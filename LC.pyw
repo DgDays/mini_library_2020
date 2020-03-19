@@ -787,9 +787,7 @@ def edit_profile(self):
     text = self_main.table.item(selected_item, option="text")
     root = Edit_profile()
     root.en_fio2.insert(0,text)
-    row = datetime.datetime.strptime(values[0], '%Y-%m-%d')
-    row = row.strftime('%d.%m.%Y')
-    root.en_db2.set_date(row)
+    root.en_db2.set_date(values[0])
     root.en_class2.insert(0, values[1])
     root.en_lit2.insert(0, values[2])
     root.en_adr2.insert(0, values[3])
@@ -934,10 +932,12 @@ def save_stat(self):
     name = self.en_bookname.get()
     aut = self.en_author2.get()
     stat = self.en_stat.get()
+    db = datetime.datetime.strptime(values[0],'%d.%m.%Y')
+    db = db.strftime('%Y-%m-%d')
     dc = self.en_dc.get()
     dc = datetime.datetime.strptime(dc, '%d.%m.%Y')
     dc = dc.strftime('%Y-%m-%d')
-    line = (name, aut, stat, dc, text, values[0], values[4], text1, values1[0], values1[1])
+    line = (name, aut, stat, dc, text, db, values[4], text1, values1[0], values1[1])
     if null in (name, aut, stat):   #Проверка на пустоту полей
         messagebox.showerror('ОШИБКА!!!','Ошибка! Поля не могут быть пустыми!')  #Вывод ошибки
     else:
@@ -949,8 +949,10 @@ def save_stat(self):
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
     cur = conn.cursor()
 
+    db = datetime.datetime.strptime(values[0],'%d.%m.%Y')
+    db = db.strftime('%Y-%m-%d')
     #Вывовд всех учеников
-    cur.execute("SELECT BOOK, AUT, STAT FROM LC WHERE FIO=(?) AND DB=(?) AND PHONE=(?)",(text,values[0],values[4]))
+    cur.execute("SELECT BOOK, AUT, STAT FROM LC WHERE FIO=(?) AND DB=(?) AND PHONE=(?)",(text,db,values[4]))
     rows = cur.fetchall()
     for row in rows:
         self_info.info_table.insert("" , tk.END , text=row[0], values=row[1:])
