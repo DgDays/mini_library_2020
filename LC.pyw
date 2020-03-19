@@ -717,8 +717,8 @@ def update_info(root):
         root.adr = tk.Label(root, text='Адрес: '+values[3], font='Times 12').place(x=10, y=65)
         root.phone = tk.Label(root,text='Телефон: '+values[4], font='Times 12').place(x=260,y=65)
     
-    db = datetime.datetime.strptime(values[0], '%d.%m.%Y')
-    db = db.strftime('%Y-%m-%d')
+    db = datetime.datetime.strptime(values[0], '%d.%m.%Y')#Парсит дату
+    db = db.strftime('%Y-%m-%d')#Переводит дату в другой формат
     #Вывовд всех учеников
     cur.execute("SELECT BOOK, AUT, STAT FROM LC WHERE FIO=(?) AND DB=(?) AND PHONE=(?)",(text,db,values[4]))
     rows = cur.fetchall()
