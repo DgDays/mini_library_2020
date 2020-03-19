@@ -682,6 +682,10 @@ def update_main(self):
     cur.execute("SELECT * FROM PROFILE")
     rows = cur.fetchall()
     for row in rows:
+        db = row[1]
+        db = datetime.datetime.strptime(db, '%Y-%m-%d')
+        db = db.strftime('%d.%m.%Y')
+        row = (row[0],db, row[2], row[3], row[4], row[5])
         self.table.insert("" , tk.END ,text=row[0], values=row[1:])
 
 def update_book(self):
@@ -713,9 +717,10 @@ def update_info(root):
         root.adr = tk.Label(root, text='Адрес: '+values[3], font='Times 12').place(x=10, y=65)
         root.phone = tk.Label(root,text='Телефон: '+values[4], font='Times 12').place(x=260,y=65)
     
-    
+    db = datetime.datetime.strptime(values[0], '%d.%m.%Y')
+    db = db.strftime('%Y-%m-%d')
     #Вывовд всех учеников
-    cur.execute("SELECT BOOK, AUT, STAT FROM LC WHERE FIO=(?) AND DB=(?) AND PHONE=(?)",(text,values[0],values[4]))
+    cur.execute("SELECT BOOK, AUT, STAT FROM LC WHERE FIO=(?) AND DB=(?) AND PHONE=(?)",(text,db,values[4]))
     rows = cur.fetchall()
     for row in rows:
         root.info_table.insert('', tk.END, text=row[0], values=row[1:])
