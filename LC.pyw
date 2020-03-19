@@ -905,11 +905,14 @@ def edit_lc(self):
     # Получаем значения в выделенной строке
     values1 = self_info.info_table.item(selected_item, option="values")
     text1 = self_info.info_table.item(selected_item, option="text")
+    db = datetime.datetime.strptime(values[0],'%d.%m.%Y')
+    db = db.strftime('%Y-%m-%d')
+    values2 = (db,values[1],values[2],values[3], values[4])
     root = Edit_lc()
     root.en_bookname.insert(0,text1)
     root.en_author2.insert(0,values1[0])
     root.en_stat.insert(0, values1[1])
-    line = (text1, values1[0], values1[1], text, values[0], values[4])
+    line = (text1, values1[0], values1[1], text, values2[0], values2[4])
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
     con_cur = conn.cursor()
     con_cur.execute('SELECT DC FROM LC WHERE BOOK = (?) AND AUT = (?) AND STAT = (?) AND FIO = (?) AND DB = (?) AND PHONE = (?)',line)
