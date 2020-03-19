@@ -24,7 +24,6 @@ import os
 import sqlite3
 import datetime
 from datetime import timedelta, date
-from PIL import ImageTk, Image
 import xlsxwriter
 import threading
 from tkcalendar import DateEntry
