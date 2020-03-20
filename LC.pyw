@@ -130,16 +130,19 @@ class Main(tk.Tk):
 
         file_sohranit = tk.Menu(mainmenu, tearoff = 0) # Запретить отделение
         first_and_last = first_and_last_day()
-        file_sohranit.add_command(label = "За месяц в Excel", command = lambda: threading.Thread(target = month_excel, args = [first_and_last,]).start())
-        file_sohranit.add_command(label = "За год в Excel", command = lambda: threading.Thread(target = year_excel).start())  
-        file_sohranit.add_command(label = "За указанный срок в Excel", command = lambda: Excel())  
+        file_sohranit.add_command(label = "Статистика за месяц", command = lambda: threading.Thread(target = month_excel, args = [first_and_last,]).start())
+        file_sohranit.add_command(label = "Статистика за год", command = lambda: threading.Thread(target = year_excel).start())  
+        file_sohranit.add_command(label = "Статистика за выбранный срок", command = lambda: Excel())
+        file_sohranit.add_separator()
+        file_sohranit.add_command(label = "Учёт регистраций")
+        file_sohranit.add_command(label = "Учёт книг")
         
         file_infa = tk.Menu(mainmenu, tearoff = 0) # Запретить отделение
         file_infa.add_command(label = "Просмотреть справку")
         file_infa.add_separator()
         file_infa.add_command(label = "О программе")
 
-        mainmenu.add_cascade(label = "Сохранить отчёт", menu = file_sohranit) # Добавляет пункт "Сохранить в отчёт" в меню
+        mainmenu.add_cascade(label = "Сохранить в Excel", menu = file_sohranit) # Добавляет пункт "Сохранить в отчёт" в меню
         mainmenu.add_command(label = "Учёт книг", command = lambda: Book())
         mainmenu.add_cascade(label = "Информация", menu = file_infa) # Добавляет пункт "Информация" в меню
         mainmenu.add_command(label = 'Уведомления', command= lambda: Not())  
