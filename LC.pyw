@@ -132,7 +132,7 @@ class Main(tk.Tk):
         first_and_last = first_and_last_day()
         file_sohranit.add_command(label = "За месяц в Excel", command = lambda: threading.Thread(target = month_excel, args = [first_and_last,]).start())
         file_sohranit.add_command(label = "За год в Excel", command = lambda: threading.Thread(target = year_excel).start())  
-        file_sohranit.add_command(label = "За указанный срок в Excel")  
+        file_sohranit.add_command(label = "За указанный срок в Excel", command = lambda: Excel())  
         
         file_infa = tk.Menu(mainmenu, tearoff = 0) # Запретить отделение
         file_infa.add_command(label = "Просмотреть справку")
@@ -655,6 +655,41 @@ class Not(tk.Toplevel):
 
         #Иконка
         self.iconbitmap(os.path.dirname(os.path.abspath(__file__))+"/bell.ico")
+
+class Excel(tk.Toplevel):
+      def __init__(self,*args, **kwargs):
+        tk.Toplevel.__init__(self,*args, *kwargs)
+        w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
+        h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
+        self.title("Сохранить в Excel")#Заголовок
+        self.geometry('140x120+{}+{}'.format(w+300, h))
+        self.resizable(False,False)#Изменение размера окна
+        self.configure(background='#e9e9e9')#Фон окна
+        self.focus_force()
+
+        self.lb_excel = tk.Label(self, text='Вывести отчёт в Excel')
+        self.lb_excel.pack()
+
+        self.frame = tk.Frame(self)
+        self.lb_date1 = tk.Label(self.frame, text='С:')
+        self.lb_date1.grid(row=0, column=0)
+
+        self.en_date1 = DateEntry(self.frame, width=12, background='darkblue',
+                    foreground='white', borderwidth=2)
+        self.en_date1.grid_configure(row=0, column=1, pady=3)
+
+        self.lb_date2 = tk.Label(self.frame, text='До:')
+        self.lb_date2.grid(row=1,column=0)
+
+        self.en_date2 = DateEntry(self.frame, width=12, background='darkblue',
+                    foreground='white', borderwidth=2)
+        self.en_date2.grid_configure(row=1,column=1, pady=3)
+
+        self.btn = ttk.Button(self.frame, text='Сохранить отчёт', command= lambda: threading.Thread(target = lub_period_excel, args = [self,]).start())
+        self.btn.grid(row=2, column=1, pady=3)
+
+
+        self.frame.pack(fill='both')
 
 
 #================================ Работа с БД ================================
@@ -1218,6 +1253,51 @@ def year_excel():
         row+=1
     conn.commit()
     workbook.close()
+
+def lub_period_excel(self):
+
+    x = self.en_date1.get()
+    y = self.en_date2.get()
+
+    workbook = xlsxwriter.Workbook(os.path.dirname(os.path.abspath(__file__))+'/Отчёт с {0} по {1} .xlsx'.format(x,y))
+    worksheet = workbook.add_worksheet()
+
+    bold = workbook.add_format({'bold' : True})
+
+    worksheet.write('A1','ФИО', bold)
+    worksheet.write('B1','Дата рождения', bold)
+    worksheet.write('C1','Телефон', bold)
+    worksheet.write('D1','Дата взятия книги', bold)
+    worksheet.write('E1','Дата сдачи книги', bold)
+    worksheet.write('F1','Автор', bold)
+    worksheet.write('G1','Книга', bold)
+    worksheet.write('H1','Статус', bold)
+
+    row = 1
+    col = 0
+
+    x = datetime.datetime.strptime(x, '%d.%m.%Y')
+    x = x.strftime('%Y-%m-%d')
+    y = datetime.datetime.strptime(y, '%d.%m.%Y')
+    y = y.strftime('%Y-%m-%d')
+
+    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db") 
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM LC WHERE DI BETWEEN (?) and (?)",(x,y))
+    rows = cur.fetchall()
+    for fio,db,phone,di,dc,aut,book,stat in (rows):
+        worksheet.write(row,col,fio)
+        worksheet.write(row,col+1,db)
+        worksheet.write(row,col+2,phone)
+        worksheet.write(row,col+3,di)
+        worksheet.write(row,col+4,dc)
+        worksheet.write(row,col+5,aut)
+        worksheet.write(row,col+6,book)
+        worksheet.write(row,col+7,stat)
+        row+=1
+    conn.commit()
+    workbook.close()
+
 
 
 if __name__ == "__main__":
