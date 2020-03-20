@@ -809,7 +809,11 @@ def save_stud2(self):
     cur.execute("SELECT * FROM PROFILE")
     rows = cur.fetchall()
     for row in rows:
-        self_main.table.insert("" , tk.END , text=row[0], values=row[1:])
+        db = row[1]
+        db = datetime.datetime.strptime(db, '%Y-%m-%d')
+        db = db.strftime('%d.%m.%Y')
+        row = (row[0],db, row[2], row[3], row[4], row[5])
+        self_main.table.insert("" , tk.END ,text=row[0], values=row[1:])
 
 def edit_profile(self):
     global self_main
@@ -843,7 +847,8 @@ def edit_stud(self):
     db = db.strftime('%Y-%m-%d')
     adr = self.en_adr2.get()
     fio2 = text
-    db2 = values[0]
+    db2 = datetime.datetime.strptime(values[0], '%d.%m.%Y')
+    db2 = db2.strftime('%Y-%m-%d')
     phone2 = values[4]
     line = [fio,db,clas,lit,adr,phone,fio2, db2, phone2]
     if null in (fio,db,phone,adr):   #Проверка на пустоту полей
@@ -862,7 +867,11 @@ def edit_stud(self):
     cur.execute("SELECT * FROM PROFILE")
     rows = cur.fetchall()
     for row in rows:
-        self_main.table.insert("" , tk.END , text=row[0], values=row[1:])
+        db = row[1]
+        db = datetime.datetime.strptime(db, '%Y-%m-%d')
+        db = db.strftime('%d.%m.%Y')
+        row = (row[0],db, row[2], row[3], row[4], row[5])
+        self_main.table.insert("" , tk.END ,text=row[0], values=row[1:])
 
 def del_profile(self):
     selected_item = self.table.selection()
@@ -870,7 +879,9 @@ def del_profile(self):
     text = self.table.item(selected_item, option="text")
     ask = messagebox.askyesno('Удалить','Вы точно хотите удалить читателя {}?'.format(text))
     if ask == True:
-        line = (text, values[0], values[4])
+        db = datetime.datetime.strptime(values[0], '%d.%m.%Y')
+        db = db.strftime( '%Y-%m-%d')
+        line = (text, db, values[4])
         conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
         con_cur = conn.cursor()
         con_cur.execute('DELETE FROM PROFILE WHERE FIO = (?) AND DB = (?) AND PHONE = (?)',line)
@@ -885,7 +896,11 @@ def del_profile(self):
     cur.execute("SELECT * FROM PROFILE")
     rows = cur.fetchall()
     for row in rows:
-        self.table.insert("" , tk.END , text=row[0], values=row[1:])
+        db = row[1]
+        db = datetime.datetime.strptime(db, '%Y-%m-%d')
+        db = db.strftime('%d.%m.%Y')
+        row = (row[0],db, row[2], row[3], row[4], row[5])
+        self.table.insert("" , tk.END ,text=row[0], values=row[1:])
     
     
 
@@ -1030,6 +1045,10 @@ def search(self):
     cur.execute("SELECT * FROM PROFILE WHERE FIO LIKE '%{0}%' OR '{0}%' OR '%{0}'".format(search))
     rows = cur.fetchall()
     for row in rows:
+        db = row[1]
+        db = datetime.datetime.strptime(db, '%Y-%m-%d')
+        db = db.strftime('%d.%m.%Y')
+        row = (row[0],db, row[2], row[3], row[4], row[5])
         self.table.insert("" , tk.END ,text=row[0], values=row[1:])
 
 def search_book(self):
@@ -1043,7 +1062,10 @@ def search_book(self):
     cur.execute("SELECT * FROM BOOK WHERE (NAME LIKE '%{0}%' OR '{0}%' OR '%{0}') OR (AUT LIKE '%{0}%' OR '{0}%' OR '%{0}')".format(search))
     rows = cur.fetchall()
     for row in rows:
-        self.book_table.insert("" , tk.END ,text=row[0], values=row[1:])
+        cur.execute("SELECT COUNT(*) FROM LC WHERE BOOK = (?) AND AUT = (?) AND (STAT = 'На руках' OR STAT = 'Просрочена')",(row[0],row[1]))
+        line = cur.fetchall()
+        res = (row[0], row[1], row[2] - line[0][0])
+        self.book_table.insert("" , tk.END ,text=res[0], values=res[1:])
 
 
 
@@ -1105,15 +1127,19 @@ def edit_book(self):
     values1 = self_book.book_table.item(selected_item, option="values")
     text1 = self_book.book_table.item(selected_item, option="text")
 
+    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
+    con_cur = conn.cursor()
+    con_cur.execute('SELECT COL FROM BOOK WHERE NAME = (?) AND AUT = (?)',(text1, values1[0]))
+    f = con_cur.fetchall()
+
     null = ''
     name = self.en_name.get()
     aut = self.en_aut.get()
     col = self.en_col.get()
-    line = (name,aut,col, text1, values1[0], values1[1])
+    line = (name,aut,col, text1, values1[0], f[0][0])
     if null in (name,aut,col):   #Проверка на пустоту полей
         messagebox.showerror('ОШИБКА!!!','Ошибка! Поля не могут быть пустыми!')  #Вывод ошибки
     else:
-        conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
         con_cur = conn.cursor()
         con_cur.execute('UPDATE BOOK SET NAME=(?), AUT=(?), COL=(?) WHERE NAME=(?) AND AUT=(?) AND COL=(?)',line)
         conn.commit()
@@ -1136,7 +1162,7 @@ def del_book(self):
     # Получаем значения в выделенной строке
     values1 = self.book_table.item(selected_item, option="values")
     text1 = self.book_table.item(selected_item, option="text")
-    ask = messagebox.askyesno('Удалить','Вы точно хотите удалить книгу: {}?'.format(text))
+    ask = messagebox.askyesno('Удалить','Вы точно хотите удалить книгу: {}?'.format(text1))
 
     if ask == True:
         line = (text1, values1[0], values1[1]) 
