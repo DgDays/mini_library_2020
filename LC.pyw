@@ -33,7 +33,7 @@ values = ''
 self_main = ''
 self_info = ''
 self_book = ''
-
+obj = ["Алгебра","Геометрия","Математика","Русский язык","Английский язык","Французский язык","Немецкий язык","Физика","Химия","География","Информатика","Обществознание","История","Литература"]
 class MyTree(ttk.Treeview):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -564,7 +564,7 @@ class Book(tk.Toplevel):
 class Add_book(tk.Toplevel):
     def __init__(self, *args, **kwargs):
         tk.Toplevel.__init__(self,*args, *kwargs)
-        self.title("Добавить читателя") #Заголовок
+        self.title("Добавить книги") #Заголовок
         w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
         self.geometry('280x125+{}+{}'.format(w+300, h-125))#Размер
@@ -591,7 +591,7 @@ class Add_book(tk.Toplevel):
 class Edit_books(tk.Toplevel):
     def __init__(self, *args, **kwargs):
         tk.Toplevel.__init__(self,*args, *kwargs)
-        self.title("Добавить читателя") #Заголовок
+        self.title("Редактировать книги") #Заголовок
         w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
         self.geometry('280x125+{}+{}'.format(w+300, h-125))#Размер
@@ -727,9 +727,18 @@ def update_main(self):
         self.table.insert("" , tk.END ,text=row[0], values=row[1:])
 
 def update_book(self):
+    global obj
     self.book_table.delete(*self.book_table.get_children())
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
     cur = conn.cursor()
+
+    schbook = self.book_table.insert("", tk.END, text='Учебники')
+    for less in obj:
+        x = self.book_table.insert(schbook, tk.END, text=less)
+        cur.execute("SELECT NAME, AUT, COL FROM SCHBOOK WHERE OBJ = (?)",(less,))
+        rows = cur.fetchall()
+        for row in rows:
+            self.book_table.insert(x, tk.END, text = row[0], values=row[1:])
 
     #Вывовд всех учеников
     cur.execute("SELECT * FROM BOOK")
@@ -1097,6 +1106,15 @@ def save_book(self):
     cur = conn.cursor()
 
     #Вывовд всех учеников
+    schbook = self_book.book_table.insert("", tk.END, text='Учебники')
+    for less in obj:
+        x = self_book.book_table.insert(schbook, tk.END, text=less)
+        cur.execute("SELECT NAME, AUT, COL FROM SCHBOOK WHERE OBJ = (?)",(less,))
+        rows = cur.fetchall()
+        for row in rows:
+            self_book.book_table.insert(x, tk.END, text = row[0], values=row[1:])
+
+    #Вывовд всех учеников
     cur.execute("SELECT * FROM BOOK")
     rows = cur.fetchall()
     for row in rows:
@@ -1152,6 +1170,15 @@ def edit_book(self):
     cur = conn.cursor()
 
     #Вывовд всех учеников
+    schbook = self_book.book_table.insert("", tk.END, text='Учебники')
+    for less in obj:
+        x = self_book.book_table.insert(schbook, tk.END, text=less)
+        cur.execute("SELECT NAME, AUT, COL FROM SCHBOOK WHERE OBJ = (?)",(less,))
+        rows = cur.fetchall()
+        for row in rows:
+            self_book.book_table.insert(x, tk.END, text = row[0], values=row[1:])
+
+    #Вывовд всех учеников
     cur.execute("SELECT * FROM BOOK")
     rows = cur.fetchall()
     for row in rows:
@@ -1177,6 +1204,15 @@ def del_book(self):
     self.book_table.delete(*self.book_table.get_children())
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
     cur = conn.cursor()
+
+    #Вывовд всех учеников
+    schbook = self.book_table.insert("", tk.END, text='Учебники')
+    for less in obj:
+        x = self.book_table.insert(schbook, tk.END, text=less)
+        cur.execute("SELECT NAME, AUT, COL FROM SCHBOOK WHERE OBJ = (?)",(less,))
+        rows = cur.fetchall()
+        for row in rows:
+            self.book_table.insert(x, tk.END, text = row[0], values=row[1:])
 
     #Вывовд всех учеников
     cur.execute("SELECT * FROM BOOK")
