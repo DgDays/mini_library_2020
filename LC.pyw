@@ -1154,7 +1154,12 @@ def edit_books(self):
     col = con_cur.fetchall()
     root.en_name.insert(0, text1)
     root.en_aut.insert(0, values1[0])
-    root.en_col.insert(0, col)
+    if col != []:
+        root.en_col.insert(0, col)
+    else:
+        con_cur.execute('SELECT COL FROM SCHBOOK WHERE NAME=(?) AND AUT=(?)',line)
+        col = con_cur.fetchall()
+        root.en_col.insert(0, col)
     
 
 def edit_book(self):
@@ -1169,17 +1174,32 @@ def edit_book(self):
     con_cur.execute('SELECT COL FROM BOOK WHERE NAME = (?) AND AUT = (?)',(text1, values1[0]))
     f = con_cur.fetchall()
 
-    null = ''
-    name = self.en_name.get()
-    aut = self.en_aut.get()
-    col = self.en_col.get()
-    line = (name,aut,col, text1, values1[0], f[0][0])
-    if null in (name,aut,col):   #Проверка на пустоту полей
-        messagebox.showerror('ОШИБКА!!!','Ошибка! Поля не могут быть пустыми!')  #Вывод ошибки
+    if f != []:
+        null = ''
+        name = self.en_name.get()
+        aut = self.en_aut.get()
+        col = self.en_col.get()
+        line = (name,aut,col, text1, values1[0], f[0][0])
+        if null in (name,aut,col):   #Проверка на пустоту полей
+            messagebox.showerror('ОШИБКА!!!','Ошибка! Поля не могут быть пустыми!')  #Вывод ошибки
+        else:
+            con_cur = conn.cursor()
+            con_cur.execute('UPDATE BOOK SET NAME=(?), AUT=(?), COL=(?) WHERE NAME=(?) AND AUT=(?) AND COL=(?)',line)
+            conn.commit()
     else:
-        con_cur = conn.cursor()
-        con_cur.execute('UPDATE BOOK SET NAME=(?), AUT=(?), COL=(?) WHERE NAME=(?) AND AUT=(?) AND COL=(?)',line)
-        conn.commit()
+        con_cur.execute('SELECT COL FROM SCHBOOK WHERE NAME = (?) AND AUT = (?)',(text1, values1[0]))
+        f = con_cur.fetchall()
+        null = ''
+        name = self.en_name.get()
+        aut = self.en_aut.get()
+        col = self.en_col.get()
+        line = (name,aut,col, text1, values1[0], f[0][0])
+        if null in (name,aut,col):   #Проверка на пустоту полей
+            messagebox.showerror('ОШИБКА!!!','Ошибка! Поля не могут быть пустыми!')  #Вывод ошибки
+        else:
+            con_cur = conn.cursor()
+            con_cur.execute('UPDATE SCHBOOK SET NAME=(?), AUT=(?), COL=(?) WHERE NAME=(?) AND AUT=(?) AND COL=(?)',line)
+            conn.commit()
 
     self_book.book_table.delete(*self_book.book_table.get_children())
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
