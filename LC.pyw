@@ -220,7 +220,7 @@ class Add_profile(tk.Toplevel):
         self.title("Добавить читателя") #Заголовок
         w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
-        self.geometry('370x180+{}+{}'.format(w, h))#Размер
+        self.geometry('380x200+{}+{}'.format(w, h))#Размер
         self.resizable(False, False)#Изменение размера окна
         self.s = ttk.Style(self)#Использование темы
         self.s.theme_use('clam')
@@ -266,18 +266,24 @@ class Add_profile(tk.Toplevel):
         self.en_adr2=ttk.Entry(self,width=49)
         self.en_adr2.grid_configure(row=3,column=1, columnspan=20,sticky='W')
 
+        self.lb_client = tk.Label(self, text = 'Категория').grid(row=4, column=0, pady=3)
+
+        self.en_client = ttk.Combobox(self,values=["Ученик", "Учитель", "Другой посетитель"],width=18)
+        self.en_client.grid_configure(row=4,column=1, columnspan=20, sticky='W')
+
         #надпись "Дата рождения"
         self.lb_db=tk.Label(self,text='Дата рождения')
-        self.lb_db.grid(row=4,column=3,pady=3)
+        self.lb_db.grid(row=5,column=3,pady=3)
+
 
         #место ввода "Дата рождения"
         self.en_db2= DateEntry(self, width=12, background='darkblue',
                     foreground='white', borderwidth=2, year=2020)
-        self.en_db2.grid_configure(row=4,column=4,sticky='W')
+        self.en_db2.grid_configure(row=5,column=4,sticky='W')
 
         #кнопка "Сохранить"
         self.btn_save=ttk.Button(self, text='Сохранить',command=lambda: threading.Thread(target = save_stud2, args = [self,]).start()) #Пример многопоточности
-        self.btn_save.grid(row=5,column=4,pady=3)
+        self.btn_save.grid(row=6,column=4,pady=3)
         self.iconbitmap(os.path.dirname(os.path.abspath(__file__))+"/add.ico")
 
 #---------------- Изменить читателя ----------------
@@ -299,7 +305,7 @@ class Edit_profile(tk.Toplevel):
 
         #место ввода "ФИО"
         self.en_fio2=ttk.Entry(self,width=49)
-        self.en_fio2.grid_configure(row=0,column=1, columnspan=40)
+        self.en_fio2.grid_configure(row=0,column=1, columnspan=40, sticky='W')
 
         #надпись "Класс"
         self.lb_class=tk.Label(self,text='Класс')
@@ -331,7 +337,7 @@ class Edit_profile(tk.Toplevel):
 
         #место ввода "Адрес"
         self.en_adr2=ttk.Entry(self,width=49)
-        self.en_adr2.grid_configure(row=3,column=1,columnspan=20)
+        self.en_adr2.grid_configure(row=3,column=1,columnspan=20, sticky='W')
 
         #надпись "Дата рождения"
         self.lb_db=tk.Label(self,text='Дата рождения')
@@ -804,13 +810,14 @@ def save_stud2(self):
     db = datetime.datetime.strptime(db, '%d.%m.%Y')
     db = db.strftime('%Y-%m-%d')
     adr = self.en_adr2.get()
-    line = [fio,db,clas,lit,adr,phone]
+    client = self.en_client.get()
+    line = [fio,db,clas,lit,adr,phone,client]
     if null in (fio,db,phone,adr):   #Проверка на пустоту полей
         messagebox.showerror('ОШИБКА!!!','Ошибка! Поля не могут быть пустыми!')  #Вывод ошибки
     else:
         conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
         con_cur = conn.cursor()
-        con_cur.execute('INSERT INTO PROFILE VALUES (?,?,?,?,?,?)',line)
+        con_cur.execute('INSERT INTO PROFILE VALUES (?,?,?,?,?,?,?)',line)
         conn.commit()
 
     self_main.table.delete(*self_main.table.get_children())
@@ -928,7 +935,8 @@ def save_lc2(self):
     global values
     null = ''
     fio = text
-    db = values[0]
+    db = datetime.datetime.strptime(values[0], '%d.%m.%Y')
+    db = db.strftime('%Y-%m-%d')
     phone = values[4]
     di = datetime.date.today() #Присвоение текущей даты
     dc = di + timedelta(days=14)#Определение срока сдачи книги
@@ -941,7 +949,7 @@ def save_lc2(self):
     else:
         conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
         con_cur = conn.cursor()
-        con_cur.execute('INSERT INTO LC VALUES (?,?,?,?,?,?,?,?)',line)
+        con_cur.execute('INSERT INTO LC VALUES (?,?,?,?,?,?,?,?,0)',line)
         conn.commit()
 
 
@@ -1005,7 +1013,7 @@ def save_stat(self):
     else:
         conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
         con_cur = conn.cursor()
-        con_cur.execute('UPDATE LC SET BOOK=(?), AUT=(?), STAT=(?), DC = (?) WHERE FIO = (?) AND DB = (?) AND PHONE = (?) AND BOOK = (?) AND AUT = (?) AND STAT = (?)',line)
+        con_cur.execute('UPDATE LC SET BOOK=(?), AUT=(?), STAT=(?), DC=(?) WHERE FIO=(?) AND DB=(?) AND PHONE=(?) AND BOOK=(?) AND AUT=(?) AND STAT=(?)',line)
         conn.commit()
     self_info.info_table.delete(*self_info.info_table.get_children())
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
@@ -1029,7 +1037,9 @@ def delete_lc(self):
     ask = messagebox.askyesno('Удалить','Вы точно хотите удалить книгу: {}?'.format(text))
 
     if ask == True:
-        line = (text, values[0], values[4], text1, values1[0], values1[1])
+        db = datetime.datetime.strptime(values[0], '%d.%m.%Y')
+        db = db.strftime('%Y-%m-%d')
+        line = (text, db, values[4], text1, values1[0], values1[1])
         conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
         con_cur = conn.cursor()
         con_cur.execute('DELETE FROM LC WHERE FIO = (?) AND DB = (?) AND PHONE = (?) AND BOOK = (?) AND AUT = (?) AND STAT = (?)',line)
@@ -1039,8 +1049,10 @@ def delete_lc(self):
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
     cur = conn.cursor()
 
+    db = datetime.datetime.strptime(values[0], '%d.%m.%Y')
+    db = db.strftime('%Y-%m-%d')
     #Вывовд всех учеников
-    cur.execute("SELECT BOOK, AUT, STAT FROM LC WHERE FIO=(?) AND DB=(?) AND PHONE=(?)",(text,values[0],values[4]))
+    cur.execute("SELECT BOOK, AUT, STAT FROM LC WHERE FIO=(?) AND DB=(?) AND PHONE=(?)",(text,db,values[4]))
     rows = cur.fetchall()
     for row in rows:
         self.info_table.insert("" , tk.END , text=row[0], values=row[1:])
