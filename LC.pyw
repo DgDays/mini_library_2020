@@ -578,20 +578,24 @@ class Add_book(tk.Toplevel):
         self.s = ttk.Style(self)#Использование темы
         self.s.theme_use('clam')
 
-        self.lb_name = tk.Label(self,text='Название').grid(row=0,column=0)
-        self.lb_aut = tk.Label(self,text='Автор').grid(row=1,column=0)
-        self.lb_col = tk.Label(self,text='Кол-во').grid(row=2,column=0)
+        self.fr = tk.Frame(self)
+        self.btn_lit = ttk.Button(self.fr, text='Добавить книгу', command = lambda: lit(self)).grid(row=0,column=0, padx=5)
+        self.btn_schbook = ttk.Button(self.fr, text='Добавить учебник', command = lambda: schbook(self)).grid(row=0,column=1, padx=5)
+        self.fr.place(relx=0.5,rely=0.5,anchor=tk.CENTER)
+
+        self.lb_name = tk.Label(self,text='Название')
+        self.lb_aut = tk.Label(self,text='Автор')
+        self.lb_col = tk.Label(self,text='Кол-во')
         #поле ввода "Название"
         self.en_name = ttk.Entry(self, width=35)
-        self.en_name.grid_configure(row=0, column=1,columnspan=35, pady=3, sticky='W')
         #поле ввода "Автор"
         self.en_aut = ttk.Entry(self, width=35)
-        self.en_aut.grid_configure(row=1, column=1,columnspan=35, pady=3, sticky='W')
         #поле ввода "Кол-во"
         self.en_col = ttk.Entry(self, width=10)
-        self.en_col.grid_configure(row=2, column=1,columnspan=35, pady=3, sticky='W')
+        #
         #кнопка "Сохранить"
-        self.save = ttk.Button(self,text='Сохранить', command = lambda: threading.Thread(target = save_book, args = [self,]).start()).grid(row=3, column=1,pady=3, padx=134)
+        self.save = ttk.Button(self,text='Сохранить', command = lambda: threading.Thread(target = save_book, args = [self,]).start())
+        self.save_sch = ttk.Button(self, text='Сохранить', command = lambda: threading.Thread(target = save_schbook, args = [self,]).start())
 
 #!---------------- Изменить книгу ----------------
 class Edit_books(tk.Toplevel):
@@ -1234,8 +1238,72 @@ def del_book(self):
         line = cur.fetchall()
         res = (row[0], row[1], row[2] - line[0][0])
         self.book_table.insert("" , tk.END ,text=res[0], values=res[1:])
+
+def save_schbook(self):
+    global self_book
+    null = ''
+    name = self.en_name.get()
+    aut = self.en_aut.get()
+    col = self.en_col.get()
+    less = self.en_less.get()
+    line = (name,aut,col,less)
+    if null in (name,aut,col):   #Проверка на пустоту полей
+        messagebox.showerror('ОШИБКА!!!','Ошибка! Поля не могут быть пустыми!')  #Вывод ошибки
+    else:
+        conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
+        con_cur = conn.cursor()
+        con_cur.execute('INSERT INTO SCHBOOK VALUES (?,?,?,?)',line)
+        conn.commit()
+
+    self_book.book_table.delete(*self_book.book_table.get_children())
+    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
+    cur = conn.cursor()
+
+    #Вывовд всех учеников
+    schbook = self_book.book_table.insert("", tk.END, text='Учебники')
+    for less in obj:
+        x = self_book.book_table.insert(schbook, tk.END, text=less)
+        cur.execute("SELECT NAME, AUT, COL FROM SCHBOOK WHERE OBJ = (?)",(less,))
+        rows = cur.fetchall()
+        for row in rows:
+            self_book.book_table.insert(x, tk.END, text = row[0], values=row[1:])
+
+    #Вывовд всех учеников
+    cur.execute("SELECT * FROM BOOK")
+    rows = cur.fetchall()
+    for row in rows:
+        cur.execute("SELECT COUNT(*) FROM LC WHERE BOOK = (?) AND AUT = (?) AND (STAT = 'На руках' OR STAT = 'Просрочена')",(row[0],row[1]))
+        line = cur.fetchall()
+        res = (row[0], row[1], row[2] - line[0][0])
+        self_book.book_table.insert("" , tk.END ,text=res[0], values=res[1:])
     
     
+def schbook(self):
+    global obj
+    w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
+    h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
+    self.geometry('280x145+{}+{}'.format(w+300, h-125))#Размер
+    self.fr.place_forget()
+    self.lb_name.grid(row=0,column=0)
+    self.lb_aut.grid(row=1,column=0)
+    self.lb_col.grid(row=2,column=0)
+    self.en_name.grid_configure(row=0, column=1,columnspan=35, pady=3, sticky='W')
+    self.en_aut.grid_configure(row=1, column=1,columnspan=35, pady=3, sticky='W')
+    self.en_col.grid_configure(row=2, column=1,columnspan=35, pady=3, sticky='W')
+    self.lb_less = tk.Label(self, text='Урок').grid(row=3,column=0)
+    self.en_less = ttk.Combobox(self,values=obj,width=17)
+    self.en_less.grid_configure(row=3, column=1, columnspan=35, pady=3, sticky='W')
+    self.save_sch.grid(row=4, column=1,pady=3, padx=134)
+
+def lit(self):
+    self.fr.place_forget()
+    self.lb_name.grid(row=0,column=0)
+    self.lb_aut.grid(row=1,column=0)
+    self.lb_col.grid(row=2,column=0)
+    self.en_name.grid_configure(row=0, column=1,columnspan=35, pady=3, sticky='W')
+    self.en_aut.grid_configure(row=1, column=1,columnspan=35, pady=3, sticky='W')
+    self.en_col.grid_configure(row=2, column=1,columnspan=35, pady=3, sticky='W')
+    self.save.grid(row=3, column=1,pady=3, padx=134)
 
 
 
