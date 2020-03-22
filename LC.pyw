@@ -1084,8 +1084,9 @@ def search(self):
 def search_book(self):
     self.book_table.delete(*self.book_table.get_children())
     search = self.search.get()
-    if len(search) > 1:
-        search = search.lower().title()
+    if search[0]!='"':
+        if len(search) > 1:
+            search = search.lower().title()
     self.search.delete('0', 'end')
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
     cur = conn.cursor()
