@@ -361,7 +361,7 @@ class INFO(tk.Toplevel):
         tk.Toplevel.__init__(self,*args, *kwargs)
         w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
-        self.geometry('660x400+{}+{}'.format(w+300, h-125))#Размер
+        self.geometry('710x400+{}+{}'.format(w+300, h-125))#Размер
         self.resizable(False, False)#Изменение размера окна
         self.focus_force()
         
@@ -386,15 +386,17 @@ class INFO(tk.Toplevel):
 
 
         #Таблица
-        self.info_table = MyTree(self.fr_watch_both, columns=('Author','Status'), height=14, yscrollcommand = self.scroll.set)
+        self.info_table = MyTree(self.fr_watch_both, columns=('Author','Status','Col'), height=14, yscrollcommand = self.scroll.set)
         self.scroll.config(orient = 'vertical', command = self.info_table.yview) #Подключение скроллбара
         self.info_table.column('#0', width=250, minwidth=250, anchor=tk.CENTER)
         self.info_table.column('Author', width=250, minwidth=250, anchor=tk.CENTER)
         self.info_table.column('Status', width=140, minwidth=140, anchor=tk.CENTER)
+        self.info_table.column('Col', width=50, minwidth=50, anchor=tk.CENTER)
 
         self.info_table.heading('#0', text='Книга')
         self.info_table.heading('Author', text='Автор')
         self.info_table.heading('Status', text='Статус')
+        self.info_table.heading('Col', text='Кол-во')
 
         self.info_table.pack(side='left')
         self.fr_watch_both.pack(side='bottom', fill='both')
@@ -418,7 +420,7 @@ class Add_lc(tk.Toplevel):
         self.title("Добавить книгу в ЧБ") #Заголовок
         w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
-        self.geometry('370x100+{}+{}'.format(w+300, h-125))#Размер
+        self.geometry('370x120+{}+{}'.format(w+300, h-125))#Размер
         self.resizable(False, False)#Изменение размера окна
         self.s = ttk.Style(self)#Использование темы
         self.s.theme_use('clam')
@@ -440,9 +442,18 @@ class Add_lc(tk.Toplevel):
         self.en_author2=ttk.Entry(self,width=49)
         self.en_author2.grid_configure(row=1,column=1, columnspan=40, sticky='W')
 
+        #надпись "кол-во"
+        self.lb_col = tk.Label(self,text='Кол-во')
+        self.lb_col.grid(row=2, column=0, ipady=3)
+
+        #место ввода "кол-во"
+        self.en_col = ttk.Entry(self,width=10)
+        self.en_col.grid_configure(row=2,column=1, columnspan=40, sticky='W')
+
         #кнопка "Сохранить"
         self.btn_save=ttk.Button(self, text='Сохранить', command=lambda: threading.Thread(target = save_lc2, args = [self,]).start())
-        self.btn_save.grid(row=2, column=2, padx=219, pady=3)
+        self.btn_save.grid(row=3, column=2, padx=219, pady=3)
+
         self.iconbitmap(os.path.dirname(os.path.abspath(__file__))+"/add.ico")
 
 #---------------- Изменить книгу читателя ----------------
@@ -777,7 +788,7 @@ def update_info(root):
     db = datetime.datetime.strptime(values[0], '%d.%m.%Y')#Парсит дату
     db = db.strftime('%Y-%m-%d')#Переводит дату в другой формат
     #Вывовд всех учеников
-    cur.execute("SELECT BOOK, AUT, STAT FROM LC WHERE FIO=(?) AND DB=(?) AND PHONE=(?)",(text,db,values[4]))
+    cur.execute("SELECT BOOK, AUT, STAT, COL FROM LC WHERE FIO=(?) AND DB=(?) AND PHONE=(?)",(text,db,values[4]))
     rows = cur.fetchall()
     for row in rows:
         root.info_table.insert('', tk.END, text=row[0], values=row[1:])
@@ -947,13 +958,16 @@ def save_lc2(self):
     book = self.en_bookname.get()    #Присваивание переменным значение из полей ввода
     aut = self.en_author2.get()
     stat = "На руках"
-    line = [fio,db,phone,di,dc,aut,book,stat]
-    if null in (book,aut,stat):   #Проверка на пустоту полей
+    col = self.en_col.get()
+    if col == '':
+        col = 1
+    line = [fio,db,phone,di,dc,aut,book,stat,col]
+    if null in (book,aut,col):   #Проверка на пустоту полей
         messagebox.showerror('ОШИБКА!!!','Ошибка! Поля не могут быть пустыми!')  #Вывод ошибки
     else:
         conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
         con_cur = conn.cursor()
-        con_cur.execute('INSERT INTO LC VALUES (?,?,?,?,?,?,?,?,0)',line)
+        con_cur.execute('INSERT INTO LC VALUES (?,?,?,?,?,?,?,?,?)',line)
         conn.commit()
 
 
@@ -963,7 +977,7 @@ def save_lc2(self):
     cur = conn.cursor()
 
     #Вывовд всех учеников
-    cur.execute("SELECT BOOK, AUT, STAT FROM LC WHERE FIO=(?) AND DB=(?) AND PHONE=(?)",(fio,db,phone))
+    cur.execute("SELECT BOOK, AUT, STAT, COL FROM LC WHERE FIO=(?) AND DB=(?) AND PHONE=(?)",(fio,db,phone))
     rows = cur.fetchall()
     for row in rows:
         self_info.info_table.insert("" , tk.END , text=row[0], values=row[1:])
@@ -1026,7 +1040,7 @@ def save_stat(self):
     db = datetime.datetime.strptime(values[0],'%d.%m.%Y')
     db = db.strftime('%Y-%m-%d')
     #Вывовд всех учеников
-    cur.execute("SELECT BOOK, AUT, STAT FROM LC WHERE FIO=(?) AND DB=(?) AND PHONE=(?)",(text,db,values[4]))
+    cur.execute("SELECT BOOK, AUT, STAT, COL FROM LC WHERE FIO=(?) AND DB=(?) AND PHONE=(?)",(text,db,values[4]))
     rows = cur.fetchall()
     for row in rows:
         self_info.info_table.insert("" , tk.END , text=row[0], values=row[1:])
@@ -1056,7 +1070,7 @@ def delete_lc(self):
     db = datetime.datetime.strptime(values[0], '%d.%m.%Y')
     db = db.strftime('%Y-%m-%d')
     #Вывовд всех учеников
-    cur.execute("SELECT BOOK, AUT, STAT FROM LC WHERE FIO=(?) AND DB=(?) AND PHONE=(?)",(text,db,values[4]))
+    cur.execute("SELECT BOOK, AUT, STAT, COL FROM LC WHERE FIO=(?) AND DB=(?) AND PHONE=(?)",(text,db,values[4]))
     rows = cur.fetchall()
     for row in rows:
         self.info_table.insert("" , tk.END , text=row[0], values=row[1:])
