@@ -759,7 +759,10 @@ def update_book(self):
         cur.execute("SELECT NAME, AUT, COL FROM SCHBOOK WHERE OBJ = (?)",(less,))
         rows = cur.fetchall()
         for row in rows:
-            self.book_table.insert(x, tk.END, text = row[0], values=row[1:])
+            cur.execute("SELECT COL FROM LC WHERE BOOK = (?) AND AUT = (?) AND (STAT = 'На руках' OR STAT = 'Просрочена')",(row[0],row[1]))
+            line = cur.fetchall()
+            res = (row[0], row[1], row[2] - line[0][0])
+            self.book_table.insert(x, tk.END, text = res[0], values=res[1:])
 
     #Вывовд всех учеников
     cur.execute("SELECT * FROM BOOK")
@@ -770,7 +773,7 @@ def update_book(self):
         res = (row[0], row[1], row[2] - line[0][0])
         self.book_table.insert("" , tk.END ,text=res[0], values=res[1:])
     
-
+    
 def update_info(root):
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
     cur = conn.cursor()
@@ -1154,7 +1157,10 @@ def save_book(self):
         cur.execute("SELECT NAME, AUT, COL FROM SCHBOOK WHERE OBJ = (?)",(less,))
         rows = cur.fetchall()
         for row in rows:
-            self_book.book_table.insert(x, tk.END, text = row[0], values=row[1:])
+            cur.execute("SELECT COL FROM LC WHERE BOOK = (?) AND AUT = (?) AND (STAT = 'На руках' OR STAT = 'Просрочена')",(row[0],row[1]))
+            line = cur.fetchall()
+            res = (row[0], row[1], row[2] - line[0][0])
+            self_book.book_table.insert(x, tk.END, text = res[0], values=res[1:])
 
     #Вывовд всех учеников
     cur.execute("SELECT * FROM BOOK")
@@ -1238,7 +1244,10 @@ def edit_book(self):
         cur.execute("SELECT NAME, AUT, COL FROM SCHBOOK WHERE OBJ = (?)",(less,))
         rows = cur.fetchall()
         for row in rows:
-            self_book.book_table.insert(x, tk.END, text = row[0], values=row[1:])
+            cur.execute("SELECT COL FROM LC WHERE BOOK = (?) AND AUT = (?) AND (STAT = 'На руках' OR STAT = 'Просрочена')",(row[0],row[1]))
+            line = cur.fetchall()
+            res = (row[0], row[1], row[2] - line[0][0])
+            self_book.book_table.insert(x, tk.END, text = res[0], values=res[1:])
 
     #Вывовд всех учеников
     cur.execute("SELECT * FROM BOOK")
@@ -1281,7 +1290,10 @@ def del_book(self):
         cur.execute("SELECT NAME, AUT, COL FROM SCHBOOK WHERE OBJ = (?)",(less,))
         rows = cur.fetchall()
         for row in rows:
-            self.book_table.insert(x, tk.END, text = row[0], values=row[1:])
+            cur.execute("SELECT COL FROM LC WHERE BOOK = (?) AND AUT = (?) AND (STAT = 'На руках' OR STAT = 'Просрочена')",(row[0],row[1]))
+            line = cur.fetchall()
+            res = (row[0], row[1], row[2] - line[0][0])
+            self.book_table.insert(x, tk.END, text = res[0], values=res[1:])
 
     #Вывовд всех учеников
     cur.execute("SELECT * FROM BOOK")
@@ -1319,7 +1331,10 @@ def save_schbook(self):
         cur.execute("SELECT NAME, AUT, COL FROM SCHBOOK WHERE OBJ = (?)",(less,))
         rows = cur.fetchall()
         for row in rows:
-            self_book.book_table.insert(x, tk.END, text = row[0], values=row[1:])
+            cur.execute("SELECT COL FROM LC WHERE BOOK = (?) AND AUT = (?) AND (STAT = 'На руках' OR STAT = 'Просрочена')",(row[0],row[1]))
+            line = cur.fetchall()
+            res = (row[0], row[1], row[2] - line[0][0])
+            self_book.book_table.insert(x, tk.END, text = res[0], values=res[1:])
 
     #Вывовд всех учеников
     cur.execute("SELECT * FROM BOOK")
