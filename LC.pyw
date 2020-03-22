@@ -1065,6 +1065,8 @@ def delete_lc(self):
 def search(self):
     self.table.delete(*self.table.get_children())
     search = self.search.get()
+    if search[0] != search[0].lower():
+        search = search.lower().title()
     self.search.delete('0', 'end')
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
     cur = conn.cursor()
@@ -1082,12 +1084,21 @@ def search(self):
 def search_book(self):
     self.book_table.delete(*self.book_table.get_children())
     search = self.search.get()
+    if search[0] != search[0].lower():
+        search = search.lower().title()
     self.search.delete('0', 'end')
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
     cur = conn.cursor()
 
     #Вывовд всех учеников
     cur.execute("SELECT * FROM BOOK WHERE (NAME LIKE '%{0}%' OR '{0}%' OR '%{0}') OR (AUT LIKE '%{0}%' OR '{0}%' OR '%{0}')".format(search))
+    rows = cur.fetchall()
+    for row in rows:
+        cur.execute("SELECT COUNT(*) FROM LC WHERE BOOK = (?) AND AUT = (?) AND (STAT = 'На руках' OR STAT = 'Просрочена')",(row[0],row[1]))
+        line = cur.fetchall()
+        res = (row[0], row[1], row[2] - line[0][0])
+        self.book_table.insert("" , tk.END ,text=res[0], values=res[1:])
+    cur.execute("SELECT * FROM SCHBOOK WHERE (NAME LIKE '%{0}%' OR '{0}%' OR '%{0}') OR (AUT LIKE '%{0}%' OR '{0}%' OR '%{0}')".format(search))
     rows = cur.fetchall()
     for row in rows:
         cur.execute("SELECT COUNT(*) FROM LC WHERE BOOK = (?) AND AUT = (?) AND (STAT = 'На руках' OR STAT = 'Просрочена')",(row[0],row[1]))
