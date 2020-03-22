@@ -1242,12 +1242,19 @@ def del_book(self):
     text1 = self.book_table.item(selected_item, option="text")
     ask = messagebox.askyesno('Удалить','Вы точно хотите удалить книгу: {}?'.format(text1))
 
+    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
+    con_cur = conn.cursor()
+
     if ask == True:
         line = (text1, values1[0], values1[1]) 
-        conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
-        con_cur = conn.cursor()
-        con_cur.execute('DELETE FROM BOOK WHERE NAME = (?) AND AUT = (?) AND COL = (?)',line)
-        conn.commit()
+        con_cur.execute('SELECT * FROM BOOK WHERE NAME = (?) AND AUT = (?) AND COL = (?)',line)
+        f = con_cur.fetchall()
+        if f != []:
+            con_cur.execute('DELETE FROM BOOK WHERE NAME = (?) AND AUT = (?) AND COL = (?)',line)
+            conn.commit()
+        else:
+            con_cur.execute('DELETE FROM SCHBOOK WHERE NAME = (?) AND AUT = (?) AND COL = (?)',line)
+            conn.commit()
 
     self.book_table.delete(*self.book_table.get_children())
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
