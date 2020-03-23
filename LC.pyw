@@ -206,9 +206,15 @@ class Main(tk.Tk):
         self.table.pack(side='left')
         self.table.bind('<Double-Button-1>', lambda event: info(self))
         self.table.bind('<Button-3>', lambda event:self.profile_menu.post(event.x_root,event.y_root))
+        
         self.fr_watch_both.pack(side='bottom', fill='both')
 
         threading.Thread(target = update_main, args = [self,]).start()
+
+        self.bind('<Control-Key-a>', lambda event: add_profile(self))
+        self.bind('<Control-Key-s>', lambda event: edit_profile(self))
+        self.bind('<Delete>', lambda event: threading.Thread(target = del_profile, args = [self,]).start())
+
 
         self.iconbitmap(os.path.dirname(os.path.abspath(__file__))+"/lib.ico")
 
@@ -409,7 +415,9 @@ class INFO(tk.Toplevel):
         self.profile_menu.add_command(label = "Изменить статус книги", command= lambda: edit_lc(self))
         self.profile_menu.add_command(label = "Удалить книгу", command = lambda: threading.Thread(target = delete_lc, args = [self,]).start())         
         
-
+        self.bind('<Control-Key-a>', lambda event: add_book(self))
+        self.bind('<Control-Key-s>', lambda event: edit_lc(self))
+        self.bind('<Delete>', lambda event: threading.Thread(target = delete_lc, args = [self,]).start())
 
         self.info_table.bind('<Button-3>', lambda event:self.profile_menu.post(event.x_root,event.y_root))
         self.iconbitmap(os.path.dirname(os.path.abspath(__file__))+"/profile.ico")
