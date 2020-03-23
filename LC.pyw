@@ -530,13 +530,16 @@ class Book(tk.Toplevel):
         self.bt_search = ttk.Button(self.frame_search, text='Найти', command = lambda: threading.Thread(target = search_book, args = [self,]).start())
         self.bt_search.grid(row=0, column=1, padx=3, pady=3)
 
-        self.bt_cancel = ttk.Button(self.frame_search, text='Отмена', command = lambda: threading.Thread(target = update_book, args = [self,]).start())
+        self.bt_cancel = ttk.Button(self.frame_search, text='Отмена', command = lambda: update_search(self))
         self.bt_cancel.grid(row=0, column=2, padx=3, pady=3)
 
         self.frame_search.pack()
 
         #================================  Таблица  ================================
 
+        self.note = ttk.Notebook(self)
+
+        #=========================== Учебники ===========================================
         self.fr_watch_both = tk.Canvas(self, background='#e9e9e9',width=900,height=450)
 
         def fixed_map(option):
@@ -563,17 +566,61 @@ class Book(tk.Toplevel):
         self.book_table.heading('AUT', text='Автор(ы)')
         self.book_table.heading('COL', text='Кол-во')
 
-        self.book_menu = tk.Menu(self.book_table, tearoff=0)
+        self.schbook_menu = tk.Menu(self.book_table, tearoff=0)
 
-        self.book_menu.add_command(label = "Добавить книги", command= lambda: book(self))
-        self.book_menu.add_command(label = "Изменить кол-во книг", command = lambda: edit_books(self))
-        self.book_menu.add_command(label = "Удалить книги", command = lambda: threading.Thread(target = del_book, args = [self,]).start())
+        self.schbook_menu.add_command(label = "Добавить книги", command= lambda: schbook(self))
+        self.schbook_menu.add_command(label = "Изменить кол-во книг", command = lambda: edit_schbooks(self))
+        self.schbook_menu.add_command(label = "Удалить книги", command = lambda: threading.Thread(target = del_schbook, args = [self,]).start())
 
         self.book_table.pack(side='left')
-        self.book_table.bind('<Button-3>', lambda event:self.book_menu.post(event.x_root,event.y_root))
+        self.book_table.bind('<Button-3>', lambda event:self.schbook_menu.post(event.x_root,event.y_root))
         self.fr_watch_both.pack(side='bottom', fill='both')
 
+        threading.Thread(target = update_schbook, args = [self,]).start()
+
+        #============================ Литература ======================================
+
+        self.fr_lit = tk.Canvas(self, background='#e9e9e9',width=900,height=450)
+
+        def fixed_map(option):
+            return [elm for elm in style.map('Treeview', query_opt=option)
+                    if elm[:2] != ('!disabled', '!selected') and elm[0] != '!disabled !selected']
+
+        style = ttk.Style()
+        style.map('Treeview', foreground=fixed_map('foreground'), background=fixed_map('background'))
+
+        # ttk.Style().configure("Treeview",fieldbackground="#e9e9e9")
+
+        #Создание скроллбара
+        self.scroll1 = tk.Scrollbar(self.fr_lit)
+        self.scroll1.pack(side='right',fill='y')
+
+        #Таблица
+        self.book_table1 = MyTree(self.fr_lit, columns=('AUT','COL'), height=21, yscrollcommand = self.scroll.set)
+        self.scroll1.config(orient = 'vertical', command = self.book_table1.yview) #Подключение скроллбара
+        self.book_table1.column('#0', minwidth = 230, width=230, anchor=tk.CENTER)
+        self.book_table1.column('AUT', minwidth = 230, width=230, anchor=tk.CENTER)
+        self.book_table1.column('COL', minwidth = 230, width=230, anchor=tk.CENTER)
+
+        self.book_table1.heading('#0', text='Название')
+        self.book_table1.heading('AUT', text='Автор(ы)')
+        self.book_table1.heading('COL', text='Кол-во')
+
+        self.book_menu = tk.Menu(self.book_table1, tearoff=0)
+
+        self.book_menu.add_command(label = "Добавить книги", command= lambda: lit(self))
+        self.book_menu.add_command(label = "Изменить кол-во книг", command = lambda: edit_lit(self))
+        self.book_menu.add_command(label = "Удалить книги", command = lambda: threading.Thread(target = del_book, args = [self,]).start())
+
+        self.book_table1.pack(side='left')
+        self.book_table1.bind('<Button-3>', lambda event:self.book_menu.post(event.x_root,event.y_root))
+        self.fr_lit.pack(side='bottom', fill='both')
+
         threading.Thread(target = update_book, args = [self,]).start()
+
+        self.note.add(self.fr_watch_both, text='Учебники')
+        self.note.add(self.fr_lit, text='Литература')
+        self.note.pack(fill='both')
 
         self.iconbitmap(os.path.dirname(os.path.abspath(__file__))+"/lib.ico")
 
@@ -589,10 +636,6 @@ class Add_book(tk.Toplevel):
         self.s = ttk.Style(self)#Использование темы
         self.s.theme_use('clam')
 
-        self.fr = tk.Frame(self)
-        self.btn_lit = ttk.Button(self.fr, text='Добавить книгу', command = lambda: lit(self)).grid(row=0,column=0, padx=5)
-        self.btn_schbook = ttk.Button(self.fr, text='Добавить учебник', command = lambda: schbook(self)).grid(row=0,column=1, padx=5)
-        self.fr.place(relx=0.5,rely=0.5,anchor=tk.CENTER)
 
         self.lb_name = tk.Label(self,text='Название')
         self.lb_aut = tk.Label(self,text='Автор')
@@ -633,7 +676,8 @@ class Edit_books(tk.Toplevel):
         self.en_col = ttk.Entry(self, width=10)
         self.en_col.grid_configure(row=2, column=1,columnspan=35, pady=3, sticky='W')
         #кнопка "Сохранить"
-        self.save = ttk.Button(self,text='Сохранить', command = lambda: threading.Thread(target = edit_book, args = [self,]).start()).grid(row=3, column=1,pady=3, padx=134)
+        self.save = ttk.Button(self,text='Сохранить', command = lambda: threading.Thread(target = edit_book, args = [self,]).start())
+        self.save_sch = ttk.Button(self,text='Сохранить', command = lambda: threading.Thread(target = edit_schbook, args = [self,]).start())
 
 #================================ Уведомления ================================
 class Not(tk.Toplevel):
@@ -747,22 +791,29 @@ def update_main(self):
         row = (row[0],db, row[2], row[3], row[4], row[5])
         self.table.insert("" , tk.END ,text=row[0], values=row[1:])
 
-def update_book(self):
+def update_schbook(self):
     global obj
     self.book_table.delete(*self.book_table.get_children())
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
     cur = conn.cursor()
 
-    schbook = self.book_table.insert("", tk.END, text='Учебники')
     for less in obj:
-        x = self.book_table.insert(schbook, tk.END, text=less)
+        x = self.book_table.insert('', tk.END, text=less)
         cur.execute("SELECT NAME, AUT, COL FROM SCHBOOK WHERE OBJ = (?)",(less,))
         rows = cur.fetchall()
         for row in rows:
             cur.execute("SELECT COL FROM LC WHERE BOOK = (?) AND AUT = (?) AND (STAT = 'На руках' OR STAT = 'Просрочена')",(row[0],row[1]))
             line = cur.fetchall()
-            res = (row[0], row[1], row[2] - line[0][0])
-            self.book_table.insert(x, tk.END, text = res[0], values=res[1:])
+            if line != []:
+                res = (row[0], row[1], row[2] - line[0][0])
+                self.book_table.insert(x, tk.END, text = res[0], values=res[1:])
+            else:
+                self.book_table.insert(x, tk.END, text = row[0], values=row[1:])
+
+def update_book(self):
+    self.book_table1.delete(*self.book_table1.get_children())
+    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
+    cur = conn.cursor()
 
     #Вывовд всех учеников
     cur.execute("SELECT * FROM BOOK")
@@ -770,8 +821,15 @@ def update_book(self):
     for row in rows:
         cur.execute("SELECT COUNT(*) FROM LC WHERE BOOK = (?) AND AUT = (?) AND (STAT = 'На руках' OR STAT = 'Просрочена')",(row[0],row[1]))
         line = cur.fetchall()
-        res = (row[0], row[1], row[2] - line[0][0])
-        self.book_table.insert("" , tk.END ,text=res[0], values=res[1:])
+        if line != []:
+            res = (row[0], row[1], row[2] - line[0][0])
+            self.book_table1.insert('', tk.END, text = res[0], values=res[1:])
+        else:
+            self.book_table1.insert('', tk.END, text = row[0], values=row[1:])
+
+def update_search(self):
+    threading.Thread(target = update_book, args = [self,]).start()
+    threading.Thread(target = update_schbook, args = [self,]).start()
     
     
 def update_info(root):
@@ -1100,6 +1158,7 @@ def search(self):
 
 def search_book(self):
     self.book_table.delete(*self.book_table.get_children())
+    self.book_table1.delete(*self.book_table1.get_children())
     search = self.search.get()
     if search[0]!='"':
         if len(search) > 1:
@@ -1115,7 +1174,7 @@ def search_book(self):
         cur.execute("SELECT COUNT(*) FROM LC WHERE BOOK = (?) AND AUT = (?) AND (STAT = 'На руках' OR STAT = 'Просрочена')",(row[0],row[1]))
         line = cur.fetchall()
         res = (row[0], row[1], row[2] - line[0][0])
-        self.book_table.insert("" , tk.END ,text=res[0], values=res[1:])
+        self.book_table1.insert("" , tk.END ,text=res[0], values=res[1:])
     cur.execute("SELECT * FROM SCHBOOK WHERE (NAME LIKE '%{0}%' OR '{0}%' OR '%{0}') OR (AUT LIKE '%{0}%' OR '{0}%' OR '%{0}')".format(search))
     rows = cur.fetchall()
     for row in rows:
@@ -1123,6 +1182,7 @@ def search_book(self):
         line = cur.fetchall()
         res = (row[0], row[1], row[2] - line[0][0])
         self.book_table.insert("" , tk.END ,text=res[0], values=res[1:])
+
 
 
 
@@ -1146,21 +1206,23 @@ def save_book(self):
         con_cur.execute('INSERT INTO BOOK VALUES (?,?,?)',line)
         conn.commit()
 
-    self_book.book_table.delete(*self_book.book_table.get_children())
+    self_book.book_table1.delete(*self_book.book_table1.get_children())
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
     cur = conn.cursor()
 
     #Вывовд всех учеников
-    schbook = self_book.book_table.insert("", tk.END, text='Учебники')
     for less in obj:
-        x = self_book.book_table.insert(schbook, tk.END, text=less)
+        x = self_book.book_table.insert('', tk.END, text=less)
         cur.execute("SELECT NAME, AUT, COL FROM SCHBOOK WHERE OBJ = (?)",(less,))
         rows = cur.fetchall()
         for row in rows:
             cur.execute("SELECT COL FROM LC WHERE BOOK = (?) AND AUT = (?) AND (STAT = 'На руках' OR STAT = 'Просрочена')",(row[0],row[1]))
             line = cur.fetchall()
-            res = (row[0], row[1], row[2] - line[0][0])
-            self_book.book_table.insert(x, tk.END, text = res[0], values=res[1:])
+            if line != []:
+                res = (row[0], row[1], row[2] - line[0][0])
+                self_book.book_table1.insert('', tk.END, text = res[0], values=res[1:])
+            else:
+                self_book.book_table1.insert('', tk.END, text = row[0], values=row[1:])
 
     #Вывовд всех учеников
     cur.execute("SELECT * FROM BOOK")
@@ -1171,7 +1233,25 @@ def save_book(self):
         res = (row[0], row[1], row[2] - line[0][0])
         self_book.book_table.insert("" , tk.END ,text=res[0], values=res[1:])
 
-def edit_books(self):
+def edit_lit(self):
+    global self_book
+    self_book = self
+    root = Edit_books()
+    selected_item = self_book.book_table1.selection()
+    # Получаем значения в выделенной строке
+    values1 = self_book.book_table1.item(selected_item, option="values")
+    text1 = self_book.book_table1.item(selected_item, option="text")
+    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
+    con_cur = conn.cursor()
+    line = (text1,values1[0])
+    con_cur.execute('SELECT COL FROM BOOK WHERE NAME=(?) AND AUT=(?)',line)
+    col = con_cur.fetchall()
+    root.en_name.insert(0, text1)
+    root.en_aut.insert(0, values1[0])
+    root.en_col.insert(0, col)
+    root.save.grid(row=3, column=1,pady=3, padx=134)
+
+def edit_schbooks(self):
     global self_book
     self_book = self
     root = Edit_books()
@@ -1182,19 +1262,55 @@ def edit_books(self):
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
     con_cur = conn.cursor()
     line = (text1,values1[0])
-    con_cur.execute('SELECT COL FROM BOOK WHERE NAME=(?) AND AUT=(?)',line)
+    con_cur.execute('SELECT COL FROM SCHBOOK WHERE NAME=(?) AND AUT=(?)',line)
     col = con_cur.fetchall()
     root.en_name.insert(0, text1)
     root.en_aut.insert(0, values1[0])
-    if col != []:
-        root.en_col.insert(0, col)
-    else:
-        con_cur.execute('SELECT COL FROM SCHBOOK WHERE NAME=(?) AND AUT=(?)',line)
-        col = con_cur.fetchall()
-        root.en_col.insert(0, col)
+    root.en_col.insert(0, col)
+    root.save_sch.grid(row=3, column=1,pady=3, padx=134)
     
 
 def edit_book(self):
+    global self_book
+    selected_item = self_book.book_table1.selection()
+    # Получаем значения в выделенной строке
+    values1 = self_book.book_table1.item(selected_item, option="values")
+    text1 = self_book.book_table1.item(selected_item, option="text")
+
+    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
+    con_cur = conn.cursor()
+    con_cur.execute('SELECT COL FROM BOOK WHERE NAME = (?) AND AUT = (?)',(text1, values1[0]))
+    f = con_cur.fetchall()
+
+    null = ''
+    name = self.en_name.get()
+    aut = self.en_aut.get()
+    col = self.en_col.get()
+    line = (name,aut,col, text1, values1[0], f[0][0])
+    if null in (name,aut,col):   #Проверка на пустоту полей
+        messagebox.showerror('ОШИБКА!!!','Ошибка! Поля не могут быть пустыми!')  #Вывод ошибки
+    else:
+        con_cur = conn.cursor()
+        con_cur.execute('UPDATE BOOK SET NAME=(?), AUT=(?), COL=(?) WHERE NAME=(?) AND AUT=(?) AND COL=(?)',line)
+        conn.commit()
+
+    self_book.book_table1.delete(*self_book.book_table1.get_children())
+    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
+    cur = conn.cursor()
+
+    #Вывовд всех учеников
+    cur.execute("SELECT * FROM BOOK")
+    rows = cur.fetchall()
+    for row in rows:
+        cur.execute("SELECT COUNT(*) FROM LC WHERE BOOK = (?) AND AUT = (?) AND (STAT = 'На руках' OR STAT = 'Просрочена')",(row[0],row[1]))
+        line = cur.fetchall()
+        if line != []:
+            res = (row[0], row[1], row[2] - line[0][0])
+            self_book.book_table1.insert('', tk.END, text = res[0], values=res[1:])
+        else:
+            self_book.book_table1.insert('', tk.END, text = row[0], values=row[1:])
+
+def edit_schbook(self):
     global self_book
     selected_item = self_book.book_table.selection()
     # Получаем значения в выделенной строке
@@ -1203,51 +1319,57 @@ def edit_book(self):
 
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
     con_cur = conn.cursor()
-    con_cur.execute('SELECT COL FROM BOOK WHERE NAME = (?) AND AUT = (?)',(text1, values1[0]))
-    f = con_cur.fetchall()
 
-    if f != []:
-        null = ''
-        name = self.en_name.get()
-        aut = self.en_aut.get()
-        col = self.en_col.get()
-        line = (name,aut,col, text1, values1[0], f[0][0])
-        if null in (name,aut,col):   #Проверка на пустоту полей
-            messagebox.showerror('ОШИБКА!!!','Ошибка! Поля не могут быть пустыми!')  #Вывод ошибки
-        else:
-            con_cur = conn.cursor()
-            con_cur.execute('UPDATE BOOK SET NAME=(?), AUT=(?), COL=(?) WHERE NAME=(?) AND AUT=(?) AND COL=(?)',line)
-            conn.commit()
+    con_cur.execute('SELECT COL FROM SCHBOOK WHERE NAME = (?) AND AUT = (?)',(text1, values1[0]))
+    f = con_cur.fetchall()
+    null = ''
+    name = self.en_name.get()
+    aut = self.en_aut.get()
+    col = self.en_col.get()
+    line = (name,aut,col, text1, values1[0], f[0][0])
+    if null in (name,aut,col):   #Проверка на пустоту полей
+        messagebox.showerror('ОШИБКА!!!','Ошибка! Поля не могут быть пустыми!')  #Вывод ошибки
     else:
-        con_cur.execute('SELECT COL FROM SCHBOOK WHERE NAME = (?) AND AUT = (?)',(text1, values1[0]))
-        f = con_cur.fetchall()
-        null = ''
-        name = self.en_name.get()
-        aut = self.en_aut.get()
-        col = self.en_col.get()
-        line = (name,aut,col, text1, values1[0], f[0][0])
-        if null in (name,aut,col):   #Проверка на пустоту полей
-            messagebox.showerror('ОШИБКА!!!','Ошибка! Поля не могут быть пустыми!')  #Вывод ошибки
-        else:
-            con_cur = conn.cursor()
-            con_cur.execute('UPDATE SCHBOOK SET NAME=(?), AUT=(?), COL=(?) WHERE NAME=(?) AND AUT=(?) AND COL=(?)',line)
-            conn.commit()
+        con_cur = conn.cursor()
+        con_cur.execute('UPDATE SCHBOOK SET NAME=(?), AUT=(?), COL=(?) WHERE NAME=(?) AND AUT=(?) AND COL=(?)',line)
+        conn.commit()
 
     self_book.book_table.delete(*self_book.book_table.get_children())
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
     cur = conn.cursor()
 
     #Вывовд всех учеников
-    schbook = self_book.book_table.insert("", tk.END, text='Учебники')
     for less in obj:
-        x = self_book.book_table.insert(schbook, tk.END, text=less)
+        x = self_book.book_table.insert('', tk.END, text=less)
         cur.execute("SELECT NAME, AUT, COL FROM SCHBOOK WHERE OBJ = (?)",(less,))
         rows = cur.fetchall()
         for row in rows:
             cur.execute("SELECT COL FROM LC WHERE BOOK = (?) AND AUT = (?) AND (STAT = 'На руках' OR STAT = 'Просрочена')",(row[0],row[1]))
             line = cur.fetchall()
-            res = (row[0], row[1], row[2] - line[0][0])
-            self_book.book_table.insert(x, tk.END, text = res[0], values=res[1:])
+            if line != []:
+                res = (row[0], row[1], row[2] - line[0][0])
+                self_book.book_table.insert(x, tk.END, text = res[0], values=res[1:])
+            else:
+                self_book.book_table.insert(x, tk.END, text = row[0], values=row[1:])
+
+def del_book(self):
+    selected_item = self.book_table1.selection()
+    # Получаем значения в выделенной строке
+    values1 = self.book_table1.item(selected_item, option="values")
+    text1 = self.book_table1.item(selected_item, option="text")
+    ask = messagebox.askyesno('Удалить','Вы точно хотите удалить книгу: {}?'.format(text1))
+
+    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
+    con_cur = conn.cursor()
+
+    if ask == True:
+        line = (text1, values1[0], values1[1])
+        con_cur.execute('DELETE FROM BOOK WHERE NAME = (?) AND AUT = (?) AND COL = (?)',line)
+        conn.commit()
+
+    self.book_table1.delete(*self.book_table1.get_children())
+    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
+    cur = conn.cursor()
 
     #Вывовд всех учеников
     cur.execute("SELECT * FROM BOOK")
@@ -1255,10 +1377,14 @@ def edit_book(self):
     for row in rows:
         cur.execute("SELECT COUNT(*) FROM LC WHERE BOOK = (?) AND AUT = (?) AND (STAT = 'На руках' OR STAT = 'Просрочена')",(row[0],row[1]))
         line = cur.fetchall()
-        res = (row[0], row[1], row[2] - line[0][0])
-        self_book.book_table.insert("" , tk.END ,text=res[0], values=res[1:])
+        if line != []:
+            res = (row[0], row[1], row[2] - line[0][0])
+            self.book_table1.insert('', tk.END, text = res[0], values=res[1:])
+        else:
+            self.book_table1.insert('', tk.END, text = row[0], values=row[1:])
 
-def del_book(self):
+
+def del_schbook(self):
     selected_item = self.book_table.selection()
     # Получаем значения в выделенной строке
     values1 = self.book_table.item(selected_item, option="values")
@@ -1270,39 +1396,26 @@ def del_book(self):
 
     if ask == True:
         line = (text1, values1[0], values1[1]) 
-        con_cur.execute('SELECT * FROM BOOK WHERE NAME = (?) AND AUT = (?) AND COL = (?)',line)
-        f = con_cur.fetchall()
-        if f != []:
-            con_cur.execute('DELETE FROM BOOK WHERE NAME = (?) AND AUT = (?) AND COL = (?)',line)
-            conn.commit()
-        else:
-            con_cur.execute('DELETE FROM SCHBOOK WHERE NAME = (?) AND AUT = (?) AND COL = (?)',line)
-            conn.commit()
+        con_cur.execute('DELETE FROM SCHBOOK WHERE NAME = (?) AND AUT = (?) AND COL = (?)',line)
+        conn.commit()
 
     self.book_table.delete(*self.book_table.get_children())
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
     cur = conn.cursor()
 
     #Вывовд всех учеников
-    schbook = self.book_table.insert("", tk.END, text='Учебники')
     for less in obj:
-        x = self.book_table.insert(schbook, tk.END, text=less)
+        x = self.book_table.insert('', tk.END, text=less)
         cur.execute("SELECT NAME, AUT, COL FROM SCHBOOK WHERE OBJ = (?)",(less,))
         rows = cur.fetchall()
         for row in rows:
             cur.execute("SELECT COL FROM LC WHERE BOOK = (?) AND AUT = (?) AND (STAT = 'На руках' OR STAT = 'Просрочена')",(row[0],row[1]))
             line = cur.fetchall()
-            res = (row[0], row[1], row[2] - line[0][0])
-            self.book_table.insert(x, tk.END, text = res[0], values=res[1:])
-
-    #Вывовд всех учеников
-    cur.execute("SELECT * FROM BOOK")
-    rows = cur.fetchall()
-    for row in rows:
-        cur.execute("SELECT COUNT(*) FROM LC WHERE BOOK = (?) AND AUT = (?) AND (STAT = 'На руках' OR STAT = 'Просрочена')",(row[0],row[1]))
-        line = cur.fetchall()
-        res = (row[0], row[1], row[2] - line[0][0])
-        self.book_table.insert("" , tk.END ,text=res[0], values=res[1:])
+            if line != []:
+                res = (row[0], row[1], row[2] - line[0][0])
+                self.book_table.insert(x, tk.END, text = res[0], values=res[1:])
+            else:
+                self.book_table.insert(x, tk.END, text = row[0], values=row[1:])
 
 def save_schbook(self):
     global self_book
@@ -1325,33 +1438,28 @@ def save_schbook(self):
     cur = conn.cursor()
 
     #Вывовд всех учеников
-    schbook = self_book.book_table.insert("", tk.END, text='Учебники')
     for less in obj:
-        x = self_book.book_table.insert(schbook, tk.END, text=less)
+        x = self_book.book_table.insert('', tk.END, text=less)
         cur.execute("SELECT NAME, AUT, COL FROM SCHBOOK WHERE OBJ = (?)",(less,))
         rows = cur.fetchall()
         for row in rows:
             cur.execute("SELECT COL FROM LC WHERE BOOK = (?) AND AUT = (?) AND (STAT = 'На руках' OR STAT = 'Просрочена')",(row[0],row[1]))
             line = cur.fetchall()
-            res = (row[0], row[1], row[2] - line[0][0])
-            self_book.book_table.insert(x, tk.END, text = res[0], values=res[1:])
-
-    #Вывовд всех учеников
-    cur.execute("SELECT * FROM BOOK")
-    rows = cur.fetchall()
-    for row in rows:
-        cur.execute("SELECT COUNT(*) FROM LC WHERE BOOK = (?) AND AUT = (?) AND (STAT = 'На руках' OR STAT = 'Просрочена')",(row[0],row[1]))
-        line = cur.fetchall()
-        res = (row[0], row[1], row[2] - line[0][0])
-        self_book.book_table.insert("" , tk.END ,text=res[0], values=res[1:])
+            if line != []:
+                res = (row[0], row[1], row[2] - line[0][0])
+                self_book.book_table.insert(x, tk.END, text = res[0], values=res[1:])
+            else:
+                self_book.book_table.insert(x, tk.END, text = row[0], values=row[1:])
     
     
 def schbook(self):
     global obj
+    global self_book
+    self_book = self
+    self = Add_book()
     w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
     h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
     self.geometry('280x145+{}+{}'.format(w+300, h-125))#Размер
-    self.fr.place_forget()
     self.lb_name.grid(row=0,column=0)
     self.lb_aut.grid(row=1,column=0)
     self.lb_col.grid(row=2,column=0)
@@ -1364,7 +1472,9 @@ def schbook(self):
     self.save_sch.grid(row=4, column=1,pady=3, padx=134)
 
 def lit(self):
-    self.fr.place_forget()
+    global self_book
+    self_book = self
+    self = Add_book()
     self.lb_name.grid(row=0,column=0)
     self.lb_aut.grid(row=1,column=0)
     self.lb_col.grid(row=2,column=0)
