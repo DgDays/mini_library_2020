@@ -30,9 +30,9 @@ from tkcalendar import DateEntry
 
 text = ''
 values = ''
-self_main = ''
-self_info = ''
-self_book = ''
+self_main = 'close'
+self_info = 'close'
+self_book = 'close'
 obj = ["Алгебра","Геометрия","Математика","Русский язык","Английский язык","Французский язык","Немецкий язык","Физика","Химия","География","Информатика","Обществознание","История","Литература"]
 class MyTree(ttk.Treeview):
     def __init__(self, *args, **kwargs):
@@ -230,6 +230,8 @@ class Add_profile(tk.Toplevel):
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
         self.geometry('380x200+{}+{}'.format(w, h))#Размер
         self.resizable(False, False)#Изменение размера окна
+        self.protocol("WM_DELETE_WINDOW", lambda: self_main_null(self))
+
         self.s = ttk.Style(self)#Использование темы
         self.s.theme_use('clam')
         self.focus_force()
@@ -303,6 +305,8 @@ class Edit_profile(tk.Toplevel):
         h = ((self.winfo_screenheight() // 2)) # высота экрана
         self.geometry('375x180+{}+{}'.format(w+300, h-125))#Размер
         self.resizable(False, False)#Изменение размера окна
+        self.protocol("WM_DELETE_WINDOW", lambda: self_main_null(self))
+
         self.s = ttk.Style(self)#Использование темы
         self.s.theme_use('clam')
         self.focus_force()
@@ -372,6 +376,7 @@ class INFO(tk.Toplevel):
         self.geometry('710x400+{}+{}'.format(w+300, h-125))#Размер
         self.resizable(False, False)#Изменение размера окна
         self.focus_force()
+        self.protocol("WM_DELETE_WINDOW", lambda: self_main_null(self))
         
         self.s = ttk.Style(self)#Использование темы
         self.s.theme_use('clam')
@@ -432,6 +437,8 @@ class Add_lc(tk.Toplevel):
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
         self.geometry('370x120+{}+{}'.format(w+300, h-125))#Размер
         self.resizable(False, False)#Изменение размера окна
+        self.protocol("WM_DELETE_WINDOW", lambda: self_info_null(self))
+
         self.s = ttk.Style(self)#Использование темы
         self.s.theme_use('clam')
         self.focus_force()
@@ -476,6 +483,8 @@ class Edit_lc(tk.Toplevel):
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
         self.geometry('400x160+{}+{}'.format(w+300, h-125))#Размер
         self.resizable(False, False)#Изменение размера окна
+        self.protocol("WM_DELETE_WINDOW", lambda: self_info_null(self))
+
         self.s = ttk.Style(self)#Использование темы
         self.s.theme_use('clam')
         self.focus_force()
@@ -645,6 +654,8 @@ class Add_book(tk.Toplevel):
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
         self.geometry('280x125+{}+{}'.format(w+300, h-125))#Размер
         self.resizable(False, False)#Изменение размера окна
+        self.protocol("WM_DELETE_WINDOW", lambda: self_book_null(self))
+
         self.s = ttk.Style(self)#Использование темы
         self.s.theme_use('clam')
 
@@ -672,6 +683,8 @@ class Edit_books(tk.Toplevel):
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
         self.geometry('280x125+{}+{}'.format(w+300, h-125))#Размер
         self.resizable(False, False)#Изменение размера окна
+        self.protocol("WM_DELETE_WINDOW", lambda: self_book_null(self))
+
         self.s = ttk.Style(self)#Использование темы
         self.s.theme_use('clam')
 
@@ -700,6 +713,7 @@ class Not(tk.Toplevel):
         self.resizable(False,False)#Изменение размера окна
         self.configure(background='#e9e9e9')#Фон окна
         self.focus_force()
+        self.protocol("WM_DELETE_WINDOW", lambda: self_main_null(self))
 
         #Контейнер уведомлений
         self.fr_watch_both = tk.Frame(self)
@@ -871,21 +885,25 @@ def update_info(root):
         
 
 def info(self):
+    global self_main
     global text
     global values
     selected_item = self.table.selection()
     # Получаем значения в выделенной строке
     values = self.table.item(selected_item, option="values")
     text = self.table.item(selected_item, option="text")
-    if text != '':
-        root = INFO()
-        threading.Thread(target = update_info, args = [root,]).start()
+    if self_main == 'close':
+        if text != '':
+            self_main = ''
+            root = INFO()
+            threading.Thread(target = update_info, args = [root,]).start()
     
 
 def add_profile(self):
     global self_main
-    self_main = self
-    Add_profile()
+    if self_main == 'close':
+        self_main = self
+        Add_profile()
 
 def save_stud2(self):
     global self_main
@@ -926,18 +944,19 @@ def edit_profile(self):
     global self_main
     global text
     global values
-    self_main = self
-    selected_item = self_main.table.selection()
-    # Получаем значения в выделенной строке
-    values = self_main.table.item(selected_item, option="values")
-    text = self_main.table.item(selected_item, option="text")
-    root = Edit_profile()
-    root.en_fio2.insert(0,text)
-    root.en_db2.set_date(values[0])
-    root.en_class2.insert(0, values[1])
-    root.en_lit2.insert(0, values[2])
-    root.en_adr2.insert(0, values[3])
-    root.en_phone2.insert(0, values[4])
+    if self_main == 'close':
+        self_main = self
+        selected_item = self_main.table.selection()
+        # Получаем значения в выделенной строке
+        values = self_main.table.item(selected_item, option="values")
+        text = self_main.table.item(selected_item, option="text")
+        root = Edit_profile()
+        root.en_fio2.insert(0,text)
+        root.en_db2.set_date(values[0])
+        root.en_class2.insert(0, values[1])
+        root.en_lit2.insert(0, values[2])
+        root.en_adr2.insert(0, values[3])
+        root.en_phone2.insert(0, values[4])
 
 
 def edit_stud(self):
@@ -1014,8 +1033,9 @@ def del_profile(self):
 
 def add_book(self):
     global self_info
-    self_info = self
-    Add_lc()
+    if self_info == 'close':
+        self_info = self
+        Add_lc()
 
 def save_lc2(self):
     global self_info
@@ -1059,27 +1079,28 @@ def edit_lc(self):
     global self_info
     global text
     global values
-    self_info = self
-    selected_item = self_info.info_table.selection()
-    # Получаем значения в выделенной строке
-    values1 = self_info.info_table.item(selected_item, option="values")
-    text1 = self_info.info_table.item(selected_item, option="text")
-    db = datetime.datetime.strptime(values[0],'%d.%m.%Y')
-    db = db.strftime('%Y-%m-%d')
-    values2 = (db,values[1],values[2],values[3], values[4])
-    root = Edit_lc()
-    root.en_bookname.insert(0,text1)
-    root.en_author2.insert(0,values1[0])
-    root.en_stat.insert(0, values1[1])
-    line = (text1, values1[0], values1[1], text, values2[0], values2[4])
-    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
-    con_cur = conn.cursor()
-    con_cur.execute('SELECT DC FROM LC WHERE BOOK = (?) AND AUT = (?) AND STAT = (?) AND FIO = (?) AND DB = (?) AND PHONE = (?)',line)
-    rows = con_cur.fetchall()
-    rows = datetime.datetime.strptime(rows[0][0], '%Y-%m-%d')
-    row = rows.strftime('%d.%m.%Y')
-    root.en_dc.set_date(row)
-    conn.commit()
+    if self_info == 'close':
+        self_info = self
+        selected_item = self_info.info_table.selection()
+        # Получаем значения в выделенной строке
+        values1 = self_info.info_table.item(selected_item, option="values")
+        text1 = self_info.info_table.item(selected_item, option="text")
+        db = datetime.datetime.strptime(values[0],'%d.%m.%Y')
+        db = db.strftime('%Y-%m-%d')
+        values2 = (db,values[1],values[2],values[3], values[4])
+        root = Edit_lc()
+        root.en_bookname.insert(0,text1)
+        root.en_author2.insert(0,values1[0])
+        root.en_stat.insert(0, values1[1])
+        line = (text1, values1[0], values1[1], text, values2[0], values2[4])
+        conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
+        con_cur = conn.cursor()
+        con_cur.execute('SELECT DC FROM LC WHERE BOOK = (?) AND AUT = (?) AND STAT = (?) AND FIO = (?) AND DB = (?) AND PHONE = (?)',line)
+        rows = con_cur.fetchall()
+        rows = datetime.datetime.strptime(rows[0][0], '%Y-%m-%d')
+        row = rows.strftime('%d.%m.%Y')
+        root.en_dc.set_date(row)
+        conn.commit()
 
 def save_stat(self):
     global self_info
@@ -1507,7 +1528,20 @@ def lit(self):
     self.en_col.grid_configure(row=2, column=1,columnspan=35, pady=3, sticky='W')
     self.save.grid(row=3, column=1,pady=3, padx=134)
 
+def self_main_null(self):
+    global self_main
+    self_main = 'close'
+    self.destroy()
 
+def self_info_null(self):
+    global self_info
+    self_info = 'close'
+    self.destroy()
+
+def self_book_null(self):
+    global self_book
+    self_book = 'close'
+    self.destroy()
 
 #================================ Функции меню ================================
 def first_and_last_day():
