@@ -161,6 +161,8 @@ class Main(tk.Tk):
 
         self.frame_search.pack()
 
+        self.bind('<Return>', lambda event: search_enter(self))
+
         #================================  Таблица  ================================
 
         self.fr_watch_both = tk.Canvas(self, background='#e9e9e9',width=900,height=450)
@@ -534,6 +536,8 @@ class Book(tk.Toplevel):
         self.bt_cancel.grid(row=0, column=2, padx=3, pady=3)
 
         self.frame_search.pack()
+
+        self.bind('<Return>', lambda event: search_b_enter(self))
 
         #================================  Таблица  ================================
 
@@ -1113,7 +1117,7 @@ def delete_lc(self):
     # Получаем значения в выделенной строке
     values1 = self.info_table.item(selected_item, option="values")
     text1 = self.info_table.item(selected_item, option="text")
-    ask = messagebox.askyesno('Удалить','Вы точно хотите удалить книгу: {}?'.format(text))
+    ask = messagebox.askyesno('Удалить','Вы точно хотите удалить книгу: {}?'.format(text1))
 
     if ask == True:
         db = datetime.datetime.strptime(values[0], '%d.%m.%Y')
@@ -1182,6 +1186,18 @@ def search_book(self):
         line = cur.fetchall()
         res = (row[0], row[1], row[2] - line[0][0])
         self.book_table.insert("" , tk.END ,text=res[0], values=res[1:])
+
+def search_enter(self):
+    if self.search.get() != 'Поиск':
+        threading.Thread(target = search, args = [self,]).start()
+    else:
+        threading.Thread(target = update_main, args = [self,]).start()
+
+def search_b_enter(self):
+    if self.search.get() != 'Поиск':
+        threading.Thread(target = search_book, args = [self,]).start()
+    else:
+        threading.Thread(target = update_search, args = [self,]).start()
 
 
 
