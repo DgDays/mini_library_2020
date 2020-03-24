@@ -1274,7 +1274,7 @@ def save_book(self):
                 res = (row[0], row[1], row[2] - line[0][0])
                 self_book.book_table1.insert(x, tk.END, text = res[0], values=res[1:])
             else:
-                self_book.book_table1.insert('', tk.END, text = row[0], values=row[1:])
+                self_book.book_table1.insert(x, tk.END, text = row[0], values=row[1:])
 
     #Вывовд всех учеников
     cur.execute("SELECT * FROM BOOK")
