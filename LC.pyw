@@ -32,7 +32,9 @@ text = ''
 values = ''
 self_main = 'close'
 self_info = 'close'
-self_book = 'close'
+self_book = ''
+self_main_book = 'close'
+self_main_not = 'close'
 obj = ["Алгебра","Геометрия","Математика","Русский язык","Английский язык","Французский язык","Немецкий язык","Физика","Химия","География","Информатика","Обществознание","История","Литература"]
 class MyTree(ttk.Treeview):
     def __init__(self, *args, **kwargs):
@@ -143,9 +145,9 @@ class Main(tk.Tk):
         file_infa.add_command(label = "О программе")
 
         mainmenu.add_cascade(label = "Сохранить в Excel", menu = file_sohranit) # Добавляет пункт "Сохранить в отчёт" в меню
-        mainmenu.add_command(label = "Учёт книг", command = lambda: Book())
+        mainmenu.add_command(label = "Учёт книг", command = lambda: self_book_open(self))
         mainmenu.add_cascade(label = "Информация", menu = file_infa) # Добавляет пункт "Информация" в меню
-        mainmenu.add_command(label = 'Уведомления', command= lambda: Not())  
+        mainmenu.add_command(label = 'Уведомления', command= lambda: self_not_open(self))  
         
         #================================= Поиск ====================================
         self.frame_search = tk.Frame(self)
@@ -537,6 +539,7 @@ class Book(tk.Toplevel):
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
         self.geometry('713x450+{}+{}'.format(w-100, h-150))#Размер
         self.resizable(False, False)#Изменение размера окна
+        self.protocol("WM_DELETE_WINDOW", lambda: self_main_book_null(self))
         
         self.s = ttk.Style(self)#Использование темы
         self.s.theme_use('clam')
@@ -640,6 +643,10 @@ class Book(tk.Toplevel):
         threading.Thread(target = update_book, args = [self,]).start()
 
         self.note.add(self.fr_watch_both, text='Учебники')
+        self.book_table.bind("<Control-Key-s>", lambda event: edit_schbooks(self))
+        self.book_table1.bind("<Control-Key-s>", lambda event: edit_lit(self))
+        self.book_table.bind("<Delete>", lambda event: threading.Thread(target = del_schbook, args = [self,]).start())
+        self.book_table1.bind("<Delete>", lambda event: threading.Thread(target = del_book, args = [self,]).start())
         self.note.add(self.fr_lit, text='Литература')
         self.note.pack(fill='both')
 
@@ -713,7 +720,7 @@ class Not(tk.Toplevel):
         self.resizable(False,False)#Изменение размера окна
         self.configure(background='#e9e9e9')#Фон окна
         self.focus_force()
-        self.protocol("WM_DELETE_WINDOW", lambda: self_main_null(self))
+        self.protocol("WM_DELETE_WINDOW", lambda: self_not_close(self))
 
         #Контейнер уведомлений
         self.fr_watch_both = tk.Frame(self)
@@ -1265,7 +1272,7 @@ def save_book(self):
             line = cur.fetchall()
             if line != []:
                 res = (row[0], row[1], row[2] - line[0][0])
-                self_book.book_table1.insert('', tk.END, text = res[0], values=res[1:])
+                self_book.book_table1.insert(x, tk.END, text = res[0], values=res[1:])
             else:
                 self_book.book_table1.insert('', tk.END, text = row[0], values=row[1:])
 
@@ -1541,6 +1548,28 @@ def self_info_null(self):
 def self_book_null(self):
     global self_book
     self_book = 'close'
+    self.destroy()
+
+def self_main_book_null(self):
+    global self_main_book
+    self_main_book = 'close'
+    self.destroy()
+
+def self_book_open(self):
+    global self_main_book
+    if self_main_book == 'close':
+        self_main_book = self
+        Book()
+
+def self_not_open(self):
+    global self_main_not
+    if self_main_not == 'close':
+        self_main_not = self
+        Not()
+
+def self_not_close(self):
+    global self_main_not
+    self_main_not = 'close'
     self.destroy()
 
 #================================ Функции меню ================================
