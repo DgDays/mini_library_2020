@@ -35,6 +35,7 @@ self_info = 'close'
 self_book = ''
 self_main_book = 'close'
 self_main_not = 'close'
+book_add = 0
 obj = ["Алгебра","Геометрия","Математика","Русский язык","Английский язык","Французский язык","Немецкий язык","Физика","Химия","География","Информатика","Обществознание","История","Литература"]
 class MyTree(ttk.Treeview):
     def __init__(self, *args, **kwargs):
@@ -620,7 +621,7 @@ class Book(tk.Toplevel):
         self.scroll1.pack(side='right',fill='y')
 
         #Таблица
-        self.book_table1 = MyTree(self.fr_lit, columns=('AUT','COL'), height=21, yscrollcommand = self.scroll.set)
+        self.book_table1 = MyTree(self.fr_lit, columns=('AUT','COL'), height=21, yscrollcommand = self.scroll1.set)
         self.scroll1.config(orient = 'vertical', command = self.book_table1.yview) #Подключение скроллбара
         self.book_table1.column('#0', minwidth = 230, width=230, anchor=tk.CENTER)
         self.book_table1.column('AUT', minwidth = 230, width=230, anchor=tk.CENTER)
@@ -648,6 +649,7 @@ class Book(tk.Toplevel):
         self.book_table.bind("<Delete>", lambda event: threading.Thread(target = del_schbook, args = [self,]).start())
         self.book_table1.bind("<Delete>", lambda event: threading.Thread(target = del_book, args = [self,]).start())
         self.note.add(self.fr_lit, text='Литература')
+        self.note.bind("<<NotebookTabChanged>>", lambda event: book_bind_add(self))
         self.note.pack(fill='both')
 
         self.iconbitmap(os.path.dirname(os.path.abspath(__file__))+"/lib.ico")
@@ -1571,6 +1573,15 @@ def self_not_close(self):
     global self_main_not
     self_main_not = 'close'
     self.destroy()
+
+def book_bind_add(self):
+    global book_add
+    if book_add == 0:
+        self.bind('<Control-Key-a>', lambda event: schbook(self))
+        book_add = 1
+    elif book_add == 1:
+        self.bind('<Control-Key-a>', lambda event: lit(self))
+        book_add = 0
 
 #================================ Функции меню ================================
 def first_and_last_day():
