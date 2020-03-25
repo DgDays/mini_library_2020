@@ -651,6 +651,7 @@ class Book(tk.Toplevel):
         self.book_table.bind("<Delete>", lambda event: threading.Thread(target = del_schbook, args = [self,]).start())
         self.book_table1.bind("<Delete>", lambda event: threading.Thread(target = del_book, args = [self,]).start())
         self.book_table.bind("<Double-Button-1>", lambda event: threading.Thread(target = schbook_info, args = [self,]).start())
+        self.book_table1.bind("<Double-Button-1>", lambda event: threading.Thread(target = lit_info, args = [self,]).start())
         self.note.add(self.fr_lit, text='Литература')
         self.note.bind("<<NotebookTabChanged>>", lambda event: book_bind_add(self))
         self.note.pack(fill='both')
@@ -1663,6 +1664,36 @@ def schbook_info(self):
     root.col_ost.grid(row=2,column=1)
     root.obj = tk.Label(root.fr_info, text='Предмет: '+info[0][3])
     root.obj.grid(row=3,column=0,columnspan=30)
+    root.frame.pack(side='bottom', fill='both')
+
+    cur.execute("SELECT FIO, DB, PHONE, DI, DC, STAT, COL FROM LC WHERE BOOK =(?) AND AUT=(?)",(text,values[0]))
+    rows = cur.fetchall()
+    for row in rows:
+        root.table.insert('', tk.END, text=row[0], values=row[1:])
+
+
+def lit_info(self):
+    selected_item = self.book_table1.selection()
+    # Получаем значения в выделенной строке
+    values = self.book_table1.item(selected_item, option="values")
+    text = self.book_table1.item(selected_item, option="text")
+    
+    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db") 
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM BOOK WHERE NAME = (?) AND AUT =(?)",(text,values[0]))
+    info = cur.fetchall()
+
+
+    root = INFO_Book()
+
+    root.aut = tk.Label(root.fr_info, text=info[0][1])
+    root.aut.grid(row=0,column=0, columnspan=40)
+    root.name = tk.Label(root.fr_info, text=info[0][0])
+    root.name.grid(row=1, column=0,columnspan=40)
+    root.col_v = tk.Label(root.fr_info, text='Всего: '+str(info[0][2]))
+    root.col_v.grid(row=2,column=0)
+    root.col_ost = tk.Label(root.fr_info, text='Осталось: '+str(values[1]))
+    root.col_ost.grid(row=2,column=1, padx = 40, sticky='E' )
     root.frame.pack(side='bottom', fill='both')
 
     cur.execute("SELECT FIO, DB, PHONE, DI, DC, STAT, COL FROM LC WHERE BOOK =(?) AND AUT=(?)",(text,values[0]))
