@@ -54,11 +54,11 @@ class MyTree(ttk.Treeview):
         values = kwargs.get('values', None)
 
         if values:
-            if values[1]=="Сдана":
+            if "Сдана" in values:
                 super().item(item, tag='A')
-            elif values[1]=="Просрочена":
+            elif "Просрочена" in values:
                 super().item(item, tag='B')
-            elif values[1]=="На руках":
+            elif "На руках" in values:
                 super().item(item, tag='C')
 
         return item
@@ -726,7 +726,7 @@ class INFO_Book(tk.Toplevel):
         self.title("Добавить книги") #Заголовок
         w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
-        self.geometry('900x400+{}+{}'.format(w+300, h-125))#Размер
+        self.geometry('830x450+{}+{}'.format(w+300, h-125))#Размер
         self.resizable(False, False)#Изменение размера окна
         self.protocol("WM_DELETE_WINDOW", lambda: self_book_null(self))
 
@@ -750,12 +750,12 @@ class INFO_Book(tk.Toplevel):
 
         self.table = MyTree(self.frame, columns=('DB','PHONE','DI','DC','STAT','COL'), height=21, yscrollcommand = self.scroll.set)
         self.scroll.config(orient = 'vertical', command = self.table.yview) #Подключение скроллбара
-        self.table.column('#0', minwidth = 230, width=230, anchor=tk.CENTER)
-        self.table.column('DB', minwidth = 230, width=230, anchor=tk.CENTER)
-        self.table.column('PHONE', minwidth = 230, width=230, anchor=tk.CENTER)
-        self.table.column('DI', minwidth = 230, width=230, anchor=tk.CENTER)
-        self.table.column('DC', minwidth = 230, width=230, anchor=tk.CENTER)
-        self.table.column('STAT', minwidth = 230, width=230, anchor=tk.CENTER)
+        self.table.column('#0', minwidth = 160, width=160, anchor=tk.CENTER)
+        self.table.column('DB', minwidth = 100, width=100, anchor=tk.CENTER)
+        self.table.column('PHONE', minwidth = 150, width=150, anchor=tk.CENTER)
+        self.table.column('DI', minwidth = 100, width=100, anchor=tk.CENTER)
+        self.table.column('DC', minwidth = 100, width=100, anchor=tk.CENTER)
+        self.table.column('STAT', minwidth = 150, width=150, anchor=tk.CENTER)
         self.table.column('COL', minwidth = 50, width=50, anchor=tk.CENTER)
 
         self.table.heading('#0', text='ФИО')
@@ -767,7 +767,7 @@ class INFO_Book(tk.Toplevel):
         self.table.heading('COL', text='Кол-во')
 
         self.table.pack(side='left', fill='both')
-        self.frame.pack(side='bottom', fill='both')
+        
 
 #================================ Уведомления ================================
 class Not(tk.Toplevel):
@@ -1128,7 +1128,7 @@ def save_lc2(self):
         con_cur.execute('INSERT INTO LC VALUES (?,?,?,?,?,?,?,?,?)',line)
         conn.commit()
 
-
+    print(self_info)
     #Обновление таблицы при нажатии на кнопку никак не хочет работать потому сделал как коммент
     self_info.info_table.delete(*self_info.info_table.get_children())
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
@@ -1184,13 +1184,13 @@ def save_stat(self):
     dc = self.en_dc.get()
     dc = datetime.datetime.strptime(dc, '%d.%m.%Y')
     dc = dc.strftime('%Y-%m-%d')
-    line = (name, aut, stat, dc, text, db, values[4], text1, values1[0], values1[1])
+    line = (name, aut, stat, dc, text, db, values[4], text1, values1[0], values1[1], values1[2])
     if null in (name, aut, stat):   #Проверка на пустоту полей
         messagebox.showerror('ОШИБКА!!!','Ошибка! Поля не могут быть пустыми!')  #Вывод ошибки
     else:
         conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
         con_cur = conn.cursor()
-        con_cur.execute('UPDATE LC SET BOOK=(?), AUT=(?), STAT=(?), DC=(?) WHERE FIO=(?) AND DB=(?) AND PHONE=(?) AND BOOK=(?) AND AUT=(?) AND STAT=(?)',line)
+        con_cur.execute('UPDATE LC SET BOOK=(?), AUT=(?), STAT=(?), DC=(?) WHERE FIO=(?) AND DB=(?) AND PHONE=(?) AND BOOK=(?) AND AUT=(?) AND STAT=(?) AND COL=(?)',line)
         conn.commit()
     self_info.info_table.delete(*self_info.info_table.get_children())
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
@@ -1663,6 +1663,12 @@ def schbook_info(self):
     root.col_ost.grid(row=2,column=1)
     root.obj = tk.Label(root.fr_info, text='Предмет: '+info[0][3])
     root.obj.grid(row=3,column=0,columnspan=30)
+    root.frame.pack(side='bottom', fill='both')
+
+    cur.execute("SELECT FIO, DB, PHONE, DI, DC, STAT, COL FROM LC WHERE BOOK =(?) AND AUT=(?)",(text,values[0]))
+    rows = cur.fetchall()
+    for row in rows:
+        root.table.insert('', tk.END, text=row[0], values=row[1:])
 
 #================================ Функции меню ================================
 def first_and_last_day():
