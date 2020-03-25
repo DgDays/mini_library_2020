@@ -194,7 +194,7 @@ class Main(tk.Tk):
         self.table.column('Adress', minwidth = 260, width=260, anchor=tk.CENTER)
 
         self.table.heading('#0', text='ФИО')
-        self.table.heading('BirthDay', text='День рождения')
+        self.table.heading('BirthDay', text='Дата рождения')
         self.table.heading('Class', text='Класс')
         self.table.heading('Litera', text='Литера')
         self.table.heading('Phone', text='Телефон')
@@ -541,6 +541,8 @@ class Book(tk.Toplevel):
         self.geometry('713x450+{}+{}'.format(w-100, h-150))#Размер
         self.resizable(False, False)#Изменение размера окна
         self.protocol("WM_DELETE_WINDOW", lambda: self_main_book_null(self))
+
+        self.focus_force()
         
         self.s = ttk.Style(self)#Использование темы
         self.s.theme_use('clam')
@@ -648,6 +650,7 @@ class Book(tk.Toplevel):
         self.book_table1.bind("<Control-Key-s>", lambda event: edit_lit(self))
         self.book_table.bind("<Delete>", lambda event: threading.Thread(target = del_schbook, args = [self,]).start())
         self.book_table1.bind("<Delete>", lambda event: threading.Thread(target = del_book, args = [self,]).start())
+        self.book_table.bind("<Double-Button-1>", lambda event: threading.Thread(target = schbook_info, args = [self,]).start())
         self.note.add(self.fr_lit, text='Литература')
         self.note.bind("<<NotebookTabChanged>>", lambda event: book_bind_add(self))
         self.note.pack(fill='both')
@@ -664,6 +667,8 @@ class Add_book(tk.Toplevel):
         self.geometry('280x125+{}+{}'.format(w+300, h-125))#Размер
         self.resizable(False, False)#Изменение размера окна
         self.protocol("WM_DELETE_WINDOW", lambda: self_book_null(self))
+
+        self.focus_force()
 
         self.s = ttk.Style(self)#Использование темы
         self.s.theme_use('clam')
@@ -694,6 +699,8 @@ class Edit_books(tk.Toplevel):
         self.resizable(False, False)#Изменение размера окна
         self.protocol("WM_DELETE_WINDOW", lambda: self_book_null(self))
 
+        self.focus_force()
+
         self.s = ttk.Style(self)#Использование темы
         self.s.theme_use('clam')
 
@@ -712,6 +719,55 @@ class Edit_books(tk.Toplevel):
         #кнопка "Сохранить"
         self.save = ttk.Button(self,text='Сохранить', command = lambda: threading.Thread(target = edit_book, args = [self,]).start())
         self.save_sch = ttk.Button(self,text='Сохранить', command = lambda: threading.Thread(target = edit_schbook, args = [self,]).start())
+
+class INFO_Book(tk.Toplevel):
+    def __init__(self, *args, **kwargs):
+        tk.Toplevel.__init__(self,*args, *kwargs)
+        self.title("Добавить книги") #Заголовок
+        w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
+        h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
+        self.geometry('900x400+{}+{}'.format(w+300, h-125))#Размер
+        self.resizable(False, False)#Изменение размера окна
+        self.protocol("WM_DELETE_WINDOW", lambda: self_book_null(self))
+
+        self.focus_force()
+
+        self.s = ttk.Style(self)#Использование темы
+        self.s.theme_use('clam')
+
+        #============================= Контейнер информации =================
+
+        self.fr_info = tk.Frame(self)
+
+        self.fr_info.pack(side='top')
+
+        #================================ Таблица ===========================
+
+        self.frame = tk.Frame(self)
+
+        self.scroll = tk.Scrollbar(self.frame)
+        self.scroll.pack(side='right',fill='y')
+
+        self.table = MyTree(self.frame, columns=('DB','PHONE','DI','DC','STAT','COL'), height=21, yscrollcommand = self.scroll.set)
+        self.scroll.config(orient = 'vertical', command = self.table.yview) #Подключение скроллбара
+        self.table.column('#0', minwidth = 230, width=230, anchor=tk.CENTER)
+        self.table.column('DB', minwidth = 230, width=230, anchor=tk.CENTER)
+        self.table.column('PHONE', minwidth = 230, width=230, anchor=tk.CENTER)
+        self.table.column('DI', minwidth = 230, width=230, anchor=tk.CENTER)
+        self.table.column('DC', minwidth = 230, width=230, anchor=tk.CENTER)
+        self.table.column('STAT', minwidth = 230, width=230, anchor=tk.CENTER)
+        self.table.column('COL', minwidth = 50, width=50, anchor=tk.CENTER)
+
+        self.table.heading('#0', text='ФИО')
+        self.table.heading('DB', text='Дата рождения')
+        self.table.heading('PHONE', text='Телефон')
+        self.table.heading('DI', text='Дата взятия')
+        self.table.heading('DC', text='Дата сдачи')
+        self.table.heading('STAT', text='Статус')
+        self.table.heading('COL', text='Кол-во')
+
+        self.table.pack(side='left', fill='both')
+        self.frame.pack(side='bottom', fill='both')
 
 #================================ Уведомления ================================
 class Not(tk.Toplevel):
@@ -1582,6 +1638,31 @@ def book_bind_add(self):
     elif book_add == 1:
         self.bind('<Control-Key-a>', lambda event: lit(self))
         book_add = 0
+
+def schbook_info(self):
+    selected_item = self.book_table.selection()
+    # Получаем значения в выделенной строке
+    values = self.book_table.item(selected_item, option="values")
+    text = self.book_table.item(selected_item, option="text")
+
+    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db") 
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM SCHBOOK WHERE NAME = (?) AND AUT =(?)",(text,values[0]))
+    info = cur.fetchall()
+
+
+    root = INFO_Book()
+
+    root.aut = tk.Label(root.fr_info, text=info[0][1])
+    root.aut.grid(row=0,column=0, columnspan=40)
+    root.name = tk.Label(root.fr_info, text=info[0][0])
+    root.name.grid(row=1, column=0,columnspan=40)
+    root.col_v = tk.Label(root.fr_info, text='Всего: '+str(info[0][2]))
+    root.col_v.grid(row=2,column=0)
+    root.col_ost = tk.Label(root.fr_info, text='Осталось: '+str(values[1]))
+    root.col_ost.grid(row=2,column=1)
+    root.obj = tk.Label(root.fr_info, text='Предмет: '+info[0][3])
+    root.obj.grid(row=3,column=0,columnspan=30)
 
 #================================ Функции меню ================================
 def first_and_last_day():
