@@ -36,6 +36,7 @@ self_book = ''
 self_main_book = 'close'
 self_main_not = 'close'
 book_add = 0
+prev_column = None
 obj = ["Алгебра","Геометрия","Математика","Русский язык","Английский язык","Французский язык","Немецкий язык","Физика","Химия","География","Информатика","Обществознание","История","Литература"]
 class MyTree(ttk.Treeview):
     def __init__(self, *args, **kwargs):
@@ -192,6 +193,14 @@ class Main(tk.Tk):
         self.table.column('Litera', minwidth = 60, width=60, anchor=tk.CENTER)
         self.table.column('Phone', minwidth = 130, width=130, anchor=tk.CENTER)
         self.table.column('Adress', minwidth = 260, width=260, anchor=tk.CENTER)
+
+        self.table.heading("#0", command=lambda : sort_0(self.table, "#0", False))
+
+        columns = self.table['columns']
+        
+        for col in columns:
+            self.table.heading(col, text=col, command=lambda _col=col: \
+                             sort(self.table, _col, False))
 
         self.table.heading('#0', text='ФИО')
         self.table.heading('BirthDay', text='Дата рождения')
@@ -409,6 +418,14 @@ class INFO(tk.Toplevel):
         self.info_table.column('Status', width=140, minwidth=140, anchor=tk.CENTER)
         self.info_table.column('Col', width=50, minwidth=50, anchor=tk.CENTER)
 
+        self.info_table.heading("#0", command=lambda : sort_0(self.info_table, "#0", False))
+
+        columns = self.info_table['columns']
+        
+        for col in columns:
+            self.info_table.heading(col, text=col, command=lambda _col=col: \
+                             sort(self.info_table, _col, False))
+
         self.info_table.heading('#0', text='Книга')
         self.info_table.heading('Author', text='Автор')
         self.info_table.heading('Status', text='Статус')
@@ -589,6 +606,14 @@ class Book(tk.Toplevel):
         self.book_table.column('AUT', minwidth = 230, width=230, anchor=tk.CENTER)
         self.book_table.column('COL', minwidth = 230, width=230, anchor=tk.CENTER)
 
+        self.book_table.heading("#0", command=lambda : sort_0(self.book_table, "#0", False))
+
+        columns = self.book_table['columns']
+        
+        for col in columns:
+            self.book_table.heading(col, text=col, command=lambda _col=col: \
+                             sort(self.book_table, _col, False))
+
         self.book_table.heading('#0', text='Название')
         self.book_table.heading('AUT', text='Автор(ы)')
         self.book_table.heading('COL', text='Кол-во')
@@ -628,6 +653,14 @@ class Book(tk.Toplevel):
         self.book_table1.column('#0', minwidth = 230, width=230, anchor=tk.CENTER)
         self.book_table1.column('AUT', minwidth = 230, width=230, anchor=tk.CENTER)
         self.book_table1.column('COL', minwidth = 230, width=230, anchor=tk.CENTER)
+
+        self.book_table1.heading("#0", command=lambda : sort_0(self.book_table1, "#0", False))
+
+        columns = self.book_table1['columns']
+        
+        for col in columns:
+            self.book_table1.heading(col, text=col, command=lambda _col=col: \
+                             sort(self.book_table1, _col, False))
 
         self.book_table1.heading('#0', text='Название')
         self.book_table1.heading('AUT', text='Автор(ы)')
@@ -758,6 +791,14 @@ class INFO_Book(tk.Toplevel):
         self.table.column('DC', minwidth = 100, width=100, anchor=tk.CENTER)
         self.table.column('STAT', minwidth = 150, width=150, anchor=tk.CENTER)
         self.table.column('COL', minwidth = 50, width=50, anchor=tk.CENTER)
+
+        self.table.heading("#0", command=lambda : sort_0(self.table, "#0", False))
+
+        columns = self.table['columns']
+        
+        for col in columns:
+            self.table.heading(col, text=col, command=lambda _col=col: \
+                             sort(self.table, _col, False))
 
         self.table.heading('#0', text='ФИО')
         self.table.heading('DB', text='Дата рождения')
@@ -1700,6 +1741,46 @@ def lit_info(self):
     rows = cur.fetchall()
     for row in rows:
         root.table.insert('', tk.END, text=row[0], values=row[1:])
+
+#================================ Сортировка ==================================
+def sort(tv, col, reverse):
+    global prev_column
+
+    if prev_column == col:
+        # Если предыдущая колонка та же что и сечас, то меняем направление сортировки
+        reverse = not reverse
+    else:
+        # Если была другая колонка, то делаем прямую сортировку
+        reverse = False
+
+    prev_column = col
+
+    l = [(tv.set(k, col), k) for k in tv.get_children()]
+    l.sort(reverse=reverse)
+
+    for index, (val, k) in enumerate(l):
+        tv.move(k, '', index)
+
+    tv.heading(col, command=lambda: sort(tv, col, reverse))
+
+
+def sort_0(tv, col, reverse):
+    global prev_column
+
+    if prev_column == col:
+        reverse = not reverse
+    else:
+        reverse = False
+
+    prev_column = col
+
+    l = [(tv.item(k)["text"], k) for k in tv.get_children()] #Display column #0 cannot be set
+    l.sort(key=lambda t: t[0], reverse=reverse)
+
+    for index, (val, k) in enumerate(l):
+        tv.move(k, '', index)
+
+    tv.heading(col, command=lambda: sort_0(tv, col, reverse))
 
 #================================ Функции меню ================================
 def first_and_last_day():
