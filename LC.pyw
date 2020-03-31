@@ -32,9 +32,10 @@ text = ''
 values = ''
 self_main = 'close'
 self_info = 'close'
-self_book = ''
+self_book = 'close'
 self_main_book = 'close'
 self_main_not = 'close'
+self_book_info = 'close'
 book_add = 0
 prev_column = None
 obj = ["Алгебра","Геометрия","Математика","Русский язык","Английский язык","Французский язык","Немецкий язык","Физика","Химия","География","Информатика","Обществознание","История","Литература"]
@@ -762,7 +763,7 @@ class INFO_Book(tk.Toplevel):
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
         self.geometry('830x450+{}+{}'.format(w+300, h-125))#Размер
         self.resizable(False, False)#Изменение размера окна
-        self.protocol("WM_DELETE_WINDOW", lambda: self_book_null(self))
+        self.protocol("WM_DELETE_WINDOW", lambda: self_book_inf_null(self))
 
         self.focus_force()
 
@@ -1087,6 +1088,7 @@ def edit_stud(self):
     line = [fio,db,clas,lit,adr,phone,fio2, db2, phone2]
     if null in (fio,db,phone,adr):   #Проверка на пустоту полей
         messagebox.showerror('ОШИБКА!!!','Ошибка! Поля не могут быть пустыми!')  #Вывод ошибки
+        self.focus_force()
     else:
         conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
         con_cur = conn.cursor()
@@ -1113,6 +1115,7 @@ def del_profile(self):
     text = self.table.item(selected_item, option="text")
     ask = messagebox.askyesno('Удалить','Вы точно хотите удалить читателя {}?'.format(text))
     if ask == True:
+        self.focus_force()
         db = datetime.datetime.strptime(values[0], '%d.%m.%Y')
         db = db.strftime( '%Y-%m-%d')
         line = (text, db, values[4])
@@ -1341,8 +1344,9 @@ def search_b_enter(self):
 
 def book(self):
     global self_book
-    self_book = self
-    Add_book()
+    if self_book == 'close':
+        self_book = self
+        Add_book()
 
 def save_book(self):
     global self_book
@@ -1388,39 +1392,41 @@ def save_book(self):
 
 def edit_lit(self):
     global self_book
-    self_book = self
-    root = Edit_books()
-    selected_item = self_book.book_table1.selection()
-    # Получаем значения в выделенной строке
-    values1 = self_book.book_table1.item(selected_item, option="values")
-    text1 = self_book.book_table1.item(selected_item, option="text")
-    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
-    con_cur = conn.cursor()
-    line = (text1,values1[0])
-    con_cur.execute('SELECT COL FROM BOOK WHERE NAME=(?) AND AUT=(?)',line)
-    col = con_cur.fetchall()
-    root.en_name.insert(0, text1)
-    root.en_aut.insert(0, values1[0])
-    root.en_col.insert(0, col)
-    root.save.grid(row=3, column=1,pady=3, padx=134)
+    if self_book == 'close':
+        self_book = self
+        root = Edit_books()
+        selected_item = self_book.book_table1.selection()
+        # Получаем значения в выделенной строке
+        values1 = self_book.book_table1.item(selected_item, option="values")
+        text1 = self_book.book_table1.item(selected_item, option="text")
+        conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
+        con_cur = conn.cursor()
+        line = (text1,values1[0])
+        con_cur.execute('SELECT COL FROM BOOK WHERE NAME=(?) AND AUT=(?)',line)
+        col = con_cur.fetchall()
+        root.en_name.insert(0, text1)
+        root.en_aut.insert(0, values1[0])
+        root.en_col.insert(0, col)
+        root.save.grid(row=3, column=1,pady=3, padx=134)
 
 def edit_schbooks(self):
     global self_book
-    self_book = self
-    root = Edit_books()
-    selected_item = self_book.book_table.selection()
-    # Получаем значения в выделенной строке
-    values1 = self_book.book_table.item(selected_item, option="values")
-    text1 = self_book.book_table.item(selected_item, option="text")
-    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
-    con_cur = conn.cursor()
-    line = (text1,values1[0])
-    con_cur.execute('SELECT COL FROM SCHBOOK WHERE NAME=(?) AND AUT=(?)',line)
-    col = con_cur.fetchall()
-    root.en_name.insert(0, text1)
-    root.en_aut.insert(0, values1[0])
-    root.en_col.insert(0, col)
-    root.save_sch.grid(row=3, column=1,pady=3, padx=134)
+    if self_book == 'close':
+        self_book = self
+        root = Edit_books()
+        selected_item = self_book.book_table.selection()
+        # Получаем значения в выделенной строке
+        values1 = self_book.book_table.item(selected_item, option="values")
+        text1 = self_book.book_table.item(selected_item, option="text")
+        conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
+        con_cur = conn.cursor()
+        line = (text1,values1[0])
+        con_cur.execute('SELECT COL FROM SCHBOOK WHERE NAME=(?) AND AUT=(?)',line)
+        col = con_cur.fetchall()
+        root.en_name.insert(0, text1)
+        root.en_aut.insert(0, values1[0])
+        root.en_col.insert(0, col)
+        root.save_sch.grid(row=3, column=1,pady=3, padx=134)
     
 
 def edit_book(self):
@@ -1651,6 +1657,11 @@ def self_book_null(self):
     self_book = 'close'
     self.destroy()
 
+def self_book_inf_null(self):
+    global self_book_info
+    self_book_info = 'close'
+    self.destroy()
+
 def self_main_book_null(self):
     global self_main_book
     self_main_book = 'close'
@@ -1683,65 +1694,71 @@ def book_bind_add(self):
         book_add = 0
 
 def schbook_info(self):
-    selected_item = self.book_table.selection()
-    # Получаем значения в выделенной строке
-    values = self.book_table.item(selected_item, option="values")
-    text = self.book_table.item(selected_item, option="text")
+    global self_book_info
+    if self_book_info == 'close':
+        self_book_info = self
+        selected_item = self.book_table.selection()
+        # Получаем значения в выделенной строке
+        values = self.book_table.item(selected_item, option="values")
+        text = self.book_table.item(selected_item, option="text")
 
-    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db") 
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM SCHBOOK WHERE NAME = (?) AND AUT =(?)",(text,values[0]))
-    info = cur.fetchall()
+        conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db") 
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM SCHBOOK WHERE NAME = (?) AND AUT =(?)",(text,values[0]))
+        info = cur.fetchall()
 
 
-    root = INFO_Book()
+        root = INFO_Book()
 
-    root.aut = tk.Label(root.fr_info, text=info[0][1])
-    root.aut.grid(row=0,column=0, columnspan=40)
-    root.name = tk.Label(root.fr_info, text=info[0][0])
-    root.name.grid(row=1, column=0,columnspan=40)
-    root.col_v = tk.Label(root.fr_info, text='Всего: '+str(info[0][2]))
-    root.col_v.grid(row=2,column=0)
-    root.col_ost = tk.Label(root.fr_info, text='Осталось: '+str(values[1]))
-    root.col_ost.grid(row=2,column=1)
-    root.obj = tk.Label(root.fr_info, text='Предмет: '+info[0][3])
-    root.obj.grid(row=3,column=0,columnspan=30)
-    root.frame.pack(side='bottom', fill='both')
+        root.aut = tk.Label(root.fr_info, text=info[0][1])
+        root.aut.grid(row=0,column=0, columnspan=40)
+        root.name = tk.Label(root.fr_info, text=info[0][0])
+        root.name.grid(row=1, column=0,columnspan=40)
+        root.col_v = tk.Label(root.fr_info, text='Всего: '+str(info[0][2]))
+        root.col_v.grid(row=2,column=0)
+        root.col_ost = tk.Label(root.fr_info, text='Осталось: '+str(values[1]))
+        root.col_ost.grid(row=2,column=1)
+        root.obj = tk.Label(root.fr_info, text='Предмет: '+info[0][3])
+        root.obj.grid(row=3,column=0,columnspan=30)
+        root.frame.pack(side='bottom', fill='both')
 
-    cur.execute("SELECT FIO, DB, PHONE, DI, DC, STAT, COL FROM LC WHERE BOOK =(?) AND AUT=(?)",(text,values[0]))
-    rows = cur.fetchall()
-    for row in rows:
-        root.table.insert('', tk.END, text=row[0], values=row[1:])
+        cur.execute("SELECT FIO, DB, PHONE, DI, DC, STAT, COL FROM LC WHERE BOOK =(?) AND AUT=(?)",(text,values[0]))
+        rows = cur.fetchall()
+        for row in rows:
+            root.table.insert('', tk.END, text=row[0], values=row[1:])
 
 
 def lit_info(self):
-    selected_item = self.book_table1.selection()
-    # Получаем значения в выделенной строке
-    values = self.book_table1.item(selected_item, option="values")
-    text = self.book_table1.item(selected_item, option="text")
+    global self_book_info
+    if self_book_info == 'close':
+        self_book_info = self
+        selected_item = self.book_table1.selection()
+        # Получаем значения в выделенной строке
+        values = self.book_table1.item(selected_item, option="values")
+        text = self.book_table1.item(selected_item, option="text")
     
-    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db") 
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM BOOK WHERE NAME = (?) AND AUT =(?)",(text,values[0]))
-    info = cur.fetchall()
+        conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db") 
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM BOOK WHERE NAME = (?) AND AUT =(?)",(text,values[0]))
+        info = cur.fetchall()
 
 
-    root = INFO_Book()
+        root = INFO_Book()
 
-    root.aut = tk.Label(root.fr_info, text=info[0][1])
-    root.aut.grid(row=0,column=0, columnspan=40)
-    root.name = tk.Label(root.fr_info, text=info[0][0])
-    root.name.grid(row=1, column=0,columnspan=40)
-    root.col_v = tk.Label(root.fr_info, text='Всего: '+str(info[0][2]))
-    root.col_v.grid(row=2,column=0)
-    root.col_ost = tk.Label(root.fr_info, text='Осталось: '+str(values[1]))
-    root.col_ost.grid(row=2,column=1, padx = 40, sticky='E' )
-    root.frame.pack(side='bottom', fill='both')
+        root.aut = tk.Label(root.fr_info, text=info[0][1])
+        root.aut.grid(row=0,column=0, columnspan=40)
+        root.name = tk.Label(root.fr_info, text=info[0][0])
+        root.name.grid(row=1, column=0,columnspan=40)
+        root.col_v = tk.Label(root.fr_info, text='Всего: '+str(info[0][2]))
+        root.col_v.grid(row=2,column=0)
+        root.col_ost = tk.Label(root.fr_info, text='Осталось: '+str(values[1]))
+        root.col_ost.grid(row=2,column=1, padx = 40, sticky='E' )
+        root.frame.pack(side='bottom', fill='both')
 
-    cur.execute("SELECT FIO, DB, PHONE, DI, DC, STAT, COL FROM LC WHERE BOOK =(?) AND AUT=(?)",(text,values[0]))
-    rows = cur.fetchall()
-    for row in rows:
-        root.table.insert('', tk.END, text=row[0], values=row[1:])
+        cur.execute("SELECT FIO, DB, PHONE, DI, DC, STAT, COL FROM LC WHERE BOOK =(?) AND AUT=(?)",(text,values[0]))
+        rows = cur.fetchall()
+        for row in rows:
+            root.table.insert('', tk.END, text=row[0], values=row[1:])
 
 #================================ Сортировка ==================================
 def sort(tv, col, reverse):
