@@ -244,6 +244,7 @@ class Add_profile(tk.Toplevel):
         self.geometry('380x200+{}+{}'.format(w, h))#Размер
         self.resizable(False, False)#Изменение размера окна
         self.protocol("WM_DELETE_WINDOW", lambda: self_main_null(self))
+        self.attributes("-topmost",True)
 
         self.s = ttk.Style(self)#Использование темы
         self.s.theme_use('clam')
@@ -319,6 +320,7 @@ class Edit_profile(tk.Toplevel):
         self.geometry('375x180+{}+{}'.format(w+300, h-125))#Размер
         self.resizable(False, False)#Изменение размера окна
         self.protocol("WM_DELETE_WINDOW", lambda: self_main_null(self))
+        self.attributes("-topmost",True)
 
         self.s = ttk.Style(self)#Использование темы
         self.s.theme_use('clam')
@@ -459,6 +461,7 @@ class Add_lc(tk.Toplevel):
         self.geometry('370x120+{}+{}'.format(w+300, h-125))#Размер
         self.resizable(False, False)#Изменение размера окна
         self.protocol("WM_DELETE_WINDOW", lambda: self_info_null(self))
+        self.attributes("-topmost",True)
 
         self.s = ttk.Style(self)#Использование темы
         self.s.theme_use('clam')
@@ -505,6 +508,7 @@ class Edit_lc(tk.Toplevel):
         self.geometry('400x160+{}+{}'.format(w+300, h-125))#Размер
         self.resizable(False, False)#Изменение размера окна
         self.protocol("WM_DELETE_WINDOW", lambda: self_info_null(self))
+        self.attributes("-topmost",True)
 
         self.s = ttk.Style(self)#Использование темы
         self.s.theme_use('clam')
@@ -544,7 +548,7 @@ class Edit_lc(tk.Toplevel):
         #кнопка "Сохранить"
         self.btn_save=ttk.Button(self, text='Сохранить', command=lambda: threading.Thread(target = save_stat, args = [self,]).start())
         self.btn_save.grid(row=4, column=2, padx=220, pady=3)
-        self.iconbitmap(os.path.dirname(os.path.abspath(__file__))+"/add.ico")
+        self.iconbitmap(os.path.dirname(os.path.abspath(__file__))+"/edit.ico")
 
 #!!!---------------- Удалить книгу у читателя ----------------
 
@@ -690,7 +694,7 @@ class Book(tk.Toplevel):
         self.note.bind("<<NotebookTabChanged>>", lambda event: book_bind_add(self))
         self.note.pack(fill='both')
 
-        self.iconbitmap(os.path.dirname(os.path.abspath(__file__))+"/lib.ico")
+        self.iconbitmap(os.path.dirname(os.path.abspath(__file__))+"/books.ico")
 
 #!---------------- Добавить книгу ----------------
 class Add_book(tk.Toplevel):
@@ -702,6 +706,7 @@ class Add_book(tk.Toplevel):
         self.geometry('280x125+{}+{}'.format(w+300, h-125))#Размер
         self.resizable(False, False)#Изменение размера окна
         self.protocol("WM_DELETE_WINDOW", lambda: self_book_null(self))
+        self.attributes("-topmost",True)
 
         self.focus_force()
 
@@ -722,6 +727,7 @@ class Add_book(tk.Toplevel):
         #кнопка "Сохранить"
         self.save = ttk.Button(self,text='Сохранить', command = lambda: threading.Thread(target = save_book, args = [self,]).start())
         self.save_sch = ttk.Button(self, text='Сохранить', command = lambda: threading.Thread(target = save_schbook, args = [self,]).start())
+        self.iconbitmap(os.path.dirname(os.path.abspath(__file__))+"/add.ico")
 
 #!---------------- Изменить книгу ----------------
 class Edit_books(tk.Toplevel):
@@ -733,6 +739,7 @@ class Edit_books(tk.Toplevel):
         self.geometry('280x125+{}+{}'.format(w+300, h-125))#Размер
         self.resizable(False, False)#Изменение размера окна
         self.protocol("WM_DELETE_WINDOW", lambda: self_book_null(self))
+        self.attributes("-topmost",True)
 
         self.focus_force()
 
@@ -754,6 +761,7 @@ class Edit_books(tk.Toplevel):
         #кнопка "Сохранить"
         self.save = ttk.Button(self,text='Сохранить', command = lambda: threading.Thread(target = edit_book, args = [self,]).start())
         self.save_sch = ttk.Button(self,text='Сохранить', command = lambda: threading.Thread(target = edit_schbook, args = [self,]).start())
+        self.iconbitmap(os.path.dirname(os.path.abspath(__file__))+"/edit.ico")
 
 class INFO_Book(tk.Toplevel):
     def __init__(self, *args, **kwargs):
@@ -810,6 +818,7 @@ class INFO_Book(tk.Toplevel):
         self.table.heading('COL', text='Кол-во')
 
         self.table.pack(side='left', fill='both')
+        self.iconbitmap(os.path.dirname(os.path.abspath(__file__))+"/book.ico")
         
 
 #================================ Уведомления ================================
@@ -822,6 +831,7 @@ class Not(tk.Toplevel):
         self.configure(background='#e9e9e9')#Фон окна
         self.focus_force()
         self.protocol("WM_DELETE_WINDOW", lambda: self_not_close(self))
+        self.attributes("-topmost",True)
 
         #Контейнер уведомлений
         self.fr_watch_both = tk.Frame(self)
@@ -2130,7 +2140,7 @@ def uchet_book():
     worksheet.merge_range('A2:A3', 'Числа месяца', bold_wrap)
     worksheet.merge_range('B2:B3', 'Всего выдано', bold_wrap)
     worksheet.merge_range('C2:E2', 'ОПЛ', bold)
-    worksheet.merge_range('F2:G2', 'ОПЛ', bold)
+    worksheet.merge_range('F2:G2', 'ЕНЛ', bold)
     worksheet.write('C3','1, 6, 86, 87', bold_wrap)
     worksheet.write('D3','9', bold)
     worksheet.write('E3','74', bold)
