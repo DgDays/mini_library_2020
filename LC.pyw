@@ -1038,7 +1038,7 @@ def save_stud2(self):
     dreg = datetime.date.today()
     line = [fio,db,clas,lit,adr,phone,client,dreg]
     if null in (fio,db,phone,adr):   #Проверка на пустоту полей
-        messagebox.showerror('ОШИБКА!!!','Ошибка! Поля не могут быть пустыми!')  #Вывод ошибки
+        messagebox.showerror('ОШИБКА!!!','Ошибка! Поля не могут быть пустыми!', parent=self)  #Вывод ошибки
     else:
         conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
         con_cur = conn.cursor()
@@ -1097,7 +1097,7 @@ def edit_stud(self):
     phone2 = values[4]
     line = [fio,db,clas,lit,adr,phone,fio2, db2, phone2]
     if null in (fio,db,phone,adr):   #Проверка на пустоту полей
-        messagebox.showerror('ОШИБКА!!!','Ошибка! Поля не могут быть пустыми!')  #Вывод ошибки
+        messagebox.showerror('ОШИБКА!!!','Ошибка! Поля не могут быть пустыми!',parent=self)  #Вывод ошибки
         self.focus_force()
     else:
         conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
@@ -1123,7 +1123,7 @@ def del_profile(self):
     selected_item = self.table.selection()
     values = self.table.item(selected_item, option="values")
     text = self.table.item(selected_item, option="text")
-    ask = messagebox.askyesno('Удалить','Вы точно хотите удалить читателя {}?'.format(text))
+    ask = messagebox.askyesno('Удалить','Вы точно хотите удалить читателя {}?'.format(text), parent=self)
     if ask == True:
         self.focus_force()
         db = datetime.datetime.strptime(values[0], '%d.%m.%Y')
@@ -1177,14 +1177,14 @@ def save_lc2(self):
         col = 1
     line = [fio,db,phone,di,dc,aut,book,stat,col]
     if null in (book,aut,col):   #Проверка на пустоту полей
-        messagebox.showerror('ОШИБКА!!!','Ошибка! Поля не могут быть пустыми!')  #Вывод ошибки
+        messagebox.showerror('ОШИБКА!!!','Ошибка! Поля не могут быть пустыми!',parent=self)  #Вывод ошибки
     else:
         conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
         con_cur = conn.cursor()
         con_cur.execute('INSERT INTO LC VALUES (?,?,?,?,?,?,?,?,?)',line)
         conn.commit()
 
-    print(self_info)
+    
     #Обновление таблицы при нажатии на кнопку никак не хочет работать потому сделал как коммент
     self_info.info_table.delete(*self_info.info_table.get_children())
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
@@ -1242,7 +1242,7 @@ def save_stat(self):
     dc = dc.strftime('%Y-%m-%d')
     line = (name, aut, stat, dc, text, db, values[4], text1, values1[0], values1[1], values1[2])
     if null in (name, aut, stat):   #Проверка на пустоту полей
-        messagebox.showerror('ОШИБКА!!!','Ошибка! Поля не могут быть пустыми!')  #Вывод ошибки
+        messagebox.showerror('ОШИБКА!!!','Ошибка! Поля не могут быть пустыми!', parent=self)  #Вывод ошибки
     else:
         conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
         con_cur = conn.cursor()
@@ -1267,7 +1267,7 @@ def delete_lc(self):
     # Получаем значения в выделенной строке
     values1 = self.info_table.item(selected_item, option="values")
     text1 = self.info_table.item(selected_item, option="text")
-    ask = messagebox.askyesno('Удалить','Вы точно хотите удалить книгу: {}?'.format(text1))
+    ask = messagebox.askyesno('Удалить','Вы точно хотите удалить книгу: {}?'.format(text1), parent=self)
 
     if ask == True:
         db = datetime.datetime.strptime(values[0], '%d.%m.%Y')
@@ -1366,7 +1366,7 @@ def save_book(self):
     col = self.en_col.get()
     line = (name,aut,col)
     if null in (name,aut,col):   #Проверка на пустоту полей
-        messagebox.showerror('ОШИБКА!!!','Ошибка! Поля не могут быть пустыми!')  #Вывод ошибки
+        messagebox.showerror('ОШИБКА!!!','Ошибка! Поля не могут быть пустыми!', parent=self)  #Вывод ошибки
     else:
         conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
         con_cur = conn.cursor()
@@ -1378,27 +1378,13 @@ def save_book(self):
     cur = conn.cursor()
 
     #Вывовд всех учеников
-    for less in obj:
-        x = self_book.book_table.insert('', tk.END, text=less)
-        cur.execute("SELECT NAME, AUT, COL FROM SCHBOOK WHERE OBJ = (?)",(less,))
-        rows = cur.fetchall()
-        for row in rows:
-            cur.execute("SELECT COL FROM LC WHERE BOOK = (?) AND AUT = (?) AND (STAT = 'На руках' OR STAT = 'Просрочена')",(row[0],row[1]))
-            line = cur.fetchall()
-            if line != []:
-                res = (row[0], row[1], row[2] - line[0][0])
-                self_book.book_table.insert(x, tk.END, text = res[0], values=res[1:])
-            else:
-                self_book.book_table.insert(x, tk.END, text = row[0], values=row[1:])
-
-    #Вывовд всех учеников
     cur.execute("SELECT * FROM BOOK")
     rows = cur.fetchall()
     for row in rows:
         cur.execute("SELECT COUNT(*) FROM LC WHERE BOOK = (?) AND AUT = (?) AND (STAT = 'На руках' OR STAT = 'Просрочена')",(row[0],row[1]))
         line = cur.fetchall()
         res = (row[0], row[1], row[2] - line[0][0])
-        self_book.book_table.insert("" , tk.END ,text=res[0], values=res[1:])
+        self_book.book_table1.insert("" , tk.END ,text=res[0], values=res[1:])
 
 def edit_lit(self):
     global self_book
@@ -1457,7 +1443,7 @@ def edit_book(self):
     col = self.en_col.get()
     line = (name,aut,col, text1, values1[0], f[0][0])
     if null in (name,aut,col):   #Проверка на пустоту полей
-        messagebox.showerror('ОШИБКА!!!','Ошибка! Поля не могут быть пустыми!')  #Вывод ошибки
+        messagebox.showerror('ОШИБКА!!!','Ошибка! Поля не могут быть пустыми!', parent=self)  #Вывод ошибки
     else:
         con_cur = conn.cursor()
         con_cur.execute('UPDATE BOOK SET NAME=(?), AUT=(?), COL=(?) WHERE NAME=(?) AND AUT=(?) AND COL=(?)',line)
@@ -1497,7 +1483,7 @@ def edit_schbook(self):
     col = self.en_col.get()
     line = (name,aut,col, text1, values1[0], f[0][0])
     if null in (name,aut,col):   #Проверка на пустоту полей
-        messagebox.showerror('ОШИБКА!!!','Ошибка! Поля не могут быть пустыми!')  #Вывод ошибки
+        messagebox.showerror('ОШИБКА!!!','Ошибка! Поля не могут быть пустыми!', parent=self)  #Вывод ошибки
     else:
         con_cur = conn.cursor()
         con_cur.execute('UPDATE SCHBOOK SET NAME=(?), AUT=(?), COL=(?) WHERE NAME=(?) AND AUT=(?) AND COL=(?)',line)
@@ -1526,7 +1512,7 @@ def del_book(self):
     # Получаем значения в выделенной строке
     values1 = self.book_table1.item(selected_item, option="values")
     text1 = self.book_table1.item(selected_item, option="text")
-    ask = messagebox.askyesno('Удалить','Вы точно хотите удалить книгу: {}?'.format(text1))
+    ask = messagebox.askyesno('Удалить','Вы точно хотите удалить книгу: {}?'.format(text1), parent=self)
 
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
     con_cur = conn.cursor()
@@ -1558,7 +1544,7 @@ def del_schbook(self):
     # Получаем значения в выделенной строке
     values1 = self.book_table.item(selected_item, option="values")
     text1 = self.book_table.item(selected_item, option="text")
-    ask = messagebox.askyesno('Удалить','Вы точно хотите удалить книгу: {}?'.format(text1))
+    ask = messagebox.askyesno('Удалить','Вы точно хотите удалить книгу: {}?'.format(text1), parent=self)
 
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
     con_cur = conn.cursor()
@@ -1595,7 +1581,7 @@ def save_schbook(self):
     less = self.en_less.get()
     line = (name,aut,col,less)
     if null in (name,aut,col):   #Проверка на пустоту полей
-        messagebox.showerror('ОШИБКА!!!','Ошибка! Поля не могут быть пустыми!')  #Вывод ошибки
+        messagebox.showerror('ОШИБКА!!!','Ошибка! Поля не могут быть пустыми!', parent=self)  #Вывод ошибки
     else:
         conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
         con_cur = conn.cursor()
