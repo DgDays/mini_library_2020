@@ -18,6 +18,7 @@
 
 '''
 import tkinter as tk
+import tkinter.font as tkFont
 from tkinter import ttk, messagebox
 import sys
 import os
@@ -118,6 +119,11 @@ class Main(tk.Tk):
 
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self,*args, *kwargs)
+        default_font = tkFont.nametofont("TkDefaultFont")# Получение дэфолтного значения шрифта
+        default_font.configure(size=11, family='Arial')# Изменение дэфолтного значения шрифта
+
+        self.option_add("*Font", default_font) # Использование нашего шрифта
+
         self.title("Мини Библиотека 2020") #Заголовок
         w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
@@ -127,6 +133,7 @@ class Main(tk.Tk):
         
         self.s = ttk.Style(self)#Использование темы
         self.s.theme_use('clam')
+        self.s.configure("Treeview.Heading", font=('Arial', 11))# Изменение шрифта столбцов в Treeview
 
         #================================ Меню ================================
         mainmenu = tk.Menu(self)
@@ -977,15 +984,15 @@ def update_info(root):
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
     cur = conn.cursor()
 
-    root.fio = tk.Label(root,text= text, font='Times 15').place(x=250,y=10)
-    root.db = tk.Label(root,text="Дата рождения: " + values[0], font='Times 12').place(x=10, y=45)
+    root.fio = tk.Label(root,text= text, font='Arial 15').place(x=250,y=10)
+    root.db = tk.Label(root,text="Дата рождения: " + values[0], font='Arial 12').place(x=10, y=45)
     if (values[1] == '') and (values[2] == ''):
-        root.adr = tk.Label(root, text='Адрес: '+values[3], font='Times 12').place(x=240, y=45)
-        root.phone = tk.Label(root,text='Телефон: '+values[4], font='Times 12').place(x=450,y=45)
+        root.adr = tk.Label(root, text='Адрес: '+values[3], font='Arial 12').place(x=240, y=45)
+        root.phone = tk.Label(root,text='Телефон: '+values[4], font='Arial 12').place(x=450,y=45)
     else:
-        root.clas = tk.Label(root, text='Класс: '+values[1]+' '+values[2], font='Times 12').place(x=240, y=45)
-        root.adr = tk.Label(root, text='Адрес: '+values[3], font='Times 12').place(x=10, y=65)
-        root.phone = tk.Label(root,text='Телефон: '+values[4], font='Times 12').place(x=260,y=65)
+        root.clas = tk.Label(root, text='Класс: '+values[1]+' '+values[2], font='Arial 12').place(x=240, y=45)
+        root.adr = tk.Label(root, text='Адрес: '+values[3], font='Arial 12').place(x=10, y=65)
+        root.phone = tk.Label(root,text='Телефон: '+values[4], font='Arial 12').place(x=260,y=65)
     
     db = datetime.datetime.strptime(values[0], '%d.%m.%Y')#Парсит дату
     db = db.strftime('%Y-%m-%d')#Переводит дату в другой формат
