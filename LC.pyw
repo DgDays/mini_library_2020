@@ -224,9 +224,8 @@ class Main(tk.Tk):
 
         threading.Thread(target = update_main, args = [self,]).start()
 
-        self.bind('<Control-Key-a>', lambda event: add_profile(self))
-        self.bind('<Control-Key-s>', lambda event: edit_profile(self))
-        self.bind('<Delete>', lambda event: threading.Thread(target = del_profile, args = [self,]).start())
+        
+        self.bind('<KeyPress>', lambda event: event_handler_main(event, self))
 
 
         self.iconbitmap(os.path.dirname(os.path.abspath(__file__))+"/lib.ico")
@@ -443,9 +442,7 @@ class INFO(tk.Toplevel):
         self.profile_menu.add_command(label = "Изменить статус книги", command= lambda: edit_lc(self))
         self.profile_menu.add_command(label = "Удалить книгу", command = lambda: threading.Thread(target = delete_lc, args = [self,]).start())         
         
-        self.bind('<Control-Key-a>', lambda event: add_book(self))
-        self.bind('<Control-Key-s>', lambda event: edit_lc(self))
-        self.bind('<Delete>', lambda event: threading.Thread(target = delete_lc, args = [self,]).start())
+        self.bind('<KeyPress>', lambda event: event_handler_info(event, self))
 
         self.info_table.bind('<Button-3>', lambda event:self.profile_menu.post(event.x_root,event.y_root))
         self.iconbitmap(os.path.dirname(os.path.abspath(__file__))+"/profile.ico")
@@ -684,12 +681,12 @@ class Book(tk.Toplevel):
         threading.Thread(target = update_book, args = [self,]).start()
 
         self.note.add(self.fr_watch_both, text='Учебники')
-        self.book_table.bind("<Control-Key-s>", lambda event: edit_schbooks(self))
-        self.book_table1.bind("<Control-Key-s>", lambda event: edit_lit(self))
-        self.book_table.bind("<Delete>", lambda event: threading.Thread(target = del_schbook, args = [self,]).start())
-        self.book_table1.bind("<Delete>", lambda event: threading.Thread(target = del_book, args = [self,]).start())
         self.book_table.bind("<Double-Button-1>", lambda event: threading.Thread(target = schbook_info, args = [self,]).start())
         self.book_table1.bind("<Double-Button-1>", lambda event: threading.Thread(target = lit_info, args = [self,]).start())
+        
+        self.book_table.bind('<KeyPress>', lambda event: event_handler_schbook(event, self))
+        self.book_table1.bind('<KeyPress>', lambda event: event_handler_lit(event, self))
+
         self.note.add(self.fr_lit, text='Литература')
         self.note.bind("<<NotebookTabChanged>>", lambda event: book_bind_add(self))
         self.note.pack(fill='both')
@@ -1045,6 +1042,8 @@ def save_stud2(self):
         con_cur.execute('INSERT INTO PROFILE VALUES (?,?,?,?,?,?,?,?)',line)
         conn.commit()
 
+    messagebox.showinfo('Успех!','Данные сохранены!', parent=self)
+
     self_main.table.delete(*self_main.table.get_children())
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
     cur = conn.cursor()
@@ -1104,6 +1103,8 @@ def edit_stud(self):
         con_cur = conn.cursor()
         con_cur.execute('UPDATE PROFILE SET FIO = (?), DB = (?), CLA = (?), LIT = (?), ADR = (?), PHONE = (?) WHERE FIO = (?) AND DB = (?) AND PHONE = (?)',line)
         conn.commit()
+
+    messagebox.showinfo('Успех!','Данные сохранены!', parent=self)
 
     self_main.table.delete(*self_main.table.get_children())
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
@@ -1184,7 +1185,8 @@ def save_lc2(self):
         con_cur.execute('INSERT INTO LC VALUES (?,?,?,?,?,?,?,?,?)',line)
         conn.commit()
 
-    
+    messagebox.showinfo('Успех!','Данные сохранены!', parent=self)
+
     #Обновление таблицы при нажатии на кнопку никак не хочет работать потому сделал как коммент
     self_info.info_table.delete(*self_info.info_table.get_children())
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
@@ -1248,6 +1250,9 @@ def save_stat(self):
         con_cur = conn.cursor()
         con_cur.execute('UPDATE LC SET BOOK=(?), AUT=(?), STAT=(?), DC=(?) WHERE FIO=(?) AND DB=(?) AND PHONE=(?) AND BOOK=(?) AND AUT=(?) AND STAT=(?) AND COL=(?)',line)
         conn.commit()
+
+    messagebox.showinfo('Успех!','Данные сохранены!', parent=self)
+
     self_info.info_table.delete(*self_info.info_table.get_children())
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
     cur = conn.cursor()
@@ -1373,6 +1378,8 @@ def save_book(self):
         con_cur.execute('INSERT INTO BOOK VALUES (?,?,?)',line)
         conn.commit()
 
+    messagebox.showinfo('Успех!','Данные сохранены!', parent=self)
+
     self_book.book_table1.delete(*self_book.book_table1.get_children())
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
     cur = conn.cursor()
@@ -1449,6 +1456,8 @@ def edit_book(self):
         con_cur.execute('UPDATE BOOK SET NAME=(?), AUT=(?), COL=(?) WHERE NAME=(?) AND AUT=(?) AND COL=(?)',line)
         conn.commit()
 
+    messagebox.showinfo('Успех!','Данные сохранены!', parent=self)
+
     self_book.book_table1.delete(*self_book.book_table1.get_children())
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
     cur = conn.cursor()
@@ -1488,6 +1497,8 @@ def edit_schbook(self):
         con_cur = conn.cursor()
         con_cur.execute('UPDATE SCHBOOK SET NAME=(?), AUT=(?), COL=(?) WHERE NAME=(?) AND AUT=(?) AND COL=(?)',line)
         conn.commit()
+
+    messagebox.showinfo('Успех!','Данные сохранены!', parent=self)
 
     self_book.book_table.delete(*self_book.book_table.get_children())
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
@@ -1588,6 +1599,8 @@ def save_schbook(self):
         con_cur.execute('INSERT INTO SCHBOOK VALUES (?,?,?,?)',line)
         conn.commit()
 
+    messagebox.showinfo('Успех!','Данные сохранены!', parent=self)
+
     self_book.book_table.delete(*self_book.book_table.get_children())
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
     cur = conn.cursor()
@@ -1659,8 +1672,10 @@ def self_book_inf_null(self):
     self.destroy()
 
 def self_main_book_null(self):
+    global book_add
     global self_main_book
     self_main_book = 'close'
+    book_add = 0
     self.destroy()
 
 def self_book_open(self):
@@ -1683,10 +1698,10 @@ def self_not_close(self):
 def book_bind_add(self):
     global book_add
     if book_add == 0:
-        self.bind('<Control-Key-a>', lambda event: schbook(self))
+        self.bind('<KeyPress>', lambda event: event_handler_schbook_a(event, self))
         book_add = 1
     elif book_add == 1:
-        self.bind('<Control-Key-a>', lambda event: lit(self))
+        self.bind('<KeyPress>', lambda event: event_handler_lit_a(event, self))
         book_add = 0
 
 def schbook_info(self):
@@ -2199,7 +2214,43 @@ def uchet_book():
 
     conn.commit()
     workbook.close()
-    
+
+#================================= Обработчики событий ============================
+def event_handler_main(event, self):
+    if event.keycode==65 and event.state == 4: # Ctrl + A
+        add_profile(self)
+    elif event.keycode==83 and event.state == 4: # Ctrl + S
+        edit_profile(self)
+    elif event.keycode==46: # Delete
+        threading.Thread(target = del_profile, args = [self,]).start()
+
+def event_handler_info(event, self):
+    if event.keycode==65 and event.state == 4: # Ctrl + A
+        add_book(self)
+    elif event.keycode==83 and event.state == 4: # Ctrl + S
+        edit_lc(self)
+    elif event.keycode==46: # Delete
+        threading.Thread(target = delete_lc, args = [self,]).start()
+
+def event_handler_schbook(event, self):
+    if event.keycode==83 and event.state == 4: # Ctrl + S
+        edit_schbooks(self)
+    elif event.keycode==46: # Delete
+        threading.Thread(target = del_schbook, args = [self,]).start()
+
+def event_handler_lit(event, self):
+    if event.keycode==83 and event.state == 4: # Ctrl + S
+        edit_lit(self)
+    elif event.keycode==46: # Delete
+        threading.Thread(target = del_book, args = [self,]).start()
+
+def event_handler_schbook_a(event, self):
+    if event.keycode==65 and event.state == 4: # Ctrl + A
+        schbook(self)
+
+def event_handler_lit_a(event, self):
+    if event.keycode==65 and event.state == 4: # Ctrl + A
+        lit(self)
 
 
 
