@@ -150,9 +150,9 @@ class Main(tk.Tk):
         file_sohranit.add_command(label = "Учёт книг", command = lambda: threading.Thread(target = uchet_book).start())
         
         file_infa = tk.Menu(mainmenu, tearoff = 0) # Запретить отделение
-        file_infa.add_command(label = "Просмотреть справку")
+        file_infa.add_command(label = "Просмотреть справку", command = lambda: Spravka())
         file_infa.add_separator()
-        file_infa.add_command(label = "О программе")
+        file_infa.add_command(label = "О программе", command = lambda: Information())
 
         mainmenu.add_cascade(label = "Сохранить в Excel", menu = file_sohranit) # Добавляет пункт "Сохранить в отчёт" в меню
         mainmenu.add_command(label = "Учёт книг", command = lambda: self_book_open(self))
@@ -906,6 +906,58 @@ class Excel(tk.Toplevel):
 
 
         self.frame.pack(fill='both')
+
+
+class Spravka(tk.Toplevel):
+
+    def __init__(self, *args, **kwargs):
+        tk.Toplevel.__init__(self,*args, *kwargs)
+        self.title("Справка") #Заголовок
+        w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
+        h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
+        self.geometry('713x450+{}+{}'.format(w-100, h-150))#Размер
+        self.resizable(False, False)#Изменение размера окна
+        self.protocol("WM_DELETE_WINDOW", lambda: self_main_book_null(self))
+
+        self.focus_force()
+        
+        self.s = ttk.Style(self)#Использование темы
+        self.s.theme_use('clam')
+
+        file = open(os.path.dirname(os.path.abspath(__file__))+"/spravka.txt", 'r')
+        row=0
+        for line in file:
+            tk.Label(self, text=line).grid(row=row, column=0)
+            row+=1
+
+        #Иконка
+        self.iconbitmap(os.path.dirname(os.path.abspath(__file__))+"/ask.ico")
+
+
+class Information(tk.Toplevel):
+
+    def __init__(self, *args, **kwargs):
+        tk.Toplevel.__init__(self,*args, *kwargs)
+        self.title("Информация") #Заголовок
+        w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
+        h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
+        self.geometry('713x450+{}+{}'.format(w-100, h-150))#Размер
+        self.resizable(False, False)#Изменение размера окна
+        self.protocol("WM_DELETE_WINDOW", lambda: self_main_book_null(self))
+
+        self.focus_force()
+        
+        self.s = ttk.Style(self)#Использование темы
+        self.s.theme_use('clam')
+
+        file = open(os.path.dirname(os.path.abspath(__file__))+"/information.txt", 'r')
+        row=0
+        for line in file:
+            tk.Label(self, text=line).grid(row=row, column=0)
+            row+=1
+
+        #Иконка
+        self.iconbitmap(os.path.dirname(os.path.abspath(__file__))+"/ask.ico")
 
 
 #================================ Работа с БД ================================
