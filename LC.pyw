@@ -20,6 +20,7 @@
 import tkinter as tk
 import tkinter.font as tkFont
 from tkinter import ttk, messagebox
+from ttkthemes import ThemedStyle
 import sys
 import os
 import sqlite3
@@ -131,9 +132,9 @@ class Main(tk.Tk):
         self.resizable(False, False)#Изменение размера окна
         self.protocol("WM_DELETE_WINDOW", lambda: sys.exit(0))
         
-        self.s = ttk.Style(self)#Использование темы
-        self.s.theme_use('clam')
-        self.s.configure("Treeview.Heading", font=('Arial', 11))# Изменение шрифта столбцов в Treeview
+        style = ThemedStyle()
+        style.set_theme("breeze")
+        style.configure("Treeview.Heading", font=('Arial', 11))# Изменение шрифта столбцов в Treeview
 
         #================================ Меню ================================
         mainmenu = tk.Menu(self)
@@ -160,7 +161,7 @@ class Main(tk.Tk):
         mainmenu.add_command(label = 'Уведомления', command= lambda: self_not_open(self))  
         
         #================================= Поиск ====================================
-        self.frame_search = tk.Frame(self)
+        self.frame_search = ttk.Frame(self)
 
         self.search = Entry_Pl(self.frame_search, "Поиск")
         self.search.grid(row=0, column=0, padx=3, pady=3)
@@ -189,7 +190,7 @@ class Main(tk.Tk):
         # ttk.Style().configure("Treeview",fieldbackground="#e9e9e9")
 
         #Создание скроллбара
-        self.scroll = tk.Scrollbar(self.fr_watch_both)
+        self.scroll = ttk.Scrollbar(self.fr_watch_both)
         self.scroll.pack(side='right',fill='y')
 
         #Таблица
@@ -252,12 +253,11 @@ class Add_profile(tk.Toplevel):
         self.protocol("WM_DELETE_WINDOW", lambda: self_main_null(self))
         self.attributes("-topmost",True)
 
-        self.s = ttk.Style(self)#Использование темы
-        self.s.theme_use('clam')
+        
         self.focus_force()
 
         #надпись "ФИО"
-        self.lb_fio=tk.Label(self,text='ФИО')
+        self.lb_fio=ttk.Label(self,text='ФИО')
         self.lb_fio.grid(row=0,column=0,pady=3)
 
         #место ввода "ФИО"
@@ -265,7 +265,7 @@ class Add_profile(tk.Toplevel):
         self.en_fio2.grid_configure(row=0,column=1,columnspan=20, sticky='W')
 
         #надпись "Класс"
-        self.lb_class=tk.Label(self,text='Класс')
+        self.lb_class=ttk.Label(self,text='Класс')
         self.lb_class.grid(row=1,column=0,pady=3)
 
         #место ввода "Класс"
@@ -273,7 +273,7 @@ class Add_profile(tk.Toplevel):
         self.en_class2.grid_configure(row=1,column=1, sticky='W')
 
         #надпись "Литера"
-        self.lb_lit=tk.Label(self,text='Литера')
+        self.lb_lit=ttk.Label(self,text='Литера')
         self.lb_lit.grid(row=1,column=2)
 
         #место ввода "Литера"
@@ -281,7 +281,7 @@ class Add_profile(tk.Toplevel):
         self.en_lit2.grid_configure(row=1,column=3,sticky='W')
 
         #надпись "Телефон"
-        self.lb_phone=tk.Label(self,text='Телефон')
+        self.lb_phone=ttk.Label(self,text='Телефон')
         self.lb_phone.grid(row=2,column=0, pady=3)
 
         #место ввода "Телефон"
@@ -289,20 +289,20 @@ class Add_profile(tk.Toplevel):
         self.en_phone2.grid_configure(row=2,column=1,sticky='W')
 
         #надпись "Адрес"
-        self.lb_adr=tk.Label(self,text='Адрес')
+        self.lb_adr=ttk.Label(self,text='Адрес')
         self.lb_adr.grid(row=3,column=0,pady=3)
 
         #место ввода "Адрес"
         self.en_adr2=ttk.Entry(self,width=49)
         self.en_adr2.grid_configure(row=3,column=1, columnspan=20,sticky='W')
 
-        self.lb_client = tk.Label(self, text = 'Категория').grid(row=4, column=0, pady=3)
+        self.lb_client = ttk.Label(self, text = 'Категория').grid(row=4, column=0, pady=3)
 
         self.en_client = ttk.Combobox(self,values=["Ученик", "Учитель", "Другой посетитель"],width=18)
         self.en_client.grid_configure(row=4,column=1, columnspan=20, sticky='W')
 
         #надпись "Дата рождения"
-        self.lb_db=tk.Label(self,text='Дата рождения')
+        self.lb_db=ttk.Label(self,text='Дата рождения')
         self.lb_db.grid(row=5,column=3,pady=3)
 
 
@@ -328,12 +328,11 @@ class Edit_profile(tk.Toplevel):
         self.protocol("WM_DELETE_WINDOW", lambda: self_main_null(self))
         self.attributes("-topmost",True)
 
-        self.s = ttk.Style(self)#Использование темы
-        self.s.theme_use('clam')
+        
         self.focus_force()
 
         #надпись "ФИО"
-        self.lb_fio=tk.Label(self,text='ФИО')
+        self.lb_fio=ttk.Label(self,text='ФИО')
         self.lb_fio.grid(row=0,column=0, ipady=3)
 
         #место ввода "ФИО"
@@ -341,7 +340,7 @@ class Edit_profile(tk.Toplevel):
         self.en_fio2.grid_configure(row=0,column=1, columnspan=40, sticky='W')
 
         #надпись "Класс"
-        self.lb_class=tk.Label(self,text='Класс')
+        self.lb_class=ttk.Label(self,text='Класс')
         self.lb_class.grid(row=1,column=0, ipady=3)
 
         #место ввода "Класс"
@@ -349,7 +348,7 @@ class Edit_profile(tk.Toplevel):
         self.en_class2.grid_configure(row=1,column=1,sticky='W')
 
         #надпись "Литера"
-        self.lb_lit=tk.Label(self,text='Литера')
+        self.lb_lit=ttk.Label(self,text='Литера')
         self.lb_lit.grid(row=1,column=2, padx=5)
 
         #место ввода "Литера"
@@ -357,7 +356,7 @@ class Edit_profile(tk.Toplevel):
         self.en_lit2.grid_configure(row=1,column=3, sticky='W')
 
         #надпись "Телефон"
-        self.lb_phone=tk.Label(self,text='Телефон')
+        self.lb_phone=ttk.Label(self,text='Телефон')
         self.lb_phone.grid(row=2,column=0, ipady=3)
 
         #место ввода "Телефон"
@@ -365,7 +364,7 @@ class Edit_profile(tk.Toplevel):
         self.en_phone2.grid_configure(row=2,column=1,columnspan=10, sticky='W')
 
         #надпись "Адрес"
-        self.lb_adr=tk.Label(self,text='Адрес')
+        self.lb_adr=ttk.Label(self,text='Адрес')
         self.lb_adr.grid(row=3,column=0, ipady=3)
 
         #место ввода "Адрес"
@@ -373,7 +372,7 @@ class Edit_profile(tk.Toplevel):
         self.en_adr2.grid_configure(row=3,column=1,columnspan=20, sticky='W')
 
         #надпись "Дата рождения"
-        self.lb_db=tk.Label(self,text='Дата рождения')
+        self.lb_db=ttk.Label(self,text='Дата рождения')
         self.lb_db.grid(row=4,column=4, ipady=3)
 
         #место ввода "Дата рождения"
@@ -399,10 +398,10 @@ class INFO(tk.Toplevel):
         self.focus_force()
         self.protocol("WM_DELETE_WINDOW", lambda: self_main_null(self))
         
-        self.s = ttk.Style(self)#Использование темы
-        self.s.theme_use('clam')
+        self.frame = ttk.Frame(self)
+        self.frame.pack()
 
-        self.fr_watch_both = tk.Frame(self, background='#e9e9e9',width=660,height=400)
+        self.fr_watch_both = ttk.Frame(self,width=660,height=400)
 
         def fixed_map(option):
             return [elm for elm in style.map('Treeview', query_opt=option)
@@ -412,9 +411,10 @@ class INFO(tk.Toplevel):
         style.map('Treeview', foreground=fixed_map('foreground'), background=fixed_map('background'))
 
         # ttk.Style().configure("Treeview",fieldbackground="#e9e9e9")
+        
 
         #Создание скроллбара
-        self.scroll = tk.Scrollbar(self.fr_watch_both)
+        self.scroll = ttk.Scrollbar(self.fr_watch_both)
         self.scroll.pack(side='right',fill='y')
 
 
@@ -467,12 +467,11 @@ class Add_lc(tk.Toplevel):
         self.protocol("WM_DELETE_WINDOW", lambda: self_info_null(self))
         self.attributes("-topmost",True)
 
-        self.s = ttk.Style(self)#Использование темы
-        self.s.theme_use('clam')
+        
         self.focus_force()
 
         #надпись "Книга"
-        self.bookname=tk.Label(self,text='Книга')
+        self.bookname=ttk.Label(self,text='Книга')
         self.bookname.grid(row=0, column=0, ipady=3)
 
         #место ввода "Книга"
@@ -480,7 +479,7 @@ class Add_lc(tk.Toplevel):
         self.en_bookname.grid_configure(row=0, column=1, columnspan=40, sticky='W')
 
         #надпись "Автор"
-        self.lb_author2=tk.Label(self,text='Автор')
+        self.lb_author2=ttk.Label(self,text='Автор')
         self.lb_author2.grid(row=1, column=0, ipady=3)
 
         #место ввода "Автор"
@@ -488,7 +487,7 @@ class Add_lc(tk.Toplevel):
         self.en_author2.grid_configure(row=1,column=1, columnspan=40, sticky='W')
 
         #надпись "кол-во"
-        self.lb_col = tk.Label(self,text='Кол-во')
+        self.lb_col = ttk.Label(self,text='Кол-во')
         self.lb_col.grid(row=2, column=0, ipady=3)
 
         #место ввода "кол-во"
@@ -514,12 +513,11 @@ class Edit_lc(tk.Toplevel):
         self.protocol("WM_DELETE_WINDOW", lambda: self_info_null(self))
         self.attributes("-topmost",True)
 
-        self.s = ttk.Style(self)#Использование темы
-        self.s.theme_use('clam')
+        
         self.focus_force()
 
         #надпись "Книга"
-        self.bookname=tk.Label(self,text='Книга')
+        self.bookname=ttk.Label(self,text='Книга')
         self.bookname.grid(row=0, column=0)
 
         #место ввода "Книга"
@@ -527,7 +525,7 @@ class Edit_lc(tk.Toplevel):
         self.en_bookname.grid_configure(row=0, column=1, columnspan=50, pady=3, sticky='W')
 
         #надпись "Автор"
-        self.lb_author2=tk.Label(self,text='Автор')
+        self.lb_author2=ttk.Label(self,text='Автор')
         self.lb_author2.grid(row=1, column=0)
 
         #место ввода "Автор"
@@ -535,7 +533,7 @@ class Edit_lc(tk.Toplevel):
         self.en_author2.grid_configure(row=1, column=1, columnspan=50, pady=3, sticky='W')
 
         #надпись "Дата сдачи"
-        self.lb_dc = tk.Label(self, text='Дата сдачи').grid(row=2, column=0)
+        self.lb_dc = ttk.Label(self, text='Дата сдачи').grid(row=2, column=0)
 
         #место ввода "Дата сдачи"
         self.en_dc = DateEntry(self, width=12, background='darkblue',
@@ -543,7 +541,7 @@ class Edit_lc(tk.Toplevel):
         self.en_dc.grid_configure(row=2, column=1, columnspan=15, pady=3, sticky='W')
 
         #надпись "Статус"
-        self.lb_stat = tk.Label(self, text='Статус').grid(row=3,column=0)
+        self.lb_stat = ttk.Label(self, text='Статус').grid(row=3,column=0)
 
         #место ввода "Статус"
         self.en_stat = ttk.Combobox(self,values=['На руках','Просрочена','Сдана'],width=15)
@@ -570,10 +568,9 @@ class Book(tk.Toplevel):
 
         self.focus_force()
         
-        self.s = ttk.Style(self)#Использование темы
-        self.s.theme_use('clam')
+        
         #================================ Поиск ====================================
-        self.frame_search = tk.Frame(self)
+        self.frame_search = ttk.Frame(self)
 
         self.search = Entry_Pl(self.frame_search, "Поиск")
         self.search.grid(row=0, column=0, padx=3, pady=3)
@@ -605,7 +602,7 @@ class Book(tk.Toplevel):
         # ttk.Style().configure("Treeview",fieldbackground="#e9e9e9")
 
         #Создание скроллбара
-        self.scroll = tk.Scrollbar(self.fr_watch_both)
+        self.scroll = ttk.Scrollbar(self.fr_watch_both)
         self.scroll.pack(side='right',fill='y')
 
         #Таблица
@@ -653,7 +650,7 @@ class Book(tk.Toplevel):
         # ttk.Style().configure("Treeview",fieldbackground="#e9e9e9")
 
         #Создание скроллбара
-        self.scroll1 = tk.Scrollbar(self.fr_lit)
+        self.scroll1 = ttk.Scrollbar(self.fr_lit)
         self.scroll1.pack(side='right',fill='y')
 
         #Таблица
@@ -714,13 +711,12 @@ class Add_book(tk.Toplevel):
 
         self.focus_force()
 
-        self.s = ttk.Style(self)#Использование темы
-        self.s.theme_use('clam')
+        
 
 
-        self.lb_name = tk.Label(self,text='Название')
-        self.lb_aut = tk.Label(self,text='Автор')
-        self.lb_col = tk.Label(self,text='Кол-во')
+        self.lb_name = ttk.Label(self,text='Название')
+        self.lb_aut = ttk.Label(self,text='Автор')
+        self.lb_col = ttk.Label(self,text='Кол-во')
         #поле ввода "Название"
         self.en_name = ttk.Entry(self, width=35)
         #поле ввода "Автор"
@@ -747,12 +743,11 @@ class Edit_books(tk.Toplevel):
 
         self.focus_force()
 
-        self.s = ttk.Style(self)#Использование темы
-        self.s.theme_use('clam')
+        
 
-        self.lb_name = tk.Label(self,text='Название').grid(row=0,column=0)
-        self.lb_aut = tk.Label(self,text='Автор').grid(row=1,column=0)
-        self.lb_col = tk.Label(self,text='Кол-во').grid(row=2,column=0)
+        self.lb_name = ttk.Label(self,text='Название').grid(row=0,column=0)
+        self.lb_aut = ttk.Label(self,text='Автор').grid(row=1,column=0)
+        self.lb_col = ttk.Label(self,text='Кол-во').grid(row=2,column=0)
         #поле ввода "Название"
         self.en_name = ttk.Entry(self, width=35)
         self.en_name.grid_configure(row=0, column=1,columnspan=35, pady=3, sticky='W')
@@ -779,20 +774,19 @@ class INFO_Book(tk.Toplevel):
 
         self.focus_force()
 
-        self.s = ttk.Style(self)#Использование темы
-        self.s.theme_use('clam')
+        
 
         #============================= Контейнер информации =================
 
-        self.fr_info = tk.Frame(self)
+        self.fr_info = ttk.Frame(self)
 
         self.fr_info.pack(side='top')
 
         #================================ Таблица ===========================
 
-        self.frame = tk.Frame(self)
+        self.frame = ttk.Frame(self)
 
-        self.scroll = tk.Scrollbar(self.frame)
+        self.scroll = ttk.Scrollbar(self.frame)
         self.scroll.pack(side='right',fill='y')
 
         self.table = MyTree(self.frame, columns=('DB','PHONE','DI','DC','STAT','COL'), height=21, yscrollcommand = self.scroll.set)
@@ -838,12 +832,12 @@ class Not(tk.Toplevel):
         self.attributes("-topmost",True)
 
         #Контейнер уведомлений
-        self.fr_watch_both = tk.Frame(self)
+        self.fr_watch_both = ttk.Frame(self)
         self.fr_watch_both.configure(background='#e9e9e9',width=750,height=456)
         self.fr_watch_both.pack(side='left',fill='both')
 
         #Создание скроллбара
-        self.scroll = tk.Scrollbar(self.fr_watch_both)
+        self.scroll = ttk.Scrollbar(self.fr_watch_both)
         self.scroll.pack(side='right',fill='y')
 
         #Таблица
@@ -883,18 +877,18 @@ class Excel(tk.Toplevel):
         self.configure(background='#e9e9e9')#Фон окна
         self.focus_force()
 
-        self.lb_excel = tk.Label(self, text='Вывести отчёт в Excel')
+        self.lb_excel = ttk.Label(self, text='Вывести отчёт в Excel')
         self.lb_excel.pack()
 
-        self.frame = tk.Frame(self)
-        self.lb_date1 = tk.Label(self.frame, text='С:')
+        self.frame = ttk.Frame(self)
+        self.lb_date1 = ttk.Label(self.frame, text='С:')
         self.lb_date1.grid(row=0, column=0)
 
         self.en_date1 = DateEntry(self.frame, width=12, background='darkblue',
                     foreground='white', borderwidth=2)
         self.en_date1.grid_configure(row=0, column=1, pady=3)
 
-        self.lb_date2 = tk.Label(self.frame, text='До:')
+        self.lb_date2 = ttk.Label(self.frame, text='До:')
         self.lb_date2.grid(row=1,column=0)
 
         self.en_date2 = DateEntry(self.frame, width=12, background='darkblue',
@@ -921,13 +915,12 @@ class Spravka(tk.Toplevel):
 
         self.focus_force()
         
-        self.s = ttk.Style(self)#Использование темы
-        self.s.theme_use('clam')
+        
 
         file = open(os.path.dirname(os.path.abspath(__file__))+"/spravka.txt", 'r')
         row=0
         for line in file:
-            tk.Label(self, text=line).grid(row=row, column=0)
+            ttk.Label(self, text=line).grid(row=row, column=0)
             row+=1
 
         #Иконка
@@ -947,13 +940,12 @@ class Information(tk.Toplevel):
 
         self.focus_force()
         
-        self.s = ttk.Style(self)#Использование темы
-        self.s.theme_use('clam')
+        
 
         file = open(os.path.dirname(os.path.abspath(__file__))+"/information.txt", 'r')
         row=0
         for line in file:
-            tk.Label(self, text=line).grid(row=row, column=0)
+            ttk.Label(self, text=line).grid(row=row, column=0)
             row+=1
 
         #Иконка
@@ -1036,15 +1028,15 @@ def update_info(root):
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
     cur = conn.cursor()
 
-    root.fio = tk.Label(root,text= text, font='Arial 15').place(x=250,y=10)
-    root.db = tk.Label(root,text="Дата рождения: " + values[0], font='Arial 12').place(x=10, y=45)
+    root.fio = ttk.Label(root.frame,text= text, font='Arial 15').pack()
+    root.db = ttk.Label(root.frame,text="Дата рождения: " + values[0], font='Arial 12').pack()
     if (values[1] == '') and (values[2] == ''):
-        root.adr = tk.Label(root, text='Адрес: '+values[3], font='Arial 12').place(x=240, y=45)
-        root.phone = tk.Label(root,text='Телефон: '+values[4], font='Arial 12').place(x=450,y=45)
+        root.adr = ttk.Label(root.frame, text='Адрес: '+values[3], font='Arial 12').pack()
+        root.phone = ttk.Label(root.frame,text='Телефон: '+values[4], font='Arial 12').pack()
     else:
-        root.clas = tk.Label(root, text='Класс: '+values[1]+' '+values[2], font='Arial 12').place(x=240, y=45)
-        root.adr = tk.Label(root, text='Адрес: '+values[3], font='Arial 12').place(x=10, y=65)
-        root.phone = tk.Label(root,text='Телефон: '+values[4], font='Arial 12').place(x=260,y=65)
+        root.clas = ttk.Label(root.frame, text='Класс: '+values[1]+' '+values[2], font='Arial 12').pack()
+        root.adr = ttk.Label(root.frame, text='Адрес: '+values[3], font='Arial 12').pack()
+        root.phone = ttk.Label(root.frame,text='Телефон: '+values[4], font='Arial 12').pack()
     
     db = datetime.datetime.strptime(values[0], '%d.%m.%Y')#Парсит дату
     db = db.strftime('%Y-%m-%d')#Переводит дату в другой формат
@@ -1693,7 +1685,7 @@ def schbook(self):
     self.en_name.grid_configure(row=0, column=1,columnspan=35, pady=3, sticky='W')
     self.en_aut.grid_configure(row=1, column=1,columnspan=35, pady=3, sticky='W')
     self.en_col.grid_configure(row=2, column=1,columnspan=35, pady=3, sticky='W')
-    self.lb_less = tk.Label(self, text='Урок').grid(row=3,column=0)
+    self.lb_less = ttk.Label(self, text='Урок').grid(row=3,column=0)
     self.en_less = ttk.Combobox(self,values=obj,width=17)
     self.en_less.grid_configure(row=3, column=1, columnspan=35, pady=3, sticky='W')
     self.save_sch.grid(row=4, column=1,pady=3, padx=134)
@@ -1780,15 +1772,15 @@ def schbook_info(self):
 
         root = INFO_Book()
 
-        root.aut = tk.Label(root.fr_info, text=info[0][1])
+        root.aut = ttk.Label(root.fr_info, text=info[0][1])
         root.aut.grid(row=0,column=0, columnspan=40)
-        root.name = tk.Label(root.fr_info, text=info[0][0])
+        root.name = ttk.Label(root.fr_info, text=info[0][0])
         root.name.grid(row=1, column=0,columnspan=40)
-        root.col_v = tk.Label(root.fr_info, text='Всего: '+str(info[0][2]))
+        root.col_v = ttk.Label(root.fr_info, text='Всего: '+str(info[0][2]))
         root.col_v.grid(row=2,column=0)
-        root.col_ost = tk.Label(root.fr_info, text='Осталось: '+str(values[1]))
+        root.col_ost = ttk.Label(root.fr_info, text='Осталось: '+str(values[1]))
         root.col_ost.grid(row=2,column=1)
-        root.obj = tk.Label(root.fr_info, text='Предмет: '+info[0][3])
+        root.obj = ttk.Label(root.fr_info, text='Предмет: '+info[0][3])
         root.obj.grid(row=3,column=0,columnspan=30)
         root.frame.pack(side='bottom', fill='both')
 
@@ -1815,13 +1807,13 @@ def lit_info(self):
 
         root = INFO_Book()
 
-        root.aut = tk.Label(root.fr_info, text=info[0][1])
+        root.aut = ttk.Label(root.fr_info, text=info[0][1])
         root.aut.grid(row=0,column=0, columnspan=40)
-        root.name = tk.Label(root.fr_info, text=info[0][0])
+        root.name = ttk.Label(root.fr_info, text=info[0][0])
         root.name.grid(row=1, column=0,columnspan=40)
-        root.col_v = tk.Label(root.fr_info, text='Всего: '+str(info[0][2]))
+        root.col_v = ttk.Label(root.fr_info, text='Всего: '+str(info[0][2]))
         root.col_v.grid(row=2,column=0)
-        root.col_ost = tk.Label(root.fr_info, text='Осталось: '+str(values[1]))
+        root.col_ost = ttk.Label(root.fr_info, text='Осталось: '+str(values[1]))
         root.col_ost.grid(row=2,column=1, padx = 40, sticky='E' )
         root.frame.pack(side='bottom', fill='both')
 
