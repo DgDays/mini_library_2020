@@ -79,6 +79,7 @@ class Entry_Pl(ttk.Entry):
             self.placeholder = placeholder
             self.placeholder_color = 'grey'
             self.default_fg_color = self['foreground']
+            self['font'] = 'Arial 11'
             self.placeholder_on = False
             self.put_placeholder()
   
@@ -135,6 +136,8 @@ class Main(tk.Tk):
         style = ThemedStyle()
         style.set_theme("breeze")
         style.configure("Treeview.Heading", font=('Arial', 11))# Изменение шрифта столбцов в Treeview
+        style.configure('Treeview', font=('Arial',11))
+        style.configure('TButton', font=('Arial',11))
 
         #================================ Меню ================================
         mainmenu = tk.Menu(self)
@@ -257,58 +260,58 @@ class Add_profile(tk.Toplevel):
         self.focus_force()
 
         #надпись "ФИО"
-        self.lb_fio=ttk.Label(self,text='ФИО')
+        self.lb_fio=ttk.Label(self,text='ФИО', font= 'Arial 11')
         self.lb_fio.grid(row=0,column=0,pady=3)
 
         #место ввода "ФИО"
-        self.en_fio2=ttk.Entry(self,width=49)
+        self.en_fio2=ttk.Entry(self,width=49, font= 'Arial 11')
         self.en_fio2.grid_configure(row=0,column=1,columnspan=20, sticky='W')
 
         #надпись "Класс"
-        self.lb_class=ttk.Label(self,text='Класс')
+        self.lb_class=ttk.Label(self,text='Класс', font= 'Arial 11')
         self.lb_class.grid(row=1,column=0,pady=3)
 
         #место ввода "Класс"
-        self.en_class2=ttk.Combobox(self,values=[1,2,3,4,5,6,7,8,9,10,11],width=3)
+        self.en_class2=ttk.Combobox(self,values=[1,2,3,4,5,6,7,8,9,10,11],width=3, font= 'Arial 11')
         self.en_class2.grid_configure(row=1,column=1, sticky='W')
 
         #надпись "Литера"
-        self.lb_lit=ttk.Label(self,text='Литера')
+        self.lb_lit=ttk.Label(self,text='Литера', font= 'Arial 11')
         self.lb_lit.grid(row=1,column=2)
 
         #место ввода "Литера"
-        self.en_lit2=ttk.Combobox(self,values=['А','Б','В','Г'],width=3)
+        self.en_lit2=ttk.Combobox(self,values=['А','Б','В','Г'],width=3, font= 'Arial 11')
         self.en_lit2.grid_configure(row=1,column=3,sticky='W')
 
         #надпись "Телефон"
-        self.lb_phone=ttk.Label(self,text='Телефон')
+        self.lb_phone=ttk.Label(self,text='Телефон', font= 'Arial 11')
         self.lb_phone.grid(row=2,column=0, pady=3)
 
         #место ввода "Телефон"
-        self.en_phone2=ttk.Entry(self,width=14)
+        self.en_phone2=ttk.Entry(self,width=14, font= 'Arial 11')
         self.en_phone2.grid_configure(row=2,column=1,sticky='W')
 
         #надпись "Адрес"
-        self.lb_adr=ttk.Label(self,text='Адрес')
+        self.lb_adr=ttk.Label(self,text='Адрес', font= 'Arial 11')
         self.lb_adr.grid(row=3,column=0,pady=3)
 
         #место ввода "Адрес"
-        self.en_adr2=ttk.Entry(self,width=49)
+        self.en_adr2=ttk.Entry(self,width=49, font= 'Arial 11')
         self.en_adr2.grid_configure(row=3,column=1, columnspan=20,sticky='W')
 
-        self.lb_client = ttk.Label(self, text = 'Категория').grid(row=4, column=0, pady=3)
+        self.lb_client = ttk.Label(self, text = 'Категория', font= 'Arial 11').grid(row=4, column=0, pady=3)
 
-        self.en_client = ttk.Combobox(self,values=["Ученик", "Учитель", "Другой посетитель"],width=18)
+        self.en_client = ttk.Combobox(self,values=["Ученик", "Учитель", "Другой посетитель"],width=18, font= 'Arial 11')
         self.en_client.grid_configure(row=4,column=1, columnspan=20, sticky='W')
 
         #надпись "Дата рождения"
-        self.lb_db=ttk.Label(self,text='Дата рождения')
+        self.lb_db=ttk.Label(self,text='Дата рождения', font= 'Arial 11')
         self.lb_db.grid(row=5,column=3,pady=3)
 
 
         #место ввода "Дата рождения"
         self.en_db2= DateEntry(self, width=12, background='darkblue',
-                    foreground='white', borderwidth=2, year=2020)
+                    foreground='white', borderwidth=2, year=2020, font= 'Arial 11')
         self.en_db2.grid_configure(row=5,column=4,sticky='W')
 
         #кнопка "Сохранить"
@@ -332,52 +335,52 @@ class Edit_profile(tk.Toplevel):
         self.focus_force()
 
         #надпись "ФИО"
-        self.lb_fio=ttk.Label(self,text='ФИО')
+        self.lb_fio=ttk.Label(self,text='ФИО', font= 'Arial 11')
         self.lb_fio.grid(row=0,column=0, ipady=3)
 
         #место ввода "ФИО"
-        self.en_fio2=ttk.Entry(self,width=49)
+        self.en_fio2=ttk.Entry(self,width=49, font= 'Arial 11')
         self.en_fio2.grid_configure(row=0,column=1, columnspan=40, sticky='W')
 
         #надпись "Класс"
-        self.lb_class=ttk.Label(self,text='Класс')
+        self.lb_class=ttk.Label(self,text='Класс', font= 'Arial 11')
         self.lb_class.grid(row=1,column=0, ipady=3)
 
         #место ввода "Класс"
-        self.en_class2=ttk.Combobox(self,values=[1,2,3,4,5,6,7,8,9,10,11],width=3)
+        self.en_class2=ttk.Combobox(self,values=[1,2,3,4,5,6,7,8,9,10,11],width=3, font= 'Arial 11')
         self.en_class2.grid_configure(row=1,column=1,sticky='W')
 
         #надпись "Литера"
-        self.lb_lit=ttk.Label(self,text='Литера')
+        self.lb_lit=ttk.Label(self,text='Литера', font= 'Arial 11')
         self.lb_lit.grid(row=1,column=2, padx=5)
 
         #место ввода "Литера"
-        self.en_lit2=ttk.Combobox(self,values=['А','Б','В','Г'],width=3)
+        self.en_lit2=ttk.Combobox(self,values=['А','Б','В','Г'],width=3, font= 'Arial 11')
         self.en_lit2.grid_configure(row=1,column=3, sticky='W')
 
         #надпись "Телефон"
-        self.lb_phone=ttk.Label(self,text='Телефон')
+        self.lb_phone=ttk.Label(self,text='Телефон', font= 'Arial 11')
         self.lb_phone.grid(row=2,column=0, ipady=3)
 
         #место ввода "Телефон"
-        self.en_phone2=ttk.Entry(self,width=14)
+        self.en_phone2=ttk.Entry(self,width=14, font= 'Arial 11')
         self.en_phone2.grid_configure(row=2,column=1,columnspan=10, sticky='W')
 
         #надпись "Адрес"
-        self.lb_adr=ttk.Label(self,text='Адрес')
+        self.lb_adr=ttk.Label(self,text='Адрес', font= 'Arial 11')
         self.lb_adr.grid(row=3,column=0, ipady=3)
 
         #место ввода "Адрес"
-        self.en_adr2=ttk.Entry(self,width=49)
+        self.en_adr2=ttk.Entry(self,width=49, font= 'Arial 11')
         self.en_adr2.grid_configure(row=3,column=1,columnspan=20, sticky='W')
 
         #надпись "Дата рождения"
-        self.lb_db=ttk.Label(self,text='Дата рождения')
+        self.lb_db=ttk.Label(self,text='Дата рождения', font= 'Arial 11')
         self.lb_db.grid(row=4,column=4, ipady=3)
 
         #место ввода "Дата рождения"
         self.en_db2= DateEntry(self, width=12, background='darkblue',
-                    foreground='white', borderwidth=2)
+                    foreground='white', borderwidth=2, font= 'Arial 11')
         self.en_db2.grid_configure(row=4,column=5,sticky='W')
 
         #кнопка "Сохранить"
@@ -471,27 +474,27 @@ class Add_lc(tk.Toplevel):
         self.focus_force()
 
         #надпись "Книга"
-        self.bookname=ttk.Label(self,text='Книга')
+        self.bookname=ttk.Label(self,text='Книга', font= 'Arial 11')
         self.bookname.grid(row=0, column=0, ipady=3)
 
         #место ввода "Книга"
-        self.en_bookname=ttk.Entry(self,width=49)
+        self.en_bookname=ttk.Entry(self,width=49, font= 'Arial 11')
         self.en_bookname.grid_configure(row=0, column=1, columnspan=40, sticky='W')
 
         #надпись "Автор"
-        self.lb_author2=ttk.Label(self,text='Автор')
+        self.lb_author2=ttk.Label(self,text='Автор', font= 'Arial 11')
         self.lb_author2.grid(row=1, column=0, ipady=3)
 
         #место ввода "Автор"
-        self.en_author2=ttk.Entry(self,width=49)
+        self.en_author2=ttk.Entry(self,width=49, font= 'Arial 11')
         self.en_author2.grid_configure(row=1,column=1, columnspan=40, sticky='W')
 
         #надпись "кол-во"
-        self.lb_col = ttk.Label(self,text='Кол-во')
+        self.lb_col = ttk.Label(self,text='Кол-во', font= 'Arial 11')
         self.lb_col.grid(row=2, column=0, ipady=3)
 
         #место ввода "кол-во"
-        self.en_col = ttk.Entry(self,width=10)
+        self.en_col = ttk.Entry(self,width=10, font= 'Arial 11')
         self.en_col.grid_configure(row=2,column=1, columnspan=40, sticky='W')
 
         #кнопка "Сохранить"
@@ -517,34 +520,34 @@ class Edit_lc(tk.Toplevel):
         self.focus_force()
 
         #надпись "Книга"
-        self.bookname=ttk.Label(self,text='Книга')
+        self.bookname=ttk.Label(self,text='Книга', font= 'Arial 11')
         self.bookname.grid(row=0, column=0)
 
         #место ввода "Книга"
-        self.en_bookname=ttk.Entry(self,width=49)
+        self.en_bookname=ttk.Entry(self,width=49, font= 'Arial 11')
         self.en_bookname.grid_configure(row=0, column=1, columnspan=50, pady=3, sticky='W')
 
         #надпись "Автор"
-        self.lb_author2=ttk.Label(self,text='Автор')
+        self.lb_author2=ttk.Label(self,text='Автор', font= 'Arial 11')
         self.lb_author2.grid(row=1, column=0)
 
         #место ввода "Автор"
-        self.en_author2=ttk.Entry(self,width=49)
+        self.en_author2=ttk.Entry(self,width=49, font= 'Arial 11')
         self.en_author2.grid_configure(row=1, column=1, columnspan=50, pady=3, sticky='W')
 
         #надпись "Дата сдачи"
-        self.lb_dc = ttk.Label(self, text='Дата сдачи').grid(row=2, column=0)
+        self.lb_dc = ttk.Label(self, text='Дата сдачи', font= 'Arial 11').grid(row=2, column=0)
 
         #место ввода "Дата сдачи"
         self.en_dc = DateEntry(self, width=12, background='darkblue',
-                    foreground='white', borderwidth=2)
+                    foreground='white', borderwidth=2, font= 'Arial 11')
         self.en_dc.grid_configure(row=2, column=1, columnspan=15, pady=3, sticky='W')
 
         #надпись "Статус"
-        self.lb_stat = ttk.Label(self, text='Статус').grid(row=3,column=0)
+        self.lb_stat = ttk.Label(self, text='Статус', font= 'Arial 11').grid(row=3,column=0)
 
         #место ввода "Статус"
-        self.en_stat = ttk.Combobox(self,values=['На руках','Просрочена','Сдана'],width=15)
+        self.en_stat = ttk.Combobox(self,values=['На руках','Просрочена','Сдана'],width=15, font= 'Arial 11')
         self.en_stat.grid_configure(row=3,column=1, columnspan=15, pady=3, sticky='W')
 
         #кнопка "Сохранить"
@@ -714,15 +717,15 @@ class Add_book(tk.Toplevel):
         
 
 
-        self.lb_name = ttk.Label(self,text='Название')
-        self.lb_aut = ttk.Label(self,text='Автор')
-        self.lb_col = ttk.Label(self,text='Кол-во')
+        self.lb_name = ttk.Label(self,text='Название', font= 'Arial 11')
+        self.lb_aut = ttk.Label(self,text='Автор', font= 'Arial 11')
+        self.lb_col = ttk.Label(self,text='Кол-во', font= 'Arial 11')
         #поле ввода "Название"
-        self.en_name = ttk.Entry(self, width=35)
+        self.en_name = ttk.Entry(self, width=35, font= 'Arial 11')
         #поле ввода "Автор"
-        self.en_aut = ttk.Entry(self, width=35)
+        self.en_aut = ttk.Entry(self, width=35, font= 'Arial 11')
         #поле ввода "Кол-во"
-        self.en_col = ttk.Entry(self, width=10)
+        self.en_col = ttk.Entry(self, width=10, font= 'Arial 11')
         #
         #кнопка "Сохранить"
         self.save = ttk.Button(self,text='Сохранить', command = lambda: threading.Thread(target = save_book, args = [self,]).start())
@@ -745,17 +748,17 @@ class Edit_books(tk.Toplevel):
 
         
 
-        self.lb_name = ttk.Label(self,text='Название').grid(row=0,column=0)
-        self.lb_aut = ttk.Label(self,text='Автор').grid(row=1,column=0)
-        self.lb_col = ttk.Label(self,text='Кол-во').grid(row=2,column=0)
+        self.lb_name = ttk.Label(self,text='Название', font= 'Arial 11').grid(row=0,column=0)
+        self.lb_aut = ttk.Label(self,text='Автор', font= 'Arial 11').grid(row=1,column=0)
+        self.lb_col = ttk.Label(self,text='Кол-во', font= 'Arial 11').grid(row=2,column=0)
         #поле ввода "Название"
-        self.en_name = ttk.Entry(self, width=35)
+        self.en_name = ttk.Entry(self, width=35, font= 'Arial 11')
         self.en_name.grid_configure(row=0, column=1,columnspan=35, pady=3, sticky='W')
         #поле ввода "Автор"
-        self.en_aut = ttk.Entry(self, width=35)
+        self.en_aut = ttk.Entry(self, width=35, font= 'Arial 11')
         self.en_aut.grid_configure(row=1, column=1,columnspan=35, pady=3, sticky='W')
         #поле ввода "Кол-во"
-        self.en_col = ttk.Entry(self, width=10)
+        self.en_col = ttk.Entry(self, width=10, font= 'Arial 11')
         self.en_col.grid_configure(row=2, column=1,columnspan=35, pady=3, sticky='W')
         #кнопка "Сохранить"
         self.save = ttk.Button(self,text='Сохранить', command = lambda: threading.Thread(target = edit_book, args = [self,]).start())
@@ -877,22 +880,22 @@ class Excel(tk.Toplevel):
         self.configure(background='#e9e9e9')#Фон окна
         self.focus_force()
 
-        self.lb_excel = ttk.Label(self, text='Вывести отчёт в Excel')
+        self.lb_excel = ttk.Label(self, text='Вывести отчёт в Excel', font= 'Arial 11')
         self.lb_excel.pack()
 
         self.frame = ttk.Frame(self)
-        self.lb_date1 = ttk.Label(self.frame, text='С:')
+        self.lb_date1 = ttk.Label(self.frame, text='С:', font= 'Arial 11')
         self.lb_date1.grid(row=0, column=0)
 
         self.en_date1 = DateEntry(self.frame, width=12, background='darkblue',
                     foreground='white', borderwidth=2)
-        self.en_date1.grid_configure(row=0, column=1, pady=3)
+        self.en_date1.grid_configure(row=0, column=1, pady=3, font= 'Arial 11')
 
-        self.lb_date2 = ttk.Label(self.frame, text='До:')
+        self.lb_date2 = ttk.Label(self.frame, text='До:', font= 'Arial 11')
         self.lb_date2.grid(row=1,column=0)
 
         self.en_date2 = DateEntry(self.frame, width=12, background='darkblue',
-                    foreground='white', borderwidth=2)
+                    foreground='white', borderwidth=2, font= 'Arial 11')
         self.en_date2.grid_configure(row=1,column=1, pady=3)
 
         self.btn = ttk.Button(self.frame, text='Сохранить отчёт', command= lambda: threading.Thread(target = lub_period_excel, args = [self,]).start())
@@ -920,7 +923,7 @@ class Spravka(tk.Toplevel):
         file = open(os.path.dirname(os.path.abspath(__file__))+"/spravka.txt", 'r')
         row=0
         for line in file:
-            ttk.Label(self, text=line).grid(row=row, column=0)
+            ttk.Label(self, text=line, font= 'Arial 11').grid(row=row, column=0)
             row+=1
 
         #Иконка
@@ -945,7 +948,7 @@ class Information(tk.Toplevel):
         file = open(os.path.dirname(os.path.abspath(__file__))+"/information.txt", 'r')
         row=0
         for line in file:
-            ttk.Label(self, text=line).grid(row=row, column=0)
+            ttk.Label(self, text=line, font= 'Arial 11').grid(row=row, column=0)
             row+=1
 
         #Иконка
@@ -1047,6 +1050,7 @@ def update_info(root):
         root.info_table.insert('', tk.END, text=row[0], values=row[1:])
 
     root.title("Профиль: {}".format(text)) #Заголовок
+    root.fr_watch_both.pack(side='bottom', fill='both')
 
         
 
@@ -1685,8 +1689,8 @@ def schbook(self):
     self.en_name.grid_configure(row=0, column=1,columnspan=35, pady=3, sticky='W')
     self.en_aut.grid_configure(row=1, column=1,columnspan=35, pady=3, sticky='W')
     self.en_col.grid_configure(row=2, column=1,columnspan=35, pady=3, sticky='W')
-    self.lb_less = ttk.Label(self, text='Урок').grid(row=3,column=0)
-    self.en_less = ttk.Combobox(self,values=obj,width=17)
+    self.lb_less = ttk.Label(self, text='Урок', font= 'Arial 11').grid(row=3,column=0)
+    self.en_less = ttk.Combobox(self,values=obj,width=17, font= 'Arial 11')
     self.en_less.grid_configure(row=3, column=1, columnspan=35, pady=3, sticky='W')
     self.save_sch.grid(row=4, column=1,pady=3, padx=134)
 
@@ -1772,15 +1776,15 @@ def schbook_info(self):
 
         root = INFO_Book()
 
-        root.aut = ttk.Label(root.fr_info, text=info[0][1])
+        root.aut = ttk.Label(root.fr_info, text=info[0][1], font= 'Arial 11')
         root.aut.grid(row=0,column=0, columnspan=40)
-        root.name = ttk.Label(root.fr_info, text=info[0][0])
+        root.name = ttk.Label(root.fr_info, text=info[0][0], font= 'Arial 11')
         root.name.grid(row=1, column=0,columnspan=40)
-        root.col_v = ttk.Label(root.fr_info, text='Всего: '+str(info[0][2]))
+        root.col_v = ttk.Label(root.fr_info, text='Всего: '+str(info[0][2]), font= 'Arial 11')
         root.col_v.grid(row=2,column=0)
-        root.col_ost = ttk.Label(root.fr_info, text='Осталось: '+str(values[1]))
+        root.col_ost = ttk.Label(root.fr_info, text='Осталось: '+str(values[1]), font= 'Arial 11')
         root.col_ost.grid(row=2,column=1)
-        root.obj = ttk.Label(root.fr_info, text='Предмет: '+info[0][3])
+        root.obj = ttk.Label(root.fr_info, text='Предмет: '+info[0][3], font= 'Arial 11')
         root.obj.grid(row=3,column=0,columnspan=30)
         root.frame.pack(side='bottom', fill='both')
 
@@ -1807,13 +1811,13 @@ def lit_info(self):
 
         root = INFO_Book()
 
-        root.aut = ttk.Label(root.fr_info, text=info[0][1])
+        root.aut = ttk.Label(root.fr_info, text=info[0][1], font= 'Arial 11')
         root.aut.grid(row=0,column=0, columnspan=40)
-        root.name = ttk.Label(root.fr_info, text=info[0][0])
+        root.name = ttk.Label(root.fr_info, text=info[0][0], font= 'Arial 11')
         root.name.grid(row=1, column=0,columnspan=40)
-        root.col_v = ttk.Label(root.fr_info, text='Всего: '+str(info[0][2]))
+        root.col_v = ttk.Label(root.fr_info, text='Всего: '+str(info[0][2]), font= 'Arial 11')
         root.col_v.grid(row=2,column=0)
-        root.col_ost = ttk.Label(root.fr_info, text='Осталось: '+str(values[1]))
+        root.col_ost = ttk.Label(root.fr_info, text='Осталось: '+str(values[1]), font= 'Arial 11')
         root.col_ost.grid(row=2,column=1, padx = 40, sticky='E' )
         root.frame.pack(side='bottom', fill='both')
 
