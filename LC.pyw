@@ -836,7 +836,7 @@ class Not(tk.Toplevel):
 
         #Контейнер уведомлений
         self.fr_watch_both = ttk.Frame(self)
-        self.fr_watch_both.configure(background='#e9e9e9',width=750,height=456)
+        self.fr_watch_both.configure(width=750,height=456)
         self.fr_watch_both.pack(side='left',fill='both')
 
         #Создание скроллбара
