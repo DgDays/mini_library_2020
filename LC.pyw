@@ -137,16 +137,6 @@ class Main(tk.Tk):
         style.set_theme("breeze")
         style.configure("Treeview.Heading", font=('Arial', 11))# Изменение шрифта столбцов в Treeview
         style.configure('Treeview', font=('Arial',11))
-        style.layout("Treeview.Item",
-                    [('Treeitem.padding', {'sticky': 'nswe', 'children': 
-                    [('Treeitem.indicator', {'side': 'left', 'sticky': ''}),
-                    ('Treeitem.image', {'side': 'left', 'sticky': ''}),
-                    ('Treeitem.focus', {'side': 'left', 'sticky': '', 'children': [
-                    ('Treeitem.text', {'side': 'left', 'sticky': ''}),
-                    ]})
-                ],
-            })]
-        )
         style.configure('TButton', font=('Arial',11))
 
         #================================ Меню ================================
