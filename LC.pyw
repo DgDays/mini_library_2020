@@ -132,9 +132,12 @@ class Main(tk.Tk):
         self.geometry('910x450+{}+{}'.format(w, h))#Размер
         self.resizable(False, False)#Изменение размера окна
         self.protocol("WM_DELETE_WINDOW", lambda: sys.exit(0))
-        
+        theme = open(os.path.dirname(os.path.abspath(__file__))+'/theme.txt','r')
         style = ThemedStyle()
-        style.set_theme("nightbreeze")
+        var_style = tk.StringVar()
+        var_style.set(theme.read())
+        theme.close()
+        style.set_theme(var_style.get())
         style.configure("Treeview.Heading", font=('Arial', 11))# Изменение шрифта столбцов в Treeview
         style.configure('Treeview', font=('Arial',11))
         style.configure('TButton', font=('Arial',11))
@@ -152,6 +155,10 @@ class Main(tk.Tk):
         file_sohranit.add_separator()
         file_sohranit.add_command(label = "Учёт регистраций", command = lambda: threading.Thread(target = excel_uchet_reg).start())
         file_sohranit.add_command(label = "Учёт книг", command = lambda: threading.Thread(target = uchet_book).start())
+
+        style_menu = tk.Menu(mainmenu, tearoff = 0)
+        style_menu.add_radiobutton(label = 'Breeze - Светлая', variable=var_style, value='breeze', command = lambda: style_change(var_style.get()))
+        style_menu.add_radiobutton(label = 'Breeze - Тёмная', variable=var_style, value='nightbreeze', command = lambda: style_change(var_style.get()))
         
         file_infa = tk.Menu(mainmenu, tearoff = 0) # Запретить отделение
         file_infa.add_command(label = "Просмотреть справку", command = lambda: Spravka())
@@ -160,8 +167,10 @@ class Main(tk.Tk):
 
         mainmenu.add_cascade(label = "Сохранить в Excel", menu = file_sohranit) # Добавляет пункт "Сохранить в отчёт" в меню
         mainmenu.add_command(label = "Учёт книг", command = lambda: self_book_open(self))
+        mainmenu.add_command(label = 'Уведомления', command= lambda: self_not_open(self))
+        mainmenu.add_cascade(label = 'Темы', menu = style_menu)
         mainmenu.add_cascade(label = "Информация", menu = file_infa) # Добавляет пункт "Информация" в меню
-        mainmenu.add_command(label = 'Уведомления', command= lambda: self_not_open(self))  
+          
         
         #================================= Поиск ====================================
         self.frame_search = ttk.Frame(self)
@@ -2262,6 +2271,17 @@ def uchet_book():
 
     conn.commit()
     workbook.close()
+
+#================================== Изменение темы ================================
+def style_change(var_style):
+    theme = open(os.path.dirname(os.path.abspath(__file__))+'/theme.txt','w')
+    theme.write(var_style)
+    theme.close()
+    ask = messagebox.askyesno('Перезапустить?', 'Чтобы изменения вступили в силу, пожалуйста перезапустите программу.\nЗакрыть программу сейчас?')
+    if ask == True:
+        sys.exit(0)
+    
+    
 
 #================================= Обработчики событий ============================
 def event_handler_main(event, self):
