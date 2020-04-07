@@ -2277,7 +2277,7 @@ def style_change(var_style):
     theme = open(os.path.dirname(os.path.abspath(__file__))+'/theme.txt','w')
     theme.write(var_style)
     theme.close()
-    ask = messagebox.askyesno('Перезапустить?', 'Чтобы изменения вступили в силу, пожалуйста перезапустите программу.\nЗакрыть программу сейчас?')
+    ask = messagebox.askyesno('Перезапустить?', 'Чтобы изменения вступили в силу, необходимо перезапустить программу.\n \nПерезапустить программу прямо сейчас?\n(Перед этим действием убедитесь, что вы сохранили \nвсе изменения, иначе они будут утеряны)')
     if ask == True:
         os.execl(sys.executable, sys.executable, *sys.argv)      
     
