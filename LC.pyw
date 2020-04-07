@@ -127,14 +127,14 @@ class Main(tk.Tk):
         self.option_add("*Font", default_font) # Использование нашего шрифта
 
         self.title("Мини Библиотека 2020") #Заголовок
-        w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
+        w = ((self.winfo_screenwidth() // 2) - 455) # ширина экрана
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
-        self.geometry('900x450+{}+{}'.format(w, h))#Размер
+        self.geometry('910x450+{}+{}'.format(w, h))#Размер
         self.resizable(False, False)#Изменение размера окна
         self.protocol("WM_DELETE_WINDOW", lambda: sys.exit(0))
         
         style = ThemedStyle()
-        style.set_theme("breeze")
+        style.set_theme("nightbreeze")
         style.configure("Treeview.Heading", font=('Arial', 11))# Изменение шрифта столбцов в Treeview
         style.configure('Treeview', font=('Arial',11))
         style.configure('TButton', font=('Arial',11))
@@ -642,13 +642,6 @@ class Book(tk.Toplevel):
         #============================ Литература ======================================
 
         self.fr_lit = tk.Canvas(self, background='#e9e9e9',width=900,height=450)
-
-        def fixed_map(option):
-            return [elm for elm in style.map('Treeview', query_opt=option)
-                    if elm[:2] != ('!disabled', '!selected') and elm[0] != '!disabled !selected']
-
-        style = ttk.Style()
-        style.map('Treeview', foreground=fixed_map('foreground'), background=fixed_map('background'))
 
         # ttk.Style().configure("Treeview",fieldbackground="#e9e9e9")
 
