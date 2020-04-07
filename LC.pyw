@@ -2279,8 +2279,7 @@ def style_change(var_style):
     theme.close()
     ask = messagebox.askyesno('Перезапустить?', 'Чтобы изменения вступили в силу, пожалуйста перезапустите программу.\nЗакрыть программу сейчас?')
     if ask == True:
-        sys.exit(0)
-    
+        os.execl(sys.executable, sys.executable, *sys.argv)      
     
 
 #================================= Обработчики событий ============================
