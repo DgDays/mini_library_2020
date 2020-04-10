@@ -159,6 +159,17 @@ class Main(tk.Tk):
         style_menu = tk.Menu(mainmenu, tearoff = 0)
         style_menu.add_radiobutton(label = 'Breeze - Светлая', variable=var_style, value='breeze', command = lambda: style_change(var_style.get()))
         style_menu.add_radiobutton(label = 'Breeze - Тёмная', variable=var_style, value='nightbreeze', command = lambda: style_change(var_style.get()))
+        style_menu.add_radiobutton(label = 'Black', variable=var_style, value='black', command = lambda: style_change(var_style.get()))
+        style_menu.add_radiobutton(label = 'Smog', variable=var_style, value='smog', command = lambda: style_change(var_style.get()))
+        style_menu.add_radiobutton(label = 'Aquativo', variable=var_style, value='aquativo', command = lambda: style_change(var_style.get()))
+        style_menu.add_radiobutton(label = 'Clarlooks', variable=var_style, value='clearlooks', command = lambda: style_change(var_style.get()))
+        style_menu.add_radiobutton(label = 'Elegance', variable=var_style, value='elegance', command = lambda: style_change(var_style.get()))
+        style_menu.add_radiobutton(label = 'Itft1', variable=var_style, value='itft1', command = lambda: style_change(var_style.get()))
+        style_menu.add_radiobutton(label = 'Keramik', variable=var_style, value='keramik', command = lambda: style_change(var_style.get()))
+        style_menu.add_radiobutton(label = 'Kroc', variable=var_style, value='kroc', command = lambda: style_change(var_style.get()))
+        style_menu.add_radiobutton(label = 'Plastik', variable=var_style, value='plastik', command = lambda: style_change(var_style.get()))
+        style_menu.add_radiobutton(label = 'Radiance', variable=var_style, value='radiance', command = lambda: style_change(var_style.get()))
+        style_menu.add_radiobutton(label = 'Winxpblue', variable=var_style, value='winxpblue', command = lambda: style_change(var_style.get()))
         
         file_infa = tk.Menu(mainmenu, tearoff = 0) # Запретить отделение
         file_infa.add_command(label = "Просмотреть справку", command = lambda: Spravka())
@@ -173,7 +184,8 @@ class Main(tk.Tk):
           
         
         #================================= Поиск ====================================
-        self.frame_search = ttk.Frame(self)
+        self.frame_search1 = ttk.Frame(self)
+        self.frame_search = ttk.Frame(self.frame_search1)
 
         self.search = Entry_Pl(self.frame_search, "Поиск")
         self.search.grid(row=0, column=0, padx=3, pady=3)
@@ -185,6 +197,7 @@ class Main(tk.Tk):
         self.bt_cancel.grid(row=0, column=2, padx=3, pady=3)
 
         self.frame_search.pack()
+        self.frame_search1.pack(fill='x')
 
         self.bind('<Return>', lambda event: search_enter(self))
 
@@ -411,7 +424,7 @@ class INFO(tk.Toplevel):
         self.protocol("WM_DELETE_WINDOW", lambda: self_main_null(self))
         
         self.frame = ttk.Frame(self)
-        self.frame.pack()
+        self.frame.pack(fill='x')
 
         self.fr_watch_both = ttk.Frame(self,width=660,height=400)
 
@@ -582,7 +595,8 @@ class Book(tk.Toplevel):
         
         
         #================================ Поиск ====================================
-        self.frame_search = ttk.Frame(self)
+        self.frame_search1 = ttk.Frame(self)
+        self.frame_search = ttk.Frame(self.frame_search1)
 
         self.search = Entry_Pl(self.frame_search, "Поиск")
         self.search.grid(row=0, column=0, padx=3, pady=3)
@@ -594,6 +608,7 @@ class Book(tk.Toplevel):
         self.bt_cancel.grid(row=0, column=2, padx=3, pady=3)
 
         self.frame_search.pack()
+        self.frame_search1.pack(fill='x')
 
         self.bind('<Return>', lambda event: search_b_enter(self))
 
@@ -785,7 +800,7 @@ class INFO_Book(tk.Toplevel):
 
         self.fr_info = ttk.Frame(self)
 
-        self.fr_info.pack(side='top')
+        self.fr_info.pack(side='top', fill='x')
 
         #================================ Таблица ===========================
 
@@ -1779,15 +1794,15 @@ def schbook_info(self):
         root = INFO_Book()
 
         root.aut = ttk.Label(root.fr_info, text=info[0][1], font= 'Arial 11')
-        root.aut.grid(row=0,column=0, columnspan=40)
+        root.aut.pack()
         root.name = ttk.Label(root.fr_info, text=info[0][0], font= 'Arial 11')
-        root.name.grid(row=1, column=0,columnspan=40)
+        root.name.pack()
         root.col_v = ttk.Label(root.fr_info, text='Всего: '+str(info[0][2]), font= 'Arial 11')
-        root.col_v.grid(row=2,column=0)
+        root.col_v.pack()
         root.col_ost = ttk.Label(root.fr_info, text='Осталось: '+str(values[1]), font= 'Arial 11')
-        root.col_ost.grid(row=2,column=1)
+        root.col_ost.pack()
         root.obj = ttk.Label(root.fr_info, text='Предмет: '+info[0][3], font= 'Arial 11')
-        root.obj.grid(row=3,column=0,columnspan=30)
+        root.obj.pack()
         root.frame.pack(side='bottom', fill='both')
 
         cur.execute("SELECT FIO, DB, PHONE, DI, DC, STAT, COL FROM LC WHERE BOOK =(?) AND AUT=(?)",(text,values[0]))
@@ -1814,13 +1829,13 @@ def lit_info(self):
         root = INFO_Book()
 
         root.aut = ttk.Label(root.fr_info, text=info[0][1], font= 'Arial 11')
-        root.aut.grid(row=0,column=0, columnspan=40)
+        root.aut.pack()
         root.name = ttk.Label(root.fr_info, text=info[0][0], font= 'Arial 11')
-        root.name.grid(row=1, column=0,columnspan=40)
+        root.name.pack()
         root.col_v = ttk.Label(root.fr_info, text='Всего: '+str(info[0][2]), font= 'Arial 11')
-        root.col_v.grid(row=2,column=0)
+        root.col_v.pack()
         root.col_ost = ttk.Label(root.fr_info, text='Осталось: '+str(values[1]), font= 'Arial 11')
-        root.col_ost.grid(row=2,column=1, padx = 40, sticky='E' )
+        root.col_ost.pack()
         root.frame.pack(side='bottom', fill='both')
 
         cur.execute("SELECT FIO, DB, PHONE, DI, DC, STAT, COL FROM LC WHERE BOOK =(?) AND AUT=(?)",(text,values[0]))
