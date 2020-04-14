@@ -29,6 +29,7 @@ from datetime import timedelta, date
 import xlsxwriter
 import threading
 from tkcalendar import DateEntry
+import pyglet
 
 text = ''
 values = ''
@@ -41,6 +42,9 @@ self_book_info = 'close'
 book_add = 0
 prev_column = None
 obj = ["Алгебра","Геометрия","Математика","Русский язык","Английский язык","Французский язык","Немецкий язык","Физика","Химия","География","Информатика","Обществознание","История","Литература"]
+
+easter_egg = 0
+
 class MyTree(ttk.Treeview):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -131,7 +135,7 @@ class Main(tk.Tk):
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
         self.geometry('910x450+{}+{}'.format(w, h))#Размер
         self.resizable(False, False)#Изменение размера окна
-        self.protocol("WM_DELETE_WINDOW", lambda: sys.exit(0))
+        self.protocol("WM_DELETE_WINDOW", lambda: exit_main())
         theme = open(os.path.dirname(os.path.abspath(__file__))+'/theme.txt','r')
         style = ThemedStyle()
         var_style = tk.StringVar()
@@ -200,6 +204,9 @@ class Main(tk.Tk):
         self.frame_search1.pack(fill='x')
 
         self.bind('<Return>', lambda event: search_enter(self))
+        self.bt_search.bind('<Button-1>', lambda event: easter1())
+        self.bt_cancel.bind('<Button-1>', lambda event: easter2())
+        self.search.bind('<Button-1>', lambda event: easter3())
 
         #================================  Таблица  ================================
 
@@ -956,7 +963,7 @@ class Information(tk.Toplevel):
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
         self.geometry('713x450+{}+{}'.format(w-100, h-150))#Размер
         self.resizable(False, False)#Изменение размера окна
-        self.protocol("WM_DELETE_WINDOW", lambda: self_main_book_null(self))
+        self.protocol("WM_DELETE_WINDOW", lambda: self_main_inf_null(self))
 
         self.focus_force()
         
@@ -970,6 +977,7 @@ class Information(tk.Toplevel):
 
         #Иконка
         self.iconbitmap(os.path.dirname(os.path.abspath(__file__))+"/ask.ico")
+        threading.Thread(target = easter4).start()
 
 
 #================================ Работа с БД ================================
@@ -1414,6 +1422,7 @@ def search_book(self):
         res = (row[0], row[1], row[2] - line[0][0])
         self.book_table.insert("" , tk.END ,text=res[0], values=res[1:])
 
+
 def search_enter(self):
     if self.search.get() != 'Поиск':
         threading.Thread(target = search, args = [self,]).start()
@@ -1749,6 +1758,16 @@ def self_main_book_null(self):
     self_main_book = 'close'
     book_add = 0
     self.destroy()
+
+def self_main_inf_null(self):
+    global book_add
+    global self_main_book
+    self_main_book = 'close'
+    book_add = 0
+    self.destroy()
+
+def music_stop():
+    pyglet.app.exit()
 
 def self_book_open(self):
     global self_main_book
@@ -2334,7 +2353,35 @@ def event_handler_lit_a(event, self):
     if event.keycode==65 and event.state == 4: # Ctrl + A
         lit(self)
 
+def easter1():
+    global easter_egg
+    easter_egg += 1
 
+def easter2():
+    global easter_egg
+    if easter_egg == 1:
+        easter_egg += 1
+    else:
+        easter_egg = 0
+
+def easter3():
+    global easter_egg
+    if easter_egg == 2:
+        easter_egg += 1
+    else:
+        easter_egg = 0
+
+def easter4():
+    global easter_egg
+    if easter_egg == 3:
+        filename = os.path.dirname(os.path.abspath(__file__))+"/imper.mp3"
+        music = pyglet.media.load(filename)
+        music.play()
+        pyglet.app.run()
+
+def exit_main():
+    threading.Thread(target = music_stop).start()
+    sys.exit(0)
 
 if __name__ == "__main__":
     app = Main()
