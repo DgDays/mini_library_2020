@@ -29,6 +29,7 @@ from datetime import timedelta, date
 import xlsxwriter
 import threading
 from tkcalendar import DateEntry
+from tkinter import filedialog as fd
 import pyglet
 
 text = ''
@@ -1927,7 +1928,8 @@ def month_excel(x):
     y = date.today().isoformat()
     y = datetime.datetime.strptime(y, '%Y-%m-%d')
     y = y.strftime('%d_%m_%Y')
-    workbook = xlsxwriter.Workbook(os.path.dirname(os.path.abspath(__file__))+'/Статистика за месяц {}.xlsx'.format(y))
+    ask = fd.asksaveasfilename(filetypes = (('Excel', '*.xlsx'),), defaultextension=".xlsx")
+    workbook = xlsxwriter.Workbook(ask)
     worksheet = workbook.add_worksheet()
 
     bold = workbook.add_format({'bold' : True})
@@ -1975,7 +1977,8 @@ def year_excel():
     y = datetime.datetime.strptime(y, '%Y-%m-%d')
     y = y.strftime('%d_%m_%Y')
     z = date.today().replace(day=31,month=12).isoformat()
-    workbook = xlsxwriter.Workbook(os.path.dirname(os.path.abspath(__file__))+'/Статистика за год {}.xlsx'.format(y))
+    ask = fd.asksaveasfilename(filetypes = (('Excel', '*.xlsx'),), defaultextension=".xlsx")
+    workbook = xlsxwriter.Workbook(ask)
     worksheet = workbook.add_worksheet()
 
     bold = workbook.add_format({'bold' : True})
@@ -2027,7 +2030,8 @@ def lub_period_excel(self):
     y1 = datetime.datetime.strptime(y, '%d.%m.%Y')
     y1 = y1.strftime('%d_%m_%Y')
 
-    workbook = xlsxwriter.Workbook(os.path.dirname(os.path.abspath(__file__))+'/Статистика с {0} по {1} .xlsx'.format(x1,y1))
+    ask = fd.asksaveasfilename(filetypes = (('Excel', '*.xlsx'),), defaultextension=".xlsx")
+    workbook = xlsxwriter.Workbook(ask)
     worksheet = workbook.add_worksheet()
 
     bold = workbook.add_format({'bold' : True})
@@ -2105,7 +2109,9 @@ def excel_uchet_reg():
     y = date.today().isoformat()
     y = datetime.datetime.strptime(y, '%Y-%m-%d')
     y1 = y.strftime('%d_%m_%Y')
-    workbook = xlsxwriter.Workbook(os.path.dirname(os.path.abspath(__file__))+'/Учёт состава читателей {}.xlsx'.format(y1))
+
+    ask = fd.asksaveasfilename(filetypes = (('Excel', '*.xlsx'),), defaultextension=".xlsx")
+    workbook = xlsxwriter.Workbook(ask)
     worksheet = workbook.add_worksheet()
 
     bold = workbook.add_format({'bold' : True})
@@ -2220,7 +2226,9 @@ def uchet_book():
     y = date.today().isoformat()
     y = datetime.datetime.strptime(y, '%Y-%m-%d')
     y1 = y.strftime('%d_%m_%Y')
-    workbook = xlsxwriter.Workbook(os.path.dirname(os.path.abspath(__file__))+'/Учёт выдачи книг {}.xlsx'.format(y1))
+
+    ask = fd.asksaveasfilename(filetypes = (('Excel', '*.xlsx'),), defaultextension=".xlsx")
+    workbook = xlsxwriter.Workbook(ask)
     worksheet = workbook.add_worksheet()
 
     bold = workbook.add_format({'bold' : True})
