@@ -1377,23 +1377,24 @@ def delete_lc(self):
 
 
 def search(self):
-    self.table.delete(*self.table.get_children())
     search = self.search.get()
-    if len(search) > 1:
-        search = search.lower().title()
-    self.search.delete('0', 'end')
-    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
-    cur = conn.cursor()
+    if search != 'Поиск':
+        self.table.delete(*self.table.get_children())
+        if len(search) > 1:
+            search = search.lower().title()
+        self.search.delete('0', 'end')
+        conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
+        cur = conn.cursor()
 
-    #Вывовд всех учеников
-    cur.execute("SELECT * FROM PROFILE WHERE FIO LIKE '%{0}%' OR '{0}%' OR '%{0}'".format(search))
-    rows = cur.fetchall()
-    for row in rows:
-        db = row[1]
-        db = datetime.datetime.strptime(db, '%Y-%m-%d')
-        db = db.strftime('%d.%m.%Y')
-        row = (row[0],db, row[2], row[3], row[4], row[5])
-        self.table.insert("" , tk.END ,text=row[0], values=row[1:])
+        #Вывовд всех учеников
+        cur.execute("SELECT * FROM PROFILE WHERE FIO LIKE '%{0}%' OR '{0}%' OR '%{0}'".format(search))
+        rows = cur.fetchall()
+        for row in rows:
+            db = row[1]
+            db = datetime.datetime.strptime(db, '%Y-%m-%d')
+            db = db.strftime('%d.%m.%Y')
+            row = (row[0],db, row[2], row[3], row[4], row[5])
+            self.table.insert("" , tk.END ,text=row[0], values=row[1:])
 
 def search_book(self):
     self.book_table.delete(*self.book_table.get_children())
