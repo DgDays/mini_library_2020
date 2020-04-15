@@ -1929,47 +1929,48 @@ def month_excel(x):
     y = datetime.datetime.strptime(y, '%Y-%m-%d')
     y = y.strftime('%d_%m_%Y')
     ask = fd.asksaveasfilename(filetypes = (('Excel', '*.xlsx'),), defaultextension=".xlsx")
-    workbook = xlsxwriter.Workbook(ask)
-    worksheet = workbook.add_worksheet()
+    if ask != '':
+        workbook = xlsxwriter.Workbook(ask)
+        worksheet = workbook.add_worksheet()
 
-    bold = workbook.add_format({'bold' : True})
+        bold = workbook.add_format({'bold' : True})
 
-    worksheet.write('A1','ФИО', bold)
-    worksheet.write('B1','Дата рождения', bold)
-    worksheet.write('C1','Телефон', bold)
-    worksheet.write('D1','Дата взятия книги', bold)
-    worksheet.write('E1','Дата сдачи книги', bold)
-    worksheet.write('F1','Автор', bold)
-    worksheet.write('G1','Книга', bold)
-    worksheet.write('H1','Статус', bold)
-    worksheet.write('I1','Кол-во', bold)
+        worksheet.write('A1','ФИО', bold)
+        worksheet.write('B1','Дата рождения', bold)
+        worksheet.write('C1','Телефон', bold)
+        worksheet.write('D1','Дата взятия книги', bold)
+        worksheet.write('E1','Дата сдачи книги', bold)
+        worksheet.write('F1','Автор', bold)
+        worksheet.write('G1','Книга', bold)
+        worksheet.write('H1','Статус', bold)
+        worksheet.write('I1','Кол-во', bold)
 
-    row = 1
-    col = 0
+        row = 1
+        col = 0
 
-    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db") 
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM LC WHERE DI BETWEEN (?) and (?)",x)
-    rows = cur.fetchall()
-    for fio,db,phone,di,dc,aut,book,stat, colvo in (rows):
-        worksheet.write(row,col,fio)
-        db = datetime.datetime.strptime(db, '%Y-%m-%d')
-        db = db.strftime('%d.%m.%Y')
-        worksheet.write(row,col+1,db)
-        worksheet.write(row,col+2,phone)
-        di = datetime.datetime.strptime(di, '%Y-%m-%d')
-        di = di.strftime('%d.%m.%Y')
-        worksheet.write(row,col+3,di)
-        dc = datetime.datetime.strptime(dc, '%Y-%m-%d')
-        dc = dc.strftime('%d.%m.%Y')
-        worksheet.write(row,col+4,dc)
-        worksheet.write(row,col+5,aut)
-        worksheet.write(row,col+6,book)
-        worksheet.write(row,col+7,stat)
-        worksheet.write(row,col+8,colvo)
-        row+=1
-    conn.commit()
-    workbook.close()
+        conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db") 
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM LC WHERE DI BETWEEN (?) and (?)",x)
+        rows = cur.fetchall()
+        for fio,db,phone,di,dc,aut,book,stat, colvo in (rows):
+            worksheet.write(row,col,fio)
+            db = datetime.datetime.strptime(db, '%Y-%m-%d')
+            db = db.strftime('%d.%m.%Y')
+            worksheet.write(row,col+1,db)
+            worksheet.write(row,col+2,phone)
+            di = datetime.datetime.strptime(di, '%Y-%m-%d')
+            di = di.strftime('%d.%m.%Y')
+            worksheet.write(row,col+3,di)
+            dc = datetime.datetime.strptime(dc, '%Y-%m-%d')
+            dc = dc.strftime('%d.%m.%Y')
+            worksheet.write(row,col+4,dc)
+            worksheet.write(row,col+5,aut)
+            worksheet.write(row,col+6,book)
+            worksheet.write(row,col+7,stat)
+            worksheet.write(row,col+8,colvo)
+            row+=1
+        conn.commit()
+        workbook.close()
 
 def year_excel():
     x = date.today().replace(day=1,month=1).isoformat()
@@ -1978,47 +1979,48 @@ def year_excel():
     y = y.strftime('%d_%m_%Y')
     z = date.today().replace(day=31,month=12).isoformat()
     ask = fd.asksaveasfilename(filetypes = (('Excel', '*.xlsx'),), defaultextension=".xlsx")
-    workbook = xlsxwriter.Workbook(ask)
-    worksheet = workbook.add_worksheet()
+    if ask != '':
+        workbook = xlsxwriter.Workbook(ask)
+        worksheet = workbook.add_worksheet()
 
-    bold = workbook.add_format({'bold' : True})
+        bold = workbook.add_format({'bold' : True})
 
-    worksheet.write('A1','ФИО', bold)
-    worksheet.write('B1','Дата рождения', bold)
-    worksheet.write('C1','Телефон', bold)
-    worksheet.write('D1','Дата взятия книги', bold)
-    worksheet.write('E1','Дата сдачи книги', bold)
-    worksheet.write('F1','Автор', bold)
-    worksheet.write('G1','Книга', bold)
-    worksheet.write('H1','Статус', bold)
-    worksheet.write('I1','Кол-во', bold)
+        worksheet.write('A1','ФИО', bold)
+        worksheet.write('B1','Дата рождения', bold)
+        worksheet.write('C1','Телефон', bold)
+        worksheet.write('D1','Дата взятия книги', bold)
+        worksheet.write('E1','Дата сдачи книги', bold)
+        worksheet.write('F1','Автор', bold)
+        worksheet.write('G1','Книга', bold)
+        worksheet.write('H1','Статус', bold)
+        worksheet.write('I1','Кол-во', bold)
 
-    row = 1
-    col = 0
+        row = 1
+        col = 0
 
-    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db") 
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM LC WHERE DI BETWEEN (?) and (?)",(x,z))
-    rows = cur.fetchall()
-    for fio,db,phone,di,dc,aut,book,stat, colvo in (rows):
-        worksheet.write(row,col,fio)
-        db = datetime.datetime.strptime(db, '%Y-%m-%d')
-        db = db.strftime('%d.%m.%Y')
-        worksheet.write(row,col+1,db)
-        worksheet.write(row,col+2,phone)
-        di = datetime.datetime.strptime(di, '%Y-%m-%d')
-        di = di.strftime('%d.%m.%Y')
-        worksheet.write(row,col+3,di)
-        dc = datetime.datetime.strptime(dc, '%Y-%m-%d')
-        dc = dc.strftime('%d.%m.%Y')
-        worksheet.write(row,col+4,dc)
-        worksheet.write(row,col+5,aut)
-        worksheet.write(row,col+6,book)
-        worksheet.write(row,col+7,stat)
-        worksheet.write(row,col+8,colvo)
-        row+=1
-    conn.commit()
-    workbook.close()
+        conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db") 
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM LC WHERE DI BETWEEN (?) and (?)",(x,z))
+        rows = cur.fetchall()
+        for fio,db,phone,di,dc,aut,book,stat, colvo in (rows):
+            worksheet.write(row,col,fio)
+            db = datetime.datetime.strptime(db, '%Y-%m-%d')
+            db = db.strftime('%d.%m.%Y')
+            worksheet.write(row,col+1,db)
+            worksheet.write(row,col+2,phone)
+            di = datetime.datetime.strptime(di, '%Y-%m-%d')
+            di = di.strftime('%d.%m.%Y')
+            worksheet.write(row,col+3,di)
+            dc = datetime.datetime.strptime(dc, '%Y-%m-%d')
+            dc = dc.strftime('%d.%m.%Y')
+            worksheet.write(row,col+4,dc)
+            worksheet.write(row,col+5,aut)
+            worksheet.write(row,col+6,book)
+            worksheet.write(row,col+7,stat)
+            worksheet.write(row,col+8,colvo)
+            row+=1
+        conn.commit()
+        workbook.close()
 
 def lub_period_excel(self):
 
@@ -2031,52 +2033,53 @@ def lub_period_excel(self):
     y1 = y1.strftime('%d_%m_%Y')
 
     ask = fd.asksaveasfilename(filetypes = (('Excel', '*.xlsx'),), defaultextension=".xlsx")
-    workbook = xlsxwriter.Workbook(ask)
-    worksheet = workbook.add_worksheet()
+    if ask != '':
+        workbook = xlsxwriter.Workbook(ask)
+        worksheet = workbook.add_worksheet()
 
-    bold = workbook.add_format({'bold' : True})
+        bold = workbook.add_format({'bold' : True})
 
-    worksheet.write('A1','ФИО', bold)
-    worksheet.write('B1','Дата рождения', bold)
-    worksheet.write('C1','Телефон', bold)
-    worksheet.write('D1','Дата взятия книги', bold)
-    worksheet.write('E1','Дата сдачи книги', bold)
-    worksheet.write('F1','Автор', bold)
-    worksheet.write('G1','Книга', bold)
-    worksheet.write('H1','Статус', bold)
-    worksheet.write('I1','Кол-во', bold)
+        worksheet.write('A1','ФИО', bold)
+        worksheet.write('B1','Дата рождения', bold)
+        worksheet.write('C1','Телефон', bold)
+        worksheet.write('D1','Дата взятия книги', bold)
+        worksheet.write('E1','Дата сдачи книги', bold)
+        worksheet.write('F1','Автор', bold)
+        worksheet.write('G1','Книга', bold)
+        worksheet.write('H1','Статус', bold)
+        worksheet.write('I1','Кол-во', bold)
 
-    row = 1
-    col = 0
+        row = 1
+        col = 0
 
-    x = datetime.datetime.strptime(x, '%d.%m.%Y')
-    x = x.strftime('%Y-%m-%d')
-    y = datetime.datetime.strptime(y, '%d.%m.%Y')
-    y = y.strftime('%Y-%m-%d')
+        x = datetime.datetime.strptime(x, '%d.%m.%Y')
+        x = x.strftime('%Y-%m-%d')
+        y = datetime.datetime.strptime(y, '%d.%m.%Y')
+        y = y.strftime('%Y-%m-%d')
 
-    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db") 
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM LC WHERE DI BETWEEN (?) and (?)",(x,y))
-    rows = cur.fetchall()
-    for fio,db,phone,di,dc,aut,book,stat,colvo in (rows):
-        worksheet.write(row,col,fio)
-        db = datetime.datetime.strptime(db, '%Y-%m-%d')
-        db = db.strftime('%d.%m.%Y')
-        worksheet.write(row,col+1,db)
-        worksheet.write(row,col+2,phone)
-        di = datetime.datetime.strptime(di, '%Y-%m-%d')
-        di = di.strftime('%d.%m.%Y')
-        worksheet.write(row,col+3,di)
-        dc = datetime.datetime.strptime(dc, '%Y-%m-%d')
-        dc = dc.strftime('%d.%m.%Y')
-        worksheet.write(row,col+4,dc)
-        worksheet.write(row,col+5,aut)
-        worksheet.write(row,col+6,book)
-        worksheet.write(row,col+7,stat)
-        worksheet.write(row,col+8,colvo)
-        row+=1
-    conn.commit()
-    workbook.close()
+        conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db") 
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM LC WHERE DI BETWEEN (?) and (?)",(x,y))
+        rows = cur.fetchall()
+        for fio,db,phone,di,dc,aut,book,stat,colvo in (rows):
+            worksheet.write(row,col,fio)
+            db = datetime.datetime.strptime(db, '%Y-%m-%d')
+            db = db.strftime('%d.%m.%Y')
+            worksheet.write(row,col+1,db)
+            worksheet.write(row,col+2,phone)
+            di = datetime.datetime.strptime(di, '%Y-%m-%d')
+            di = di.strftime('%d.%m.%Y')
+            worksheet.write(row,col+3,di)
+            dc = datetime.datetime.strptime(dc, '%Y-%m-%d')
+            dc = dc.strftime('%d.%m.%Y')
+            worksheet.write(row,col+4,dc)
+            worksheet.write(row,col+5,aut)
+            worksheet.write(row,col+6,book)
+            worksheet.write(row,col+7,stat)
+            worksheet.write(row,col+8,colvo)
+            row+=1
+        conn.commit()
+        workbook.close()
 
 def month(x):
     if x == '01':
@@ -2111,71 +2114,82 @@ def excel_uchet_reg():
     y1 = y.strftime('%d_%m_%Y')
 
     ask = fd.asksaveasfilename(filetypes = (('Excel', '*.xlsx'),), defaultextension=".xlsx")
-    workbook = xlsxwriter.Workbook(ask)
-    worksheet = workbook.add_worksheet()
+    if ask != '':
+        workbook = xlsxwriter.Workbook(ask)
+        worksheet = workbook.add_worksheet()
 
-    bold = workbook.add_format({'bold' : True})
-    bold_wrap = workbook.add_format({'bold' : True})
-    bold_wrap.set_text_wrap()
+        bold = workbook.add_format({'bold' : True})
+        bold_wrap = workbook.add_format({'bold' : True})
+        bold_wrap.set_text_wrap()
 
-    mon = y.strftime('%m')
-    mon = month(mon)
-    year = y.strftime('%Y')
+        mon = y.strftime('%m')
+        mon = month(mon)
+        year = y.strftime('%Y')
 
-    worksheet.merge_range('A1:P1', 'Учёт выдачи книг, брошюр и журналов за ____{0}____{1}г. '.format(mon,year), bold)
-    worksheet.merge_range('A2:A3', 'Числа месяца', bold_wrap)
-    worksheet.merge_range('B2:B3', 'Всего', bold)
-    worksheet.merge_range('C2:O2', 'В том числе', bold)
-    worksheet.write('C3', '1 кл.', bold)
-    worksheet.write('D3', '2 кл.', bold)
-    worksheet.write('E3', '3 кл.', bold)
-    worksheet.write('F3', '4 кл.', bold)
-    worksheet.write('G3', '5 кл.', bold)
-    worksheet.write('H3', '6 кл.', bold)
-    worksheet.write('I3', '7 кл.', bold)
-    worksheet.write('J3', '8 кл.', bold)
-    worksheet.write('K3', '9 кл.', bold)
-    worksheet.write('L3', '10 кл.', bold)
-    worksheet.write('M3', '11 кл.', bold)
-    worksheet.write('N3', 'Проч', bold)
-    worksheet.write('O3', 'Учителя', bold)
-    worksheet.write('P3', 'Число посещений', bold_wrap)
-    x = 1
-    row = 3
-    col = 0
-    while x <= 16:
-        worksheet.write(row,col, x, bold)
-        x+=1
-        col+=1
+        worksheet.merge_range('A1:P1', 'Учёт выдачи книг, брошюр и журналов за ____{0}____{1}г. '.format(mon,year), bold)
+        worksheet.merge_range('A2:A3', 'Числа месяца', bold_wrap)
+        worksheet.merge_range('B2:B3', 'Всего', bold)
+        worksheet.merge_range('C2:O2', 'В том числе', bold)
+        worksheet.write('C3', '1 кл.', bold)
+        worksheet.write('D3', '2 кл.', bold)
+        worksheet.write('E3', '3 кл.', bold)
+        worksheet.write('F3', '4 кл.', bold)
+        worksheet.write('G3', '5 кл.', bold)
+        worksheet.write('H3', '6 кл.', bold)
+        worksheet.write('I3', '7 кл.', bold)
+        worksheet.write('J3', '8 кл.', bold)
+        worksheet.write('K3', '9 кл.', bold)
+        worksheet.write('L3', '10 кл.', bold)
+        worksheet.write('M3', '11 кл.', bold)
+        worksheet.write('N3', 'Проч', bold)
+        worksheet.write('O3', 'Учителя', bold)
+        worksheet.write('P3', 'Число посещений', bold_wrap)
+        x = 1
+        row = 3
+        col = 0
+        while x <= 16:
+            worksheet.write(row,col, x, bold)
+            x+=1
+            col+=1
 
-    worksheet.write('A5', 'Состоит на начало месяца', bold_wrap)
+        worksheet.write('A5', 'Состоит на начало месяца', bold_wrap)
 
-    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db") 
-    cur = conn.cursor()
+        conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db") 
+        cur = conn.cursor()
     
-    chisl = (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31)
+        chisl = (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31)
 
-    last = first_and_last_day()
-    last_day = datetime.datetime.strptime(last[1], '%Y-%m-%d')
-    last_day = int(last_day.strftime('%d'))
+        last = first_and_last_day()
+        last_day = datetime.datetime.strptime(last[1], '%Y-%m-%d')
+        last_day = int(last_day.strftime('%d'))
 
-    first_day = y.replace(day=1)
+        first_day = y.replace(day=1)
 
-    now_chisl = int(first_day.strftime('%d'))
-    cl = 1
-    ro = 5
-    column = 0
-    vsego = 0
-    vsego_it = 0
+        now_chisl = int(first_day.strftime('%d'))
+        cl = 1
+        ro = 5
+        column = 0
+        vsego = 0
+        vsego_it = 0
 
-    while (now_chisl <= last_day) and (now_chisl in chisl):
-        worksheet.write(ro,column, now_chisl, bold)
-        date_n = first_day.replace(day=now_chisl)
-        date_n = date_n.strftime('%Y-%m-%d')
-        column +=1
-        col_vseg = column
-        while cl <= 11:
-            cur.execute("SELECT COUNT(*) FROM PROFILE WHERE DREG = (?) AND CLIENT =(?) AND CLA = (?)",(date_n,'Ученик',cl))
+        while (now_chisl <= last_day) and (now_chisl in chisl):
+            worksheet.write(ro,column, now_chisl, bold)
+            date_n = first_day.replace(day=now_chisl)
+            date_n = date_n.strftime('%Y-%m-%d')
+            column +=1
+            col_vseg = column
+            while cl <= 11:
+                cur.execute("SELECT COUNT(*) FROM PROFILE WHERE DREG = (?) AND CLIENT =(?) AND CLA = (?)",(date_n,'Ученик',cl))
+                rows = cur.fetchall()
+                for row in rows:
+                    if row[0] != 0:
+                        worksheet.write(ro,column+1, row[0])
+                    else:
+                        worksheet.write(ro,column+1, '')
+                    column+=1
+                    cl+=1
+                    vsego += int(row[0])
+            cur.execute("SELECT COUNT(*) FROM PROFILE WHERE DREG = (?) AND CLIENT =(?)",(date_n,'Другой посетитель'))
             rows = cur.fetchall()
             for row in rows:
                 if row[0] != 0:
@@ -2185,41 +2199,31 @@ def excel_uchet_reg():
                 column+=1
                 cl+=1
                 vsego += int(row[0])
-        cur.execute("SELECT COUNT(*) FROM PROFILE WHERE DREG = (?) AND CLIENT =(?)",(date_n,'Другой посетитель'))
-        rows = cur.fetchall()
-        for row in rows:
-            if row[0] != 0:
-                worksheet.write(ro,column+1, row[0])
-            else:
-                worksheet.write(ro,column+1, '')
-            column+=1
-            cl+=1
-            vsego += int(row[0])
-        cur.execute("SELECT COUNT(*) FROM PROFILE WHERE DREG = (?) AND CLIENT =(?)",(date_n,'Учитель'))
-        rows = cur.fetchall()
-        for row in rows:
-            if row[0] != 0:
-                worksheet.write(ro,column+1, row[0])
-            else:
-                worksheet.write(ro,column+1, '')
-            column+=1
-            cl+=1
-            vsego += int(row[0])
-        worksheet.write(ro,col_vseg, vsego, bold)
-        vsego_it += vsego
-        vsego = 0
+            cur.execute("SELECT COUNT(*) FROM PROFILE WHERE DREG = (?) AND CLIENT =(?)",(date_n,'Учитель'))
+            rows = cur.fetchall()
+            for row in rows:
+                if row[0] != 0:
+                    worksheet.write(ro,column+1, row[0])
+                else:
+                    worksheet.write(ro,column+1, '')
+                column+=1
+                cl+=1
+                vsego += int(row[0])
+            worksheet.write(ro,col_vseg, vsego, bold)
+            vsego_it += vsego
+            vsego = 0
+            column = 0
+            ro += 1
+            cl = 1
+            now_chisl+=1
+        worksheet.write(ro,column, 'Всего за месяц', bold_wrap)
+        column += 1
+        worksheet.write(ro,column, vsego_it, bold)
         column = 0
         ro += 1
-        cl = 1
-        now_chisl+=1
-    worksheet.write(ro,column, 'Всего за месяц', bold_wrap)
-    column += 1
-    worksheet.write(ro,column, vsego_it, bold)
-    column = 0
-    ro += 1
-    worksheet.write(ro,column, 'Итого с начала', bold_wrap)
-    conn.commit()
-    workbook.close()
+        worksheet.write(ro,column, 'Итого с начала', bold_wrap)
+        conn.commit()
+        workbook.close()
 
 
 def uchet_book():
@@ -2228,94 +2232,95 @@ def uchet_book():
     y1 = y.strftime('%d_%m_%Y')
 
     ask = fd.asksaveasfilename(filetypes = (('Excel', '*.xlsx'),), defaultextension=".xlsx")
-    workbook = xlsxwriter.Workbook(ask)
-    worksheet = workbook.add_worksheet()
+    if ask != '':
+        workbook = xlsxwriter.Workbook(ask)
+        worksheet = workbook.add_worksheet()
 
-    bold = workbook.add_format({'bold' : True})
-    bold_wrap = workbook.add_format({'bold' : True})
-    bold_wrap.set_text_wrap()
+        bold = workbook.add_format({'bold' : True})
+        bold_wrap = workbook.add_format({'bold' : True})
+        bold_wrap.set_text_wrap()
 
-    mon = y.strftime('%m')
-    mon = month(mon)
-    year = y.strftime('%Y')
+        mon = y.strftime('%m')
+        mon = month(mon)
+        year = y.strftime('%Y')
 
-    worksheet.merge_range('A1:R1', 'Учёт выдачи книг, брошюр и журналов за ____{0}____{1}г. '.format(mon,year), bold)
-    worksheet.merge_range('A2:A3', 'Числа месяца', bold_wrap)
-    worksheet.merge_range('B2:B3', 'Всего выдано', bold_wrap)
-    worksheet.merge_range('C2:E2', 'ОПЛ', bold)
-    worksheet.merge_range('F2:G2', 'ЕНЛ', bold)
-    worksheet.write('C3','1, 6, 86, 87', bold_wrap)
-    worksheet.write('D3','9', bold)
-    worksheet.write('E3','74', bold)
-    worksheet.write('F3','2', bold)
-    worksheet.write('G3','5', bold)
-    worksheet.merge_range('H2:H3', '3', bold)
-    worksheet.merge_range('I2:I3', '4', bold)
-    worksheet.merge_range('J2:J3', '85', bold)
-    worksheet.merge_range('K2:K3', '75', bold)
-    worksheet.merge_range('L2:L3', '81, 82, 83', bold_wrap)
-    worksheet.merge_range('M2:M3', '84', bold)
-    worksheet.merge_range('N2:N3', 'Д', bold)
-    worksheet.merge_range('O2:O3', 'Электр. изд', bold_wrap)
-    worksheet.merge_range('P2:P3', 'Учебники', bold_wrap)
-    worksheet.merge_range('Q2:Q3', 'Периодика', bold_wrap)
-    worksheet.merge_range('R2:R3', 'Справки', bold_wrap)
+        worksheet.merge_range('A1:R1', 'Учёт выдачи книг, брошюр и журналов за ____{0}____{1}г. '.format(mon,year), bold)
+        worksheet.merge_range('A2:A3', 'Числа месяца', bold_wrap)
+        worksheet.merge_range('B2:B3', 'Всего выдано', bold_wrap)
+        worksheet.merge_range('C2:E2', 'ОПЛ', bold)
+        worksheet.merge_range('F2:G2', 'ЕНЛ', bold)
+        worksheet.write('C3','1, 6, 86, 87', bold_wrap)
+        worksheet.write('D3','9', bold)
+        worksheet.write('E3','74', bold)
+        worksheet.write('F3','2', bold)
+        worksheet.write('G3','5', bold)
+        worksheet.merge_range('H2:H3', '3', bold)
+        worksheet.merge_range('I2:I3', '4', bold)
+        worksheet.merge_range('J2:J3', '85', bold)
+        worksheet.merge_range('K2:K3', '75', bold)
+        worksheet.merge_range('L2:L3', '81, 82, 83', bold_wrap)
+        worksheet.merge_range('M2:M3', '84', bold)
+        worksheet.merge_range('N2:N3', 'Д', bold)
+        worksheet.merge_range('O2:O3', 'Электр. изд', bold_wrap)
+        worksheet.merge_range('P2:P3', 'Учебники', bold_wrap)
+        worksheet.merge_range('Q2:Q3', 'Периодика', bold_wrap)
+        worksheet.merge_range('R2:R3', 'Справки', bold_wrap)
     
-    row = 3
-    column = 0
-    x = 1
-    while x<=18:
-        worksheet.write(row,column,x, bold)
-        x+=1
-        column+=1
+        row = 3
+        column = 0
+        x = 1
+        while x<=18:
+            worksheet.write(row,column,x, bold)
+            x+=1
+            column+=1
     
-    row +=1
-    column=0
-    worksheet.write(row,column,'Кол-во предыдущих книговыд.', bold_wrap)
-    ro = row + 1
-    
-
-    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db") 
-    cur = conn.cursor()
-    
-    chisl = (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31)
-
-    last = first_and_last_day()
-    last_day = datetime.datetime.strptime(last[1], '%Y-%m-%d')
-    last_day = int(last_day.strftime('%d'))
-
-    first_day = y.replace(day=1)
-
-    now_chisl = int(first_day.strftime('%d'))
-
-    vsego = 0
-
-    while (now_chisl <= last_day) and (now_chisl in chisl):
-        worksheet.write(ro,column, now_chisl, bold)
-        date_n = first_day.replace(day=now_chisl)
-        date_n = date_n.strftime('%Y-%m-%d')
-        column +=1
-        cur.execute("SELECT COUNT(*) FROM LC WHERE DI = (?)",(date_n,))
-        rows = cur.fetchall()
-        for row in rows:
-            if row[0] != 0:
-                worksheet.write(ro,column, row[0], bold)
-            else:
-                worksheet.write(ro,column, '', bold)
-            vsego+=row[0]
-        ro+=1
+        row +=1
         column=0
-        now_chisl+=1
-        
-    worksheet.write(ro, column, 'Всего за месяц', bold_wrap)
-    column+=1
-    worksheet.write(ro, column, vsego, bold)
-    column=0
-    ro+=1
-    worksheet.write(ro, column, 'Итого с начала года', bold_wrap)
+        worksheet.write(row,column,'Кол-во предыдущих книговыд.', bold_wrap)
+        ro = row + 1
+    
 
-    conn.commit()
-    workbook.close()
+        conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db") 
+        cur = conn.cursor()
+    
+        chisl = (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31)
+
+        last = first_and_last_day()
+        last_day = datetime.datetime.strptime(last[1], '%Y-%m-%d')
+        last_day = int(last_day.strftime('%d'))
+
+        first_day = y.replace(day=1)
+
+        now_chisl = int(first_day.strftime('%d'))
+
+        vsego = 0
+
+        while (now_chisl <= last_day) and (now_chisl in chisl):
+            worksheet.write(ro,column, now_chisl, bold)
+            date_n = first_day.replace(day=now_chisl)
+            date_n = date_n.strftime('%Y-%m-%d')
+            column +=1
+            cur.execute("SELECT COUNT(*) FROM LC WHERE DI = (?)",(date_n,))
+            rows = cur.fetchall()
+            for row in rows:
+                if row[0] != 0:
+                    worksheet.write(ro,column, row[0], bold)
+                else:
+                    worksheet.write(ro,column, '', bold)
+                vsego+=row[0]
+            ro+=1
+            column=0
+            now_chisl+=1
+        
+        worksheet.write(ro, column, 'Всего за месяц', bold_wrap)
+        column+=1
+        worksheet.write(ro, column, vsego, bold)
+        column=0
+        ro+=1
+        worksheet.write(ro, column, 'Итого с начала года', bold_wrap)
+
+        conn.commit()
+        workbook.close()
 
 #================================== Изменение темы ================================
 def style_change(var_style):
