@@ -977,7 +977,9 @@ class Information(tk.Toplevel):
 
         #Иконка
         self.iconbitmap(os.path.dirname(os.path.abspath(__file__))+"/ask.ico")
-        threading.Thread(target = easter4).start()
+        global easter_egg
+        if easter_egg == 3:
+            threading.Thread(target = easter4, args = [self,]).start()
 
 
 #================================ Работа с БД ================================
@@ -2372,13 +2374,11 @@ def easter3():
     else:
         easter_egg = 0
 
-def easter4():
-    global easter_egg
-    if easter_egg == 3:
-        filename = os.path.dirname(os.path.abspath(__file__))+"/imper.mp3"
-        music = pyglet.media.load(filename)
-        music.play()
-        pyglet.app.run()
+def easter4(self):
+    filename = os.path.dirname(os.path.abspath(__file__))+"/imper.mp3"
+    music = pyglet.media.load(filename)
+    music.play()
+    pyglet.app.run()
 
 def exit_main():
     threading.Thread(target = music_stop).start()
