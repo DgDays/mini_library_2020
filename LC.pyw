@@ -161,7 +161,7 @@ class Main(tk.Tk):
         file_sohranit.add_command(label = "Учёт регистраций", command = lambda: threading.Thread(target = excel_uchet_reg).start())
         file_sohranit.add_command(label = "Учёт книг", command = lambda: threading.Thread(target = uchet_book).start())
 
-        style_menu = tk.Menu(mainmenu, tearoff = 0)
+        style_menu = tk.Menu(mainmenu, tearoff = 0, selectcolor = 'green')
         style_menu.add_radiobutton(label = 'Breeze - Светлая', variable=var_style, value='breeze', command = lambda: style_change(var_style.get()))
         style_menu.add_radiobutton(label = 'Breeze - Тёмная', variable=var_style, value='nightbreeze', command = lambda: style_change(var_style.get()))
         style_menu.add_radiobutton(label = 'Black', variable=var_style, value='black', command = lambda: style_change(var_style.get()))
