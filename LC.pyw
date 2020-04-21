@@ -149,8 +149,6 @@ class Main(tk.Tk):
         style.configure('TMenubutton', font=('Arial',11))
 
         #================================ Меню ================================
-        mainmenu = tk.Menu(self)
-
         self.fr = ttk.Frame(self)
         self.fr.pack(fill='x')
 
@@ -185,20 +183,13 @@ class Main(tk.Tk):
 
         btn_inf = ttk.Menubutton(self.fr, text='Информация')
         
-        file_infa = tk.Menu(mainmenu, tearoff = 0) # Запретить отделение
+        file_infa = tk.Menu(btn_inf, tearoff = 0) # Запретить отделение
         file_infa.add_command(label = "Просмотреть справку", command = lambda: Spravka())
         file_infa.add_separator()
         file_infa.add_command(label = "О программе", command = lambda: Information())
 
         btn_inf.config(menu=file_infa)
         btn_inf.grid(row=0, column=4, padx=5, pady=5)
-
-        mainmenu.add_cascade(label = "Сохранить в Excel", menu = file_sohranit) # Добавляет пункт "Сохранить в отчёт" в меню
-        mainmenu.add_command(label = "Учёт книг", command = lambda: self_book_open(self))
-        mainmenu.add_command(label = 'Уведомления', command= lambda: self_not_open(self))
-        mainmenu.add_cascade(label = 'Темы', menu = style_menu)
-        mainmenu.add_cascade(label = "Информация", menu = file_infa) # Добавляет пункт "Информация" в меню
-          
         
         #================================= Поиск ====================================
         self.frame_search1 = ttk.Frame(self)
