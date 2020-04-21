@@ -146,13 +146,17 @@ class Main(tk.Tk):
         style.configure("Treeview.Heading", font=('Arial', 11))# Изменение шрифта столбцов в Treeview
         style.configure('Treeview', font=('Arial',11))
         style.configure('TButton', font=('Arial',11))
+        style.configure('TMenubutton', font=('Arial',11))
 
         #================================ Меню ================================
         mainmenu = tk.Menu(self)
 
-        self.config(menu = mainmenu) # Добавляет меню в главное окно
+        self.fr = ttk.Frame(self)
+        self.fr.pack(fill='x')
 
-        file_sohranit = tk.Menu(mainmenu, tearoff = 0) # Запретить отделение
+        btn_file = ttk.Menubutton(self.fr, text='Файл')
+
+        file_sohranit = tk.Menu(btn_file, tearoff = 0) # Запретить отделение
         first_and_last = first_and_last_day()
         file_sohranit.add_command(label = "Статистика за месяц", command = lambda: threading.Thread(target = month_excel, args = [first_and_last,]).start())
         file_sohranit.add_command(label = "Статистика за год", command = lambda: threading.Thread(target = year_excel).start())  
@@ -161,25 +165,33 @@ class Main(tk.Tk):
         file_sohranit.add_command(label = "Учёт регистраций", command = lambda: threading.Thread(target = excel_uchet_reg).start())
         file_sohranit.add_command(label = "Учёт книг", command = lambda: threading.Thread(target = uchet_book).start())
 
-        style_menu = tk.Menu(mainmenu, tearoff = 0, selectcolor = 'green')
+        btn_file.config(menu=file_sohranit)
+        btn_file.grid(row=0, column=0, padx=5, pady=5)
+
+        btn_style = ttk.Menubutton(self.fr, text='Темы')
+
+        style_menu = tk.Menu(btn_style, tearoff = 0, selectcolor = 'green')
         style_menu.add_radiobutton(label = 'Breeze - Светлая', variable=var_style, value='breeze', command = lambda: style_change(var_style.get()))
         style_menu.add_radiobutton(label = 'Breeze - Тёмная', variable=var_style, value='nightbreeze', command = lambda: style_change(var_style.get()))
-        style_menu.add_radiobutton(label = 'Black', variable=var_style, value='black', command = lambda: style_change(var_style.get()))
-        style_menu.add_radiobutton(label = 'Smog', variable=var_style, value='smog', command = lambda: style_change(var_style.get()))
-        style_menu.add_radiobutton(label = 'Aquativo', variable=var_style, value='aquativo', command = lambda: style_change(var_style.get()))
-        style_menu.add_radiobutton(label = 'Clarlooks', variable=var_style, value='clearlooks', command = lambda: style_change(var_style.get()))
-        style_menu.add_radiobutton(label = 'Elegance', variable=var_style, value='elegance', command = lambda: style_change(var_style.get()))
-        style_menu.add_radiobutton(label = 'Itft1', variable=var_style, value='itft1', command = lambda: style_change(var_style.get()))
-        style_menu.add_radiobutton(label = 'Keramik', variable=var_style, value='keramik', command = lambda: style_change(var_style.get()))
-        style_menu.add_radiobutton(label = 'Kroc', variable=var_style, value='kroc', command = lambda: style_change(var_style.get()))
-        style_menu.add_radiobutton(label = 'Plastik', variable=var_style, value='plastik', command = lambda: style_change(var_style.get()))
-        style_menu.add_radiobutton(label = 'Radiance', variable=var_style, value='radiance', command = lambda: style_change(var_style.get()))
-        style_menu.add_radiobutton(label = 'Winxpblue', variable=var_style, value='winxpblue', command = lambda: style_change(var_style.get()))
+        
+        btn_uch = ttk.Button(self.fr, text='Учёт книг', command = lambda: self_book_open(self))
+        btn_uch.grid(row=0, column=1, padx=5, pady=5)
+
+        btn_not = ttk.Button(self.fr, text='Уведомления', command = lambda: self_not_open(self))
+        btn_not.grid(row=0, column=2, padx=5, pady=5)
+
+        btn_style.config(menu=style_menu)
+        btn_style.grid(row=0, column=3, padx=5, pady=5)
+
+        btn_inf = ttk.Menubutton(self.fr, text='Информация')
         
         file_infa = tk.Menu(mainmenu, tearoff = 0) # Запретить отделение
         file_infa.add_command(label = "Просмотреть справку", command = lambda: Spravka())
         file_infa.add_separator()
         file_infa.add_command(label = "О программе", command = lambda: Information())
+
+        btn_inf.config(menu=file_infa)
+        btn_inf.grid(row=0, column=4, padx=5, pady=5)
 
         mainmenu.add_cascade(label = "Сохранить в Excel", menu = file_sohranit) # Добавляет пункт "Сохранить в отчёт" в меню
         mainmenu.add_command(label = "Учёт книг", command = lambda: self_book_open(self))
