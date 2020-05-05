@@ -53,7 +53,7 @@ class MyTree(ttk.Treeview):
         # Элементам с тегом green назначить зеленый фон, элементам с тегом red назначить красный фон
         self.tag_configure('A', background='green', foreground='white')
         self.tag_configure('B', background='red', foreground='white')
-        self.tag_configure('C', background='yellow')
+        self.tag_configure('C', background='yellow', foreground='black')
 
     def insert(self, parent_node, index, **kwargs):
         '''Назначение тега при добавлении элемента в дерево'''
@@ -484,6 +484,8 @@ class INFO(tk.Toplevel):
         self.info_table.pack(side='left')
         self.fr_watch_both.pack(side='bottom', fill='both')
 
+        self.progress = ttk.Progressbar(self.info_table, mode='indeterminate')
+
         self.profile_menu = tk.Menu(self.info_table, tearoff=0)
 
         self.profile_menu.add_command(label = "Добавить книгу", command= lambda: add_book(self)) 
@@ -667,6 +669,8 @@ class Book(tk.Toplevel):
         self.book_table.heading('AUT', text='Автор(ы)')
         self.book_table.heading('COL', text='Кол-во')
 
+        self.progress = ttk.Progressbar(self.book_table, mode='indeterminate')
+
         self.schbook_menu = tk.Menu(self.book_table, tearoff=0)
 
         self.schbook_menu.add_command(label = "Добавить книги", command= lambda: schbook(self))
@@ -707,6 +711,8 @@ class Book(tk.Toplevel):
         self.book_table1.heading('#0', text='Название')
         self.book_table1.heading('AUT', text='Автор(ы)')
         self.book_table1.heading('COL', text='Кол-во')
+
+        self.progress1 = ttk.Progressbar(self.book_table1, mode='indeterminate')
 
         self.book_menu = tk.Menu(self.book_table1, tearoff=0)
 
@@ -898,6 +904,7 @@ class Not(tk.Toplevel):
 
         threading.Thread(target = update_not, args = [self,]).start()
 
+        self.progress = ttk.Progressbar(self.table, mode='indeterminate')
 
         #Иконка
         self.iconbitmap(os.path.dirname(os.path.abspath(__file__))+"/bell.ico")
@@ -993,6 +1000,7 @@ class Information(tk.Toplevel):
 
 #================================ Работа с БД ================================
 def update_not(self):
+    threading.Thread(target = progressbar_start, args = [self,]).start()
     x = datetime.date.today().isoformat()#Текущая дата в ISO формате
     #Подключение к БД
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
@@ -1006,6 +1014,7 @@ def update_not(self):
     rows = cur.fetchall()
     for row in rows:
         self.table.insert("" , tk.END , values=row)#Вывод в таблицу
+    threading.Thread(target = progressbar_stop, args = [self,]).start()
 
 def update_main(self):
     threading.Thread(target = progressbar_start, args = [self,]).start()
@@ -1025,6 +1034,7 @@ def update_main(self):
     threading.Thread(target = progressbar_stop, args = [self,]).start()
 
 def update_schbook(self):
+    threading.Thread(target = progressbar_start, args = [self,]).start()
     global obj
     self.book_table.delete(*self.book_table.get_children())
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
@@ -1042,8 +1052,10 @@ def update_schbook(self):
                 self.book_table.insert(x, tk.END, text = res[0], values=res[1:])
             else:
                 self.book_table.insert(x, tk.END, text = row[0], values=row[1:])
+    threading.Thread(target = progressbar_stop, args = [self,]).start()
 
 def update_book(self):
+    threading.Thread(target = progressbar_start1, args = [self,]).start()
     self.book_table1.delete(*self.book_table1.get_children())
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
     cur = conn.cursor()
@@ -1059,6 +1071,7 @@ def update_book(self):
             self.book_table1.insert('', tk.END, text = res[0], values=res[1:])
         else:
             self.book_table1.insert('', tk.END, text = row[0], values=row[1:])
+    threading.Thread(target = progressbar_stop1, args = [self,]).start()
 
 def update_search(self):
     threading.Thread(target = update_book, args = [self,]).start()
@@ -1066,6 +1079,7 @@ def update_search(self):
     
     
 def update_info(root):
+    threading.Thread(target = progressbar_start, args = [root,]).start()
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
     cur = conn.cursor()
 
@@ -1089,6 +1103,7 @@ def update_info(root):
 
     root.title("Профиль: {}".format(text)) #Заголовок
     root.fr_watch_both.pack(side='bottom', fill='both')
+    threading.Thread(target = progressbar_stop, args = [root,]).start()
 
         
 
@@ -1245,6 +1260,7 @@ def save_lc2(self):
     messagebox.showinfo('Успех!','Данные сохранены!', parent=self)
 
     #Обновление таблицы при нажатии на кнопку никак не хочет работать потому сделал как коммент
+    threading.Thread(target = progressbar_start, args = [self_info,]).start()
     self_info.info_table.delete(*self_info.info_table.get_children())
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
     cur = conn.cursor()
@@ -1254,6 +1270,7 @@ def save_lc2(self):
     rows = cur.fetchall()
     for row in rows:
         self_info.info_table.insert("" , tk.END , text=row[0], values=row[1:])
+    threading.Thread(target = progressbar_stop, args = [self_info,]).start()
 
 def edit_lc(self):
     global self_info
@@ -1310,6 +1327,7 @@ def save_stat(self):
 
     messagebox.showinfo('Успех!','Данные сохранены!', parent=self)
 
+    threading.Thread(target = progressbar_start, args = [self_info,]).start()
     self_info.info_table.delete(*self_info.info_table.get_children())
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
     cur = conn.cursor()
@@ -1321,6 +1339,7 @@ def save_stat(self):
     rows = cur.fetchall()
     for row in rows:
         self_info.info_table.insert("" , tk.END , text=row[0], values=row[1:])
+    threading.Thread(target = progressbar_stop, args = [self_info,]).start()
 
 def delete_lc(self):
     global text
@@ -1340,6 +1359,7 @@ def delete_lc(self):
         con_cur.execute('DELETE FROM LC WHERE FIO = (?) AND DB = (?) AND PHONE = (?) AND BOOK = (?) AND AUT = (?) AND STAT = (?)',line)
         conn.commit()
 
+    threading.Thread(target = progressbar_start, args = [self,]).start()
     self.info_table.delete(*self.info_table.get_children())
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
     cur = conn.cursor()
@@ -1351,6 +1371,7 @@ def delete_lc(self):
     rows = cur.fetchall()
     for row in rows:
         self.info_table.insert("" , tk.END , text=row[0], values=row[1:])
+    threading.Thread(target = progressbar_stop, args = [self,]).start()
 
 
 def search(self):
@@ -1439,18 +1460,7 @@ def save_book(self):
 
     messagebox.showinfo('Успех!','Данные сохранены!', parent=self)
 
-    self_book.book_table1.delete(*self_book.book_table1.get_children())
-    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
-    cur = conn.cursor()
-
-    #Вывовд всех учеников
-    cur.execute("SELECT * FROM BOOK")
-    rows = cur.fetchall()
-    for row in rows:
-        cur.execute("SELECT COUNT(*) FROM LC WHERE BOOK = (?) AND AUT = (?) AND (STAT = 'На руках' OR STAT = 'Просрочена')",(row[0],row[1]))
-        line = cur.fetchall()
-        res = (row[0], row[1], row[2] - line[0][0])
-        self_book.book_table1.insert("" , tk.END ,text=res[0], values=res[1:])
+    threading.Thread(target = update_book, args = [self_book,]).start()
 
 def edit_lit(self):
     global self_book
@@ -1517,21 +1527,7 @@ def edit_book(self):
 
     messagebox.showinfo('Успех!','Данные сохранены!', parent=self)
 
-    self_book.book_table1.delete(*self_book.book_table1.get_children())
-    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
-    cur = conn.cursor()
-
-    #Вывовд всех учеников
-    cur.execute("SELECT * FROM BOOK")
-    rows = cur.fetchall()
-    for row in rows:
-        cur.execute("SELECT COUNT(*) FROM LC WHERE BOOK = (?) AND AUT = (?) AND (STAT = 'На руках' OR STAT = 'Просрочена')",(row[0],row[1]))
-        line = cur.fetchall()
-        if line != []:
-            res = (row[0], row[1], row[2] - line[0][0])
-            self_book.book_table1.insert('', tk.END, text = res[0], values=res[1:])
-        else:
-            self_book.book_table1.insert('', tk.END, text = row[0], values=row[1:])
+    threading.Thread(target = update_book, args = [self_book,]).start()
 
 def edit_schbook(self):
     global self_book
@@ -1559,23 +1555,7 @@ def edit_schbook(self):
 
     messagebox.showinfo('Успех!','Данные сохранены!', parent=self)
 
-    self_book.book_table.delete(*self_book.book_table.get_children())
-    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
-    cur = conn.cursor()
-
-    #Вывовд всех учеников
-    for less in obj:
-        x = self_book.book_table.insert('', tk.END, text=less)
-        cur.execute("SELECT NAME, AUT, COL FROM SCHBOOK WHERE OBJ = (?)",(less,))
-        rows = cur.fetchall()
-        for row in rows:
-            cur.execute("SELECT COL FROM LC WHERE BOOK = (?) AND AUT = (?) AND (STAT = 'На руках' OR STAT = 'Просрочена')",(row[0],row[1]))
-            line = cur.fetchall()
-            if line != []:
-                res = (row[0], row[1], row[2] - line[0][0])
-                self_book.book_table.insert(x, tk.END, text = res[0], values=res[1:])
-            else:
-                self_book.book_table.insert(x, tk.END, text = row[0], values=row[1:])
+    threading.Thread(target = update_schbook, args = [self_book,]).start()
 
 def del_book(self):
     selected_item = self.book_table1.selection()
@@ -1592,21 +1572,7 @@ def del_book(self):
         con_cur.execute('DELETE FROM BOOK WHERE NAME = (?) AND AUT = (?) AND COL = (?)',line)
         conn.commit()
 
-    self.book_table1.delete(*self.book_table1.get_children())
-    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
-    cur = conn.cursor()
-
-    #Вывовд всех учеников
-    cur.execute("SELECT * FROM BOOK")
-    rows = cur.fetchall()
-    for row in rows:
-        cur.execute("SELECT COUNT(*) FROM LC WHERE BOOK = (?) AND AUT = (?) AND (STAT = 'На руках' OR STAT = 'Просрочена')",(row[0],row[1]))
-        line = cur.fetchall()
-        if line != []:
-            res = (row[0], row[1], row[2] - line[0][0])
-            self.book_table1.insert('', tk.END, text = res[0], values=res[1:])
-        else:
-            self.book_table1.insert('', tk.END, text = row[0], values=row[1:])
+    threading.Thread(target = update_book, args = [self,]).start()
 
 
 def del_schbook(self):
@@ -1624,23 +1590,7 @@ def del_schbook(self):
         con_cur.execute('DELETE FROM SCHBOOK WHERE NAME = (?) AND AUT = (?) AND COL = (?)',line)
         conn.commit()
 
-    self.book_table.delete(*self.book_table.get_children())
-    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
-    cur = conn.cursor()
-
-    #Вывовд всех учеников
-    for less in obj:
-        x = self.book_table.insert('', tk.END, text=less)
-        cur.execute("SELECT NAME, AUT, COL FROM SCHBOOK WHERE OBJ = (?)",(less,))
-        rows = cur.fetchall()
-        for row in rows:
-            cur.execute("SELECT COL FROM LC WHERE BOOK = (?) AND AUT = (?) AND (STAT = 'На руках' OR STAT = 'Просрочена')",(row[0],row[1]))
-            line = cur.fetchall()
-            if line != []:
-                res = (row[0], row[1], row[2] - line[0][0])
-                self.book_table.insert(x, tk.END, text = res[0], values=res[1:])
-            else:
-                self.book_table.insert(x, tk.END, text = row[0], values=row[1:])
+    threading.Thread(target = update_schbook, args = [self,]).start()
 
 def save_schbook(self):
     global self_book
@@ -1660,23 +1610,7 @@ def save_schbook(self):
 
     messagebox.showinfo('Успех!','Данные сохранены!', parent=self)
 
-    self_book.book_table.delete(*self_book.book_table.get_children())
-    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
-    cur = conn.cursor()
-
-    #Вывовд всех учеников
-    for less in obj:
-        x = self_book.book_table.insert('', tk.END, text=less)
-        cur.execute("SELECT NAME, AUT, COL FROM SCHBOOK WHERE OBJ = (?)",(less,))
-        rows = cur.fetchall()
-        for row in rows:
-            cur.execute("SELECT COL FROM LC WHERE BOOK = (?) AND AUT = (?) AND (STAT = 'На руках' OR STAT = 'Просрочена')",(row[0],row[1]))
-            line = cur.fetchall()
-            if line != []:
-                res = (row[0], row[1], row[2] - line[0][0])
-                self_book.book_table.insert(x, tk.END, text = res[0], values=res[1:])
-            else:
-                self_book.book_table.insert(x, tk.END, text = row[0], values=row[1:])
+    threading.Thread(target = update_schbook, args = [self_book,]).start()
     
     
 def schbook(self):
@@ -2411,6 +2345,14 @@ def progressbar_start(self):
 def progressbar_stop(self):
     self.progress.place_forget()
     self.progress.stop()
+
+def progressbar_start1(self):
+    self.progress1.place(relx=0.8871,rely=0.95)
+    self.progress1.start()
+
+def progressbar_stop1(self):
+    self.progress1.place_forget()
+    self.progress1.stop()
 
 if __name__ == "__main__":
     app = Main()
