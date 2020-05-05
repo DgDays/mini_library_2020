@@ -156,6 +156,8 @@ class Main(tk.Tk):
 
         file_sohranit = tk.Menu(btn_file, tearoff = 0) # Запретить отделение
         first_and_last = first_and_last_day()
+        file_sohranit.add_command(label = 'Загрузить читателей из TXT', command = lambda: threading.Thread(target = open_txt, args= [self,]).start())
+        file_sohranit.add_separator()
         file_sohranit.add_command(label = "Статистика за месяц", command = lambda: threading.Thread(target = month_excel, args = [first_and_last,]).start())
         file_sohranit.add_command(label = "Статистика за год", command = lambda: threading.Thread(target = year_excel).start())  
         file_sohranit.add_command(label = "Статистика за выбранный срок", command = lambda: Excel())
@@ -2399,6 +2401,39 @@ def easter4(self):
 def exit_main():
     threading.Thread(target = music_stop).start()
     sys.exit(0)
+
+def open_txt(self):
+    ask = fd.askopenfilename(filetypes = (('TXT', '*.txt'),), defaultextension=".txt")
+    if ask != '':
+        f = open(ask,'r')
+        spis = f.readlines()
+        for s in spis:
+            lst = s.split()
+            i = 0
+            res_spis = []
+            while i < len(lst):
+                res = lst[i]
+                res = res.replace('.', '')
+                res = res.replace('-', '.')
+                res_spis.append(res)
+                i+=1
+            if len(res_spis) == 11:
+                result = [res_spis[0]+' '+res_spis[1]+' '+res_spis[2],
+                            datetime.datetime.strptime(res_spis[3], '%d.%m.%Y').strftime('%Y-%m-%d'), res_spis[4], res_spis[5],
+                            res_spis[6]+' '+res_spis[7]+' '+res_spis[8],
+                            res_spis[9], res_spis[10], datetime.date.today().isoformat()]
+            elif len(res_spis) == 12:
+                result = [res_spis[0]+' '+res_spis[1]+' '+res_spis[2],
+                            datetime.datetime.strptime(res_spis[3], '%d.%m.%Y').strftime('%Y-%m-%d'), res_spis[4], res_spis[5],
+                            res_spis[6]+' '+res_spis[7]+' '+res_spis[8],
+                            res_spis[9], res_spis[10]+' '+res_spis[11], datetime.date.today().isoformat()]
+        
+            conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
+            cur = conn.cursor()
+            cur.execute('INSERT INTO PROFILE VALUES (?,?,?,?,?,?,?,?)',result)
+            conn.commit()
+    update_main(self)
+            
 
 if __name__ == "__main__":
     app = Main()
