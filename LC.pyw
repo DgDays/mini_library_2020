@@ -256,6 +256,9 @@ class Main(tk.Tk):
         self.table.heading('Phone', text='Телефон')
         self.table.heading('Adress', text='Адрес')
 
+
+        self.progress = ttk.Progressbar(self.table, mode='indeterminate')
+
         self.profile_menu = tk.Menu(self.table, tearoff=0)
 
         self.profile_menu.add_command(label = "Добавить читателя", command= lambda: add_profile(self))
@@ -1005,6 +1008,7 @@ def update_not(self):
         self.table.insert("" , tk.END , values=row)#Вывод в таблицу
 
 def update_main(self):
+    threading.Thread(target = progressbar_start, args = [self,]).start()
     self.table.delete(*self.table.get_children())
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
     cur = conn.cursor()
@@ -1018,6 +1022,7 @@ def update_main(self):
         db = db.strftime('%d.%m.%Y')
         row = (row[0],db, row[2], row[3], row[4], row[5])
         self.table.insert("" , tk.END ,text=row[0], values=row[1:])
+    threading.Thread(target = progressbar_stop, args = [self,]).start()
 
 def update_schbook(self):
     global obj
@@ -1132,19 +1137,7 @@ def save_stud2(self):
 
     messagebox.showinfo('Успех!','Данные сохранены!', parent=self)
 
-    self_main.table.delete(*self_main.table.get_children())
-    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
-    cur = conn.cursor()
-
-    #Вывовд всех учеников
-    cur.execute("SELECT * FROM PROFILE")
-    rows = cur.fetchall()
-    for row in rows:
-        db = row[1]
-        db = datetime.datetime.strptime(db, '%Y-%m-%d')
-        db = db.strftime('%d.%m.%Y')
-        row = (row[0],db, row[2], row[3], row[4], row[5])
-        self_main.table.insert("" , tk.END ,text=row[0], values=row[1:])
+    update_main(self_main)
 
 def edit_profile(self):
     global self_main
@@ -1194,19 +1187,7 @@ def edit_stud(self):
 
     messagebox.showinfo('Успех!','Данные сохранены!', parent=self)
 
-    self_main.table.delete(*self_main.table.get_children())
-    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
-    cur = conn.cursor()
-
-    #Вывовд всех учеников
-    cur.execute("SELECT * FROM PROFILE")
-    rows = cur.fetchall()
-    for row in rows:
-        db = row[1]
-        db = datetime.datetime.strptime(db, '%Y-%m-%d')
-        db = db.strftime('%d.%m.%Y')
-        row = (row[0],db, row[2], row[3], row[4], row[5])
-        self_main.table.insert("" , tk.END ,text=row[0], values=row[1:])
+    update_main(self_main)
 
 def del_profile(self):
     selected_item = self.table.selection()
@@ -1224,19 +1205,7 @@ def del_profile(self):
         con_cur.execute('DELETE FROM LC WHERE FIO = (?) AND DB = (?) AND PHONE = (?)',line)
         conn.commit()
 
-    self.table.delete(*self.table.get_children())
-    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
-    cur = conn.cursor()
-
-    #Вывовд всех учеников
-    cur.execute("SELECT * FROM PROFILE")
-    rows = cur.fetchall()
-    for row in rows:
-        db = row[1]
-        db = datetime.datetime.strptime(db, '%Y-%m-%d')
-        db = db.strftime('%d.%m.%Y')
-        row = (row[0],db, row[2], row[3], row[4], row[5])
-        self.table.insert("" , tk.END ,text=row[0], values=row[1:])
+    update_main(self)
     
     
 
@@ -2405,6 +2374,9 @@ def exit_main():
 def open_txt(self):
     ask = fd.askopenfilename(filetypes = (('TXT', '*.txt'),), defaultextension=".txt")
     if ask != '':
+        conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
+        cur = conn.cursor()
+        threading.Thread(target = progressbar_start, args = [self,]).start()
         f = open(ask,'r')
         spis = f.readlines()
         for s in spis:
@@ -2427,13 +2399,18 @@ def open_txt(self):
                             datetime.datetime.strptime(res_spis[3], '%d.%m.%Y').strftime('%Y-%m-%d'), res_spis[4], res_spis[5],
                             res_spis[6]+' '+res_spis[7]+' '+res_spis[8],
                             res_spis[9], res_spis[10]+' '+res_spis[11], datetime.date.today().isoformat()]
-        
-            conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
-            cur = conn.cursor()
             cur.execute('INSERT INTO PROFILE VALUES (?,?,?,?,?,?,?,?)',result)
-            conn.commit()
+        conn.commit()
+    threading.Thread(target = progressbar_stop, args = [self,]).start()
     update_main(self)
-            
+
+def progressbar_start(self):
+    self.progress.place(relx=0.8871,rely=0.95)
+    self.progress.start()
+
+def progressbar_stop(self):
+    self.progress.place_forget()
+    self.progress.stop()
 
 if __name__ == "__main__":
     app = Main()
