@@ -952,19 +952,37 @@ class Spravka(tk.Toplevel):
         self.title("Справка") #Заголовок
         w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
-        self.geometry('713x450+{}+{}'.format(w-100, h-150))#Размер
+        self.geometry('1162x450+{}+{}'.format(w-100, h-150))#Размер
         self.resizable(False, False)#Изменение размера окна
         self.protocol("WM_DELETE_WINDOW", lambda: self_main_book_null(self))
 
         self.focus_force()
+
+        self.frame = tk.Canvas(self)
+
+        self.scroll = ttk.Scrollbar(self.frame, orient='vertical', comman = self.frame.yview)
         
-        
+        self.text = ttk.Frame(self.frame)
 
         file = open(os.path.dirname(os.path.abspath(__file__))+"/spravka.txt", 'r')
+        lines = file.readlines()
         row=0
-        for line in file:
-            ttk.Label(self, text=line, font= 'Arial 11').grid(row=row, column=0)
+        for line in lines:
+            if line[0] == '/':
+                line = line[:-1]
+                ttk.Label(self.text, text=line[1:], font= ('Arial Black', 13)).grid(row=row, column=0, columnspan=9999,
+                                                                                    sticky='w')
+            else:
+                line = line[:-1]
+                ttk.Label(self.text, text=line, font= 'Arial 11').grid(row=row, column=0, columnspan=9999,
+                                                                        rowspan=1, sticky='w')
             row+=1
+        self.frame.create_window(0,0, anchor='nw', window=self.text)
+        self.frame.update_idletasks()
+
+        self.frame.configure(scrollregion= self.frame.bbox('all'), yscrollcommand=self.scroll.set)
+        self.frame.pack(fill='both', expand=True, side='left')
+        self.scroll.pack(fill='y', side='right')
 
         #Иконка
         self.iconbitmap(os.path.dirname(os.path.abspath(__file__))+"/ask.ico")
