@@ -807,7 +807,7 @@ class Edit_books(tk.Toplevel):
 class INFO_Book(tk.Toplevel):
     def __init__(self, *args, **kwargs):
         tk.Toplevel.__init__(self,*args, *kwargs)
-        self.title("Добавить книги") #Заголовок
+        self.title("Информация о книге") #Заголовок
         w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
         self.geometry('830x450+{}+{}'.format(w+300, h-125))#Размер
@@ -1757,7 +1757,14 @@ def schbook_info(self):
         cur.execute("SELECT FIO, DB, PHONE, DI, DC, STAT, COL FROM LC WHERE BOOK =(?) AND AUT=(?)",(text,values[0]))
         rows = cur.fetchall()
         for row in rows:
-            root.table.insert('', tk.END, text=row[0], values=row[1:])
+            db = datetime.datetime.strptime(row[1], '%Y-%m-%d')
+            db = db.strftime('%d.%m.%Y')
+            di = datetime.datetime.strptime(row[3], '%Y-%m-%d')
+            di = di.strftime('%d.%m.%Y')
+            dc = datetime.datetime.strptime(row[4], '%Y-%m-%d')
+            dc = dc.strftime('%d.%m.%Y')
+            row1 = [row[0], db, row[2], di, dc, row[5], row[6]]
+            root.table.insert('', tk.END, text=row1[0], values=row1[1:])
 
 
 def lit_info(self):
@@ -1790,7 +1797,14 @@ def lit_info(self):
         cur.execute("SELECT FIO, DB, PHONE, DI, DC, STAT, COL FROM LC WHERE BOOK =(?) AND AUT=(?)",(text,values[0]))
         rows = cur.fetchall()
         for row in rows:
-            root.table.insert('', tk.END, text=row[0], values=row[1:])
+            db = datetime.datetime.strptime(row[1], '%Y-%m-%d')
+            db = db.strftime('%d.%m.%Y')
+            di = datetime.datetime.strptime(row[3], '%Y-%m-%d')
+            di = di.strftime('%d.%m.%Y')
+            dc = datetime.datetime.strptime(row[4], '%Y-%m-%d')
+            dc = dc.strftime('%d.%m.%Y')
+            row1 = [row[0], db, row[2], di, dc, row[5], row[6]]
+            root.table.insert('', tk.END, text=row1[0], values=row1[1:])
 
 #================================ Сортировка ==================================
 def sort(tv, col, reverse):
