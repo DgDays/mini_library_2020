@@ -289,7 +289,7 @@ class Add_profile(tk.Toplevel):
         self.title("Добавить читателя") #Заголовок
         w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
-        self.geometry('480x240+{}+{}'.format(w, h))#Размер
+        self.geometry('+{}+{}'.format(w, h))#Размер
         self.resizable(False, False)#Изменение размера окна
         self.protocol("WM_DELETE_WINDOW", lambda: self_main_null(self))
         self.attributes("-topmost",True)
@@ -364,7 +364,7 @@ class Edit_profile(tk.Toplevel):
         self.title("Редактировать читателя") #Заголовок
         w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
         h = ((self.winfo_screenheight() // 2)) # высота экрана
-        self.geometry('480x240+{}+{}'.format(w+300, h-125))#Размер
+        self.geometry('+{}+{}'.format(w+300, h-125))#Размер
         self.resizable(False, False)#Изменение размера окна
         self.protocol("WM_DELETE_WINDOW", lambda: self_main_null(self))
         self.attributes("-topmost",True)
@@ -505,7 +505,7 @@ class Add_lc(tk.Toplevel):
         self.title("Добавить книгу в ЧБ") #Заголовок
         w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
-        self.geometry('480x240+{}+{}'.format(w+300, h-125))#Размер
+        self.geometry('+{}+{}'.format(w+300, h-125))#Размер
         self.resizable(False, False)#Изменение размера окна
         self.protocol("WM_DELETE_WINDOW", lambda: self_info_null(self))
         self.attributes("-topmost",True)
@@ -539,7 +539,7 @@ class Add_lc(tk.Toplevel):
 
         #кнопка "Сохранить"
         self.btn_save=ttk.Button(self, text='Сохранить', command=lambda: threading.Thread(target = save_lc2, args = [self,]).start())
-        self.btn_save.grid(row=3, column=2, padx=219, pady=3)
+        self.btn_save.grid(row=3, column=1, padx=3, pady=3, columnspan=40, sticky='E')
 
         self.iconbitmap(os.path.dirname(os.path.abspath(__file__))+"/add.ico")
 
@@ -551,7 +551,7 @@ class Edit_lc(tk.Toplevel):
         self.title("Изменить книгу в ЧБ") #Заголовок
         w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
-        self.geometry('480x240+{}+{}'.format(w+300, h-125))#Размер
+        self.geometry('+{}+{}'.format(w+300, h-125))#Размер
         self.resizable(False, False)#Изменение размера окна
         self.protocol("WM_DELETE_WINDOW", lambda: self_info_null(self))
         self.attributes("-topmost",True)
@@ -592,7 +592,7 @@ class Edit_lc(tk.Toplevel):
 
         #кнопка "Сохранить"
         self.btn_save=ttk.Button(self, text='Сохранить', command=lambda: threading.Thread(target = save_stat, args = [self,]).start())
-        self.btn_save.grid(row=4, column=2, padx=220, pady=3)
+        self.btn_save.grid(row=4, column=1, padx=3, pady=3, columnspan=50, sticky='E')
         self.iconbitmap(os.path.dirname(os.path.abspath(__file__))+"/edit.ico")
 
 #!!!---------------- Удалить книгу у читателя ----------------
@@ -746,7 +746,7 @@ class Add_book(tk.Toplevel):
         self.title("Добавить книги") #Заголовок
         w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
-        self.geometry('360x200+{}+{}'.format(w+300, h-125))#Размер
+        self.geometry('+{}+{}'.format(w+300, h-125))#Размер
         self.resizable(False, False)#Изменение размера окна
         self.protocol("WM_DELETE_WINDOW", lambda: self_book_null(self))
         self.attributes("-topmost",True)
@@ -778,7 +778,7 @@ class Edit_books(tk.Toplevel):
         self.title("Редактировать книги") #Заголовок
         w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
-        self.geometry('480x240+{}+{}'.format(w+300, h-125))#Размер
+        self.geometry('+{}+{}'.format(w+300, h-125))#Размер
         self.resizable(False, False)#Изменение размера окна
         self.protocol("WM_DELETE_WINDOW", lambda: self_book_null(self))
         self.attributes("-topmost",True)
@@ -915,7 +915,7 @@ class Excel(tk.Toplevel):
         w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
         self.title("Сохранить в Excel")#Заголовок
-        self.geometry('480x240+{}+{}'.format(w+300, h))
+        self.geometry('+{}+{}'.format(w+300, h))
         self.resizable(False,False)#Изменение размера окна
         self.configure(background='#e9e9e9')#Фон окна
         self.focus_force()
@@ -939,7 +939,7 @@ class Excel(tk.Toplevel):
         self.en_date2.grid_configure(row=1,column=1, pady=3)
 
         self.btn = ttk.Button(self.frame, text='Сохранить отчёт', command= lambda: threading.Thread(target = lub_period_excel, args = [self,]).start())
-        self.btn.grid(row=2, column=1, pady=3)
+        self.btn.grid(row=2, column=1, padx=3, pady=3, sticky='E')
 
 
         self.frame.pack(fill='both')
@@ -1497,7 +1497,7 @@ def edit_lit(self):
         root.en_name.insert(0, text1)
         root.en_aut.insert(0, values1[0])
         root.en_col.insert(0, col)
-        root.save.grid(row=3, column=1,pady=3, padx=134)
+        root.save.grid(row=3, column=1, padx=3, pady=3, columnspan=35, sticky='E')
 
 def edit_schbooks(self):
     global self_book
@@ -1516,7 +1516,7 @@ def edit_schbooks(self):
         root.en_name.insert(0, text1)
         root.en_aut.insert(0, values1[0])
         root.en_col.insert(0, col)
-        root.save_sch.grid(row=3, column=1,pady=3, padx=134)
+        root.save_sch.grid(row=3, column=1, padx=3, pady=3, columnspan=35, sticky='E')
     
 
 def edit_book(self):
@@ -1638,7 +1638,7 @@ def schbook(self):
     self = Add_book()
     w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
     h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
-    self.geometry('360x200+{}+{}'.format(w+300, h-125))#Размер
+    self.geometry('+{}+{}'.format(w+300, h-125))#Размер
     self.lb_name.grid(row=0,column=0)
     self.lb_aut.grid(row=1,column=0)
     self.lb_col.grid(row=2,column=0)
@@ -1648,7 +1648,7 @@ def schbook(self):
     self.lb_less = ttk.Label(self, text='Урок', font= 'Arial 11').grid(row=3,column=0)
     self.en_less = ttk.Combobox(self,values=obj,width=17, font= 'Arial 11')
     self.en_less.grid_configure(row=3, column=1, columnspan=35, pady=3, sticky='W')
-    self.save_sch.grid(row=4, column=1,pady=3, padx=134)
+    self.save_sch.grid(row=4, column=1, padx=3, pady=3, columnspan=40, sticky='E')
 
 def lit(self):
     global self_book
@@ -1660,7 +1660,7 @@ def lit(self):
     self.en_name.grid_configure(row=0, column=1,columnspan=35, pady=3, sticky='W')
     self.en_aut.grid_configure(row=1, column=1,columnspan=35, pady=3, sticky='W')
     self.en_col.grid_configure(row=2, column=1,columnspan=35, pady=3, sticky='W')
-    self.save.grid(row=3, column=1,pady=3, padx=134)
+    self.save.grid(row=3, column=1, padx=3, pady=3, columnspan=35, sticky='E')
 
 def self_main_null(self):
     global self_main
