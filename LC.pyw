@@ -30,6 +30,7 @@ import xlsxwriter
 import threading
 from tkcalendar import DateEntry
 from tkinter import filedialog as fd
+from PIL import ImageTk, Image
 import pyglet
 
 text = ''
@@ -952,11 +953,12 @@ class Spravka(tk.Toplevel):
         self.title("Справка") #Заголовок
         w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
-        self.geometry('1162x450+{}+{}'.format(w-100, h-150))#Размер
+        self.geometry('480x450+{}+{}'.format(w-100, h-150))#Размер
         self.resizable(False, False)#Изменение размера окна
         self.protocol("WM_DELETE_WINDOW", lambda: self_main_book_null(self))
 
         self.focus_force()
+
 
         self.frame = tk.Canvas(self)
 
@@ -971,6 +973,10 @@ class Spravka(tk.Toplevel):
             if line[0] == '/':
                 line = line[:-1]
                 ttk.Label(self.text, text=line[1:], font= ('Arial Black', 13)).grid(row=row, column=0, columnspan=9999,
+                                                                                    sticky='w')
+            elif (line[0] == '*') and (line[1] == '*'):
+                line = line[:-1]
+                ttk.Label(self.text, text=line[2:], font= ('Arial Black', 12)).grid(row=row, column=0, columnspan=9999,
                                                                                     sticky='w')
             else:
                 line = line[:-1]
@@ -995,19 +1001,81 @@ class Information(tk.Toplevel):
         self.title("Информация") #Заголовок
         w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
-        self.geometry('713x450+{}+{}'.format(w-100, h-150))#Размер
+        self.geometry('+{}+{}'.format(w-100, h-150))#Размер
         self.resizable(False, False)#Изменение размера окна
         self.protocol("WM_DELETE_WINDOW", lambda: self_main_inf_null(self))
 
         self.focus_force()
-        
+    
+        self.frame_logo = ttk.Frame(self)
         
 
+        logo = os.path.dirname(os.path.abspath(__file__))+"/logo.jpg"
+        photo = ImageTk.PhotoImage(Image.open(logo))
+        labimg = ttk.Label(self.frame_logo, image=photo)
+        labimg.image = photo 
+        labimg.grid(row=0, column=1, padx=5)
+
+        prog_logo = os.path.dirname(os.path.abspath(__file__))+"/prog_logo.jpg"
+        photo_prog = ImageTk.PhotoImage(Image.open(prog_logo))
+        prog_logo = ttk.Label(self.frame_logo, image=photo_prog)
+        prog_logo.image = photo_prog 
+        prog_logo.grid(row=0, column=0, padx=5)
+        
+        self.fr_inf = ttk.Frame(self)
+
         file = open(os.path.dirname(os.path.abspath(__file__))+"/information.txt", 'r')
+        lines = file.readlines()
         row=0
-        for line in file:
-            ttk.Label(self, text=line, font= 'Arial 11').grid(row=row, column=0)
-            row+=1
+        self.text = ttk.Frame(self.fr_inf)
+        self.contacts = ttk.Frame(self.fr_inf)
+        for line in lines:
+            if line == lines[0]:
+                line = line[2:]
+                line = line[:-3]
+                ttk.Label(self.text, text=line, font= ('Arial Black', 15)).pack(side='top')
+            elif line[0]=='/':
+                line = line[1:]
+                ttk.Label(self.text, text=line, font= ('Arial Black', 12)).pack()
+            elif (line[0] == '|') and (line[1] != '|'):
+                line = line[1:]
+                if (line[0] not in ('Ш', 'К')) and (line[:3]!='Поч'):
+                    ttk.Label(self.contacts, text=line, font= ('Arial Black', 10)).grid(row=0, column=0, columnspan=1)
+                elif line[0] == 'Ш':
+                    ttk.Label(self.contacts, text=line, font= ('Arial Black', 10)).grid(row=1, column=0, columnspan=1, padx=5)
+                elif line[0] == 'К':
+                    ttk.Label(self.contacts, text=line, font= ('Arial Black', 10)).grid(row=2, column=0, columnspan=1)
+                elif line[0]+line[1]+line[2] == 'Поч':
+                    ttk.Label(self.contacts, text=line, font= ('Arial Black', 10)).grid(row=3, column=0, columnspan=1)
+            elif (line[0]+line[1] == '||')  and (line[2] != '|'):
+                line = line[2:]
+                if (line[0] not in ('Ш', 'К')) and (line[:3]!='Поч'):
+                    ttk.Label(self.contacts, text=line, font= ('Arial Black', 10)).grid(row=0, column=2, columnspan=1)
+                elif line[0] == 'Ш':
+                    ttk.Label(self.contacts, text=line, font= ('Arial Black', 10)).grid(row=1, column=2, columnspan=1, padx=5)
+                elif line[0] == 'К':
+                    ttk.Label(self.contacts, text=line, font= ('Arial Black', 10)).grid(row=2, column=2, columnspan=1)
+                elif line[0]+line[1]+line[2] == 'Поч':
+                    ttk.Label(self.contacts, text=line, font= ('Arial Black', 10)).grid(row=3, column=2, columnspan=1)
+            elif line[0]+line[1]+line[2] == '|||':
+                line = line[3:]
+                if (line[0] not in ('Ш', 'К')) and (line[:3]!='Поч'):
+                    ttk.Label(self.contacts, text=line, font= ('Arial Black', 10)).grid(row=0, column=4, columnspan=1)
+                elif line[0] == 'Ш':
+                    ttk.Label(self.contacts, text=line, font= ('Arial Black', 10)).grid(row=1, column=4, columnspan=1, padx=5)
+                elif line[0] == 'К':
+                    ttk.Label(self.contacts, text=line, font= ('Arial Black', 10)).grid(row=2, column=4, columnspan=1)
+                elif line[0]+line[1]+line[2] == 'Поч':
+                    ttk.Label(self.contacts, text=line, font= ('Arial Black', 10)).grid(row=3, column=4, columnspan=1)
+            
+        self.bottom = ttk.Frame(self.fr_inf)
+        ttk.Label(self.bottom, text='* На момент написания программы', font= ('Arial Black', 8)).grid(row=0, column=0, columnspan=1)
+
+        self.frame_logo.pack(side='top')
+        self.text.pack()
+        self.contacts.pack()
+        self.bottom.pack(fill='x')
+        self.fr_inf.pack(side='bottom', fill='both')
 
         #Иконка
         self.iconbitmap(os.path.dirname(os.path.abspath(__file__))+"/ask.ico")
