@@ -1016,7 +1016,7 @@ class Information(tk.Toplevel):
         labimg.image = photo 
         labimg.grid(row=0, column=1, padx=5)
 
-        prog_logo = os.path.dirname(os.path.abspath(__file__))+"/prog_logo.jpg"
+        prog_logo = os.path.dirname(os.path.abspath(__file__))+"/prog_logo.png"
         photo_prog = ImageTk.PhotoImage(Image.open(prog_logo))
         prog_logo = ttk.Label(self.frame_logo, image=photo_prog)
         prog_logo.image = photo_prog 
@@ -1067,6 +1067,8 @@ class Information(tk.Toplevel):
                     ttk.Label(self.contacts, text=line, font= ('Arial Black', 10)).grid(row=2, column=4, columnspan=1)
                 elif line[0]+line[1]+line[2] == 'Поч':
                     ttk.Label(self.contacts, text=line, font= ('Arial Black', 10)).grid(row=3, column=4, columnspan=1)
+            else:
+                ttk.Label(self.contacts, text=line, font= ('Arial Black', 12)).grid(row=4, column=2, columnspan=1)
             
         self.bottom = ttk.Frame(self.fr_inf)
         ttk.Label(self.bottom, text='* На момент написания программы', font= ('Arial Black', 8)).grid(row=0, column=0, columnspan=1)
