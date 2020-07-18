@@ -953,7 +953,7 @@ class Spravka(tk.Toplevel):
         self.title("Справка") #Заголовок
         w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
-        self.geometry('480x450+{}+{}'.format(w-100, h-150))#Размер
+        self.geometry('840x450+{}+{}'.format(w-100, h-150))#Размер
         self.resizable(False, False)#Изменение размера окна
         self.protocol("WM_DELETE_WINDOW", lambda: self_main_book_null(self))
 
