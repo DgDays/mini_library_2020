@@ -138,6 +138,7 @@ class Main(tk.Tk):
         self.geometry('910x450+{}+{}'.format(w, h))#Размер
         self.resizable(False, False)#Изменение размера окна
         self.protocol("WM_DELETE_WINDOW", lambda: exit_main())
+        threading.Thread(target = creat_table).start()
         theme = open(os.path.dirname(os.path.abspath(__file__))+'/theme.txt','r')
         style = ThemedStyle()
         var_style = tk.StringVar()
@@ -1087,6 +1088,47 @@ class Information(tk.Toplevel):
 
 
 #================================ Работа с БД ================================
+def creat_table():
+    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
+    cur = conn.cursor()
+    cur.executescript("""
+        CREATE TABLE IF NOT EXISTS `BOOK` (
+	        `NAME`	TEXT NOT NULL,
+	        `AUT`	TEXT NOT NULL,
+	        `COL`	INTEGER NOT NULL
+        );
+
+        CREATE TABLE IF NOT EXISTS `LC` (
+	        `FIO`	TEXT NOT NULL,
+	        `DB`	TEXT NOT NULL,
+	        `PHONE`	TEXT NOT NULL,
+	        `DI`	TEXT NOT NULL,
+	        `DC`	TEXT NOT NULL,
+	        `AUT`	TEXT NOT NULL,
+	        `BOOK`	TEXT NOT NULL,
+	        `STAT`	TEXT NOT NULL,
+	        `COL`	INTEGER NOT NULL
+        );
+
+        CREATE TABLE IF NOT EXISTS `PROFILE` (
+	        `FIO`	TEXT NOT NULL,
+        	`DB`	TEXT NOT NULL,
+        	`CLA`	INTEGER NOT NULL,
+        	`LIT`	TEXT NOT NULL,
+        	`ADR`	TEXT NOT NULL,
+        	`PHONE`	TEXT NOT NULL,
+        	`CLIENT`	TEXT NOT NULL,
+        	`DREG`	TEXT
+        );
+
+        CREATE TABLE IF NOT EXISTS `SCHBOOK` (
+        	`NAME`	TEXT NOT NULL,
+        	`AUT`	TEXT NOT NULL,
+        	`COL`	INTEGER NOT NULL,
+        	`OBJ`	TEXT NOT NULL
+        );
+    """)
+
 def update_not(self):
     threading.Thread(target = progressbar_start, args = [self,]).start()
     x = datetime.date.today().isoformat()#Текущая дата в ISO формате
