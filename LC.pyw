@@ -352,7 +352,7 @@ class Add_profile(tk.Toplevel):
 
         #место ввода "Дата рождения"
         self.en_db2= DateEntry(self, width=12, background='darkblue',
-                    foreground='white', borderwidth=2, year=2020, font= 'Arial 11')
+                    foreground='white', borderwidth=2, year=2020, font= 'Arial 11', date_pattern='dd.MM.yyyy')
         self.en_db2.grid_configure(row=5,column=4,sticky='W')
 
         #кнопка "Сохранить"
@@ -421,7 +421,7 @@ class Edit_profile(tk.Toplevel):
 
         #место ввода "Дата рождения"
         self.en_db2= DateEntry(self, width=12, background='darkblue',
-                    foreground='white', borderwidth=2, font= 'Arial 11')
+                    foreground='white', borderwidth=2, font= 'Arial 11', date_pattern='dd.MM.yyyy')
         self.en_db2.grid_configure(row=4,column=5,sticky='W')
 
         #кнопка "Сохранить"
@@ -583,7 +583,7 @@ class Edit_lc(tk.Toplevel):
 
         #место ввода "Дата сдачи"
         self.en_dc = DateEntry(self, width=12, background='darkblue',
-                    foreground='white', borderwidth=2, font= 'Arial 11')
+                    foreground='white', borderwidth=2, font= 'Arial 11', date_pattern='dd.MM.yyyy')
         self.en_dc.grid_configure(row=2, column=1, columnspan=15, pady=3, sticky='W')
 
         #надпись "Статус"
@@ -931,14 +931,14 @@ class Excel(tk.Toplevel):
         self.lb_date1.grid(row=0, column=0)
 
         self.en_date1 = DateEntry(self.frame, width=12, background='blue',
-                    foreground='white', borderwidth=2, font= 'Arial 11')
+                    foreground='white', borderwidth=2, font= 'Arial 11', date_pattern='dd.MM.yyyy')
         self.en_date1.grid_configure(row=0, column=1, pady=3)
 
         self.lb_date2 = ttk.Label(self.frame, text='До:', font= 'Arial 11')
         self.lb_date2.grid(row=1,column=0)
 
         self.en_date2 = DateEntry(self.frame, width=12, background='darkblue',
-                    foreground='white', borderwidth=2, font= 'Arial 11')
+                    foreground='white', borderwidth=2, font= 'Arial 11', date_pattern='dd.MM.yyyy')
         self.en_date2.grid_configure(row=1,column=1, pady=3)
 
         self.btn = ttk.Button(self.frame, text='Сохранить отчёт', command= lambda: threading.Thread(target = lub_period_excel, args = [self,]).start())
