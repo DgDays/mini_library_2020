@@ -2442,7 +2442,6 @@ def easter3():
         easter_egg = 0
 
 def easter4(self):
-    print(dir(playsound.playsound))
     filename = os.path.dirname(os.path.abspath(__file__))+"/imper.mp3"
     playsound.playsound(filename)
 
