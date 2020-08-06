@@ -2500,7 +2500,7 @@ def geometry(self):
 
 def quit_window(icon, item):
     icon.stop()
-    app.destroy()
+    os._exit(1)
 
 def show_window(icon, item):
     icon.stop()
