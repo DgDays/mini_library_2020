@@ -21,6 +21,8 @@ import tkinter as tk
 import tkinter.font as tkFont
 from tkinter import ttk, messagebox
 from ttkthemes import ThemedStyle
+from pystray import MenuItem as item
+import pystray
 import sys
 import os
 import sqlite3
@@ -32,7 +34,7 @@ import threading
 from tkcalendar import DateEntry
 from tkinter import filedialog as fd
 from PIL import ImageTk, Image
-import pyglet
+import playsound 
 
 text = ''
 values = ''
@@ -138,7 +140,6 @@ class Main(tk.Tk):
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
         self.geometry('910x450+{}+{}'.format(w, h))#Размер
         self.resizable(False, False)#Изменение размера окна
-        self.protocol("WM_DELETE_WINDOW", lambda: exit_main())
         threading.Thread(target = creat_table).start()
         theme = open(os.path.dirname(os.path.abspath(__file__))+'/theme.txt','r')
         style = ThemedStyle()
@@ -1154,7 +1155,7 @@ def update_main(self):
     cur = conn.cursor()
 
     #Вывовд всех учеников
-    cur.execute("SELECT * FROM PROFILE")
+    cur.execute("SELECT * FROM PROFILE LIMIT 500")
     rows = cur.fetchall()
     for row in rows:
         db = row[1]
@@ -1812,9 +1813,6 @@ def self_main_inf_null(self):
     book_add = 0
     self.destroy()
 
-def music_stop():
-    pyglet.app.exit()
-
 def self_book_open(self):
     global self_main_book
     if self_main_book == 'close':
@@ -2444,14 +2442,9 @@ def easter3():
         easter_egg = 0
 
 def easter4(self):
+    print(dir(playsound.playsound))
     filename = os.path.dirname(os.path.abspath(__file__))+"/imper.mp3"
-    music = pyglet.media.load(filename)
-    music.play()
-    pyglet.app.run()
-
-def exit_main():
-    threading.Thread(target = music_stop).start()
-    sys.exit(0)
+    playsound.playsound(filename)
 
 def open_txt(self):
     ask = fd.askopenfilename(filetypes = (('TXT', '*.txt'),), defaultextension=".txt")
@@ -2506,6 +2499,22 @@ def geometry(self):
     time.sleep(10)
     print(self.winfo_geometry())
 
+def quit_window(icon, item):
+    icon.stop()
+    app.destroy()
+
+def show_window(icon, item):
+    icon.stop()
+    app.after(0,app.deiconify)
+
+def withdraw_window():
+    app.withdraw()
+    image = Image.open(os.path.dirname(os.path.abspath(__file__))+"/logo.ico")
+    menu = pystray.Menu(item('Развернуть', show_window, default=True), item('Закрыть', quit_window))
+    icon = pystray.Icon("Мини библиотека 2020", image, "Мини библиотека 2020", menu)
+    icon.run()
+
 if __name__ == "__main__":
     app = Main()
+    app.protocol('WM_DELETE_WINDOW', withdraw_window)
     app.mainloop()
