@@ -284,6 +284,7 @@ class Main(tk.Tk):
         threading.Thread(target = update_main, args = [self,]).start()
         
         self.bind('<KeyPress>', lambda event: event_handler_main(event, self))
+        self.bind('<<Key-43>>', lambda event: update_main(self))
 
         self.iconbitmap(os.path.dirname(os.path.abspath(__file__))+"/lib.ico")
 
@@ -2556,13 +2557,13 @@ def vk_api_save(self):
         file.write(token + '\n' + id_g)
         file.close()
 
-def vk_bot_start():
+def vk_bot_start(self):
     file = open(os.path.dirname(os.path.abspath(__file__))+"/vk_api.txt", 'r')
     lines = file.readlines()
     if lines != '':
-        threading.Thread(target = vk_bot, args=[lines[0][:-1],lines[1]]).start()
+        threading.Thread(target = vk_bot, args=[lines[0][:-1],lines[1], self]).start()
 
-def vk_bot(token, id_g):
+def vk_bot(token, id_g, self):
 
     vk_session = vk_api.VkApi(token=token, api_version='5.122')
 
@@ -2649,6 +2650,7 @@ def vk_bot(token, id_g):
                         res_spis[9], res_spis[10]+' '+res_spis[11], datetime.date.today().isoformat(), id_us]
                     cur.execute('INSERT INTO PROFILE VALUES (?,?,?,?,?,?,?,?,?)',result)
                     conn.commit()
+                    self.event_generate('<<Key-43>>')
                     vk.messages.send( #Отправляем сообщение
                         user_id=event.obj['message']['from_id'],
                         random_id=event.obj['message']['random_id'],
@@ -2734,7 +2736,7 @@ def vk_bot(token, id_g):
 
 
 if __name__ == "__main__":
-    threading.Thread(target = vk_bot_start).start()
     app = Main()
+    threading.Thread(target = vk_bot_start, args=[app,]).start()
     app.protocol('WM_DELETE_WINDOW', withdraw_window)
     app.mainloop()
