@@ -34,7 +34,10 @@ import threading
 from tkcalendar import DateEntry
 from tkinter import filedialog as fd
 from PIL import ImageTk, Image
-import playsound 
+import playsound
+import vk_api
+from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
+from vk_api.keyboard import VkKeyboard, VkKeyboardColor 
 
 text = ''
 values = ''
@@ -184,8 +187,11 @@ class Main(tk.Tk):
         btn_not = ttk.Button(self.fr, text='Уведомления', command = lambda: self_not_open(self))
         btn_not.grid(row=0, column=2, padx=5, pady=5)
 
+        btn_vk = ttk.Button(self.fr, text='ВК-Бот', command = lambda: VK_api())
+        btn_vk.grid(row=0, column=3, padx=5, pady=5)
+
         btn_style.config(menu=style_menu)
-        btn_style.grid(row=0, column=3, padx=5, pady=5)
+        btn_style.grid(row=0, column=4, padx=5, pady=5)
 
         btn_inf = ttk.Menubutton(self.fr, text='Информация')
         
@@ -195,7 +201,7 @@ class Main(tk.Tk):
         file_infa.add_command(label = "О программе", command = lambda: Information())
 
         btn_inf.config(menu=file_infa)
-        btn_inf.grid(row=0, column=4, padx=5, pady=5)
+        btn_inf.grid(row=0, column=5, padx=5, pady=5)
         
         #================================= Поиск ====================================
         self.frame_search1 = ttk.Frame(self)
@@ -276,10 +282,8 @@ class Main(tk.Tk):
         self.fr_watch_both.pack(side='bottom', fill='both')
 
         threading.Thread(target = update_main, args = [self,]).start()
-
         
         self.bind('<KeyPress>', lambda event: event_handler_main(event, self))
-
 
         self.iconbitmap(os.path.dirname(os.path.abspath(__file__))+"/lib.ico")
 
@@ -1088,6 +1092,36 @@ class Information(tk.Toplevel):
         if easter_egg == 3:
             threading.Thread(target = easter4, args = [self,]).start()
 
+class VK_api(tk.Toplevel):
+
+    def __init__(self, *args, **kwargs):
+        tk.Toplevel.__init__(self,*args, *kwargs)
+        self.title("Vk_Api") #Заголовок
+        w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
+        h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
+        self.geometry('+{}+{}'.format(w-100, h-150))#Размер
+        self.resizable(False, False)#Изменение размера окна
+        self.focus_force()
+
+        self.frame = ttk.Frame(self)
+        self.frame.pack(fill='both')
+        
+        self.token_lb = ttk.Label(self.frame,text='Токен:', width=10)
+        self.token_lb.grid(row=0,column=0, pady=5, padx=5)
+
+        self.token_en = ttk.Entry(self.frame, width = 20)
+        self.token_en.grid(row=0, column=1, padx=5)
+
+        self.id_lb = ttk.Label(self.frame,text='Id:', width=10)
+        self.id_lb.grid(row=1,column=0, pady=5, padx=5)
+
+        self.id_en = ttk.Entry(self.frame, width = 20)
+        self.id_en.grid(row=1, column=1, padx=5)
+
+        self.btn = ttk.Button(self.frame, text='Сохранить', command=lambda: vk_api_save(self))
+        self.btn.grid(row=2,column=1, pady=5, padx=5, sticky='E')
+
+
 
 #================================ Работа с БД ================================
 def creat_table():
@@ -1120,7 +1154,8 @@ def creat_table():
         	`ADR`	TEXT NOT NULL,
         	`PHONE`	TEXT NOT NULL,
         	`CLIENT`	TEXT NOT NULL,
-        	`DREG`	TEXT
+            `DREG`	TEXT NOT NULL,
+	        `VK_ID`	TEXT NOT NULL
         );
 
         CREATE TABLE IF NOT EXISTS `SCHBOOK` (
@@ -1273,13 +1308,13 @@ def save_stud2(self):
     adr = self.en_adr2.get()
     client = self.en_client.get()
     dreg = datetime.date.today()
-    line = [fio,db,clas,lit,adr,phone,client,dreg]
+    line = [fio,db,clas,lit,adr,phone,client,dreg,'']
     if null in (fio,db,phone,adr):   #Проверка на пустоту полей
         messagebox.showerror('ОШИБКА!!!','Ошибка! Поля не могут быть пустыми!', parent=self)  #Вывод ошибки
     else:
         conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
         con_cur = conn.cursor()
-        con_cur.execute('INSERT INTO PROFILE VALUES (?,?,?,?,?,?,?,?)',line)
+        con_cur.execute('INSERT INTO PROFILE VALUES (?,?,?,?,?,?,?,?,?)',line)
         conn.commit()
 
     messagebox.showinfo('Успех!','Данные сохранены!', parent=self)
@@ -2513,7 +2548,193 @@ def withdraw_window():
     icon = pystray.Icon("Мини библиотека 2020", image, "Мини библиотека 2020", menu)
     icon.run()
 
+def vk_api_save(self):
+    token = self.token_en.get()
+    id_g = self.id_en.get()
+    if (token != '') and (id_g != ''):
+        file = open(os.path.dirname(os.path.abspath(__file__))+"/vk_api.txt", 'w')
+        file.write(token + '\n' + id_g)
+        file.close()
+
+def vk_bot_start():
+    file = open(os.path.dirname(os.path.abspath(__file__))+"/vk_api.txt", 'r')
+    lines = file.readlines()
+    if lines != '':
+        threading.Thread(target = vk_bot, args=[lines[0][:-1],lines[1]]).start()
+
+def vk_bot(token, id_g):
+
+    vk_session = vk_api.VkApi(token=token, api_version='5.122')
+
+    longpoll = VkBotLongPoll(vk_session, id_g)
+
+    vk = vk_session.get_api()
+
+    for event in longpoll.listen():
+        if event.type == VkBotEventType.MESSAGE_NEW:
+            if (event.obj['message']['text'] == 'Привет') or (event.obj['message']['text'] == 'Hello'): #Если написали заданную фразу
+                if event.from_user: #Если написали в ЛС
+                    key = VkKeyboard(one_time=True, inline=False)
+                    key.add_button(label='Продолжить', color='primary')
+                    vk.messages.send( #Отправляем сообщение
+                        user_id=event.obj['message']['from_id'],
+                        random_id=event.obj['message']['random_id'],
+                        keyboard=key.get_keyboard(),
+                        message='Здравствуй! Я роботизированный помощник для школьной библиотеки. С моей помощью можно:\n\n1)Узнать статус взятой книги\n2)Продлить ее\n3)Узнать какие книги есть в наличии.'
+                    )
+            elif (event.obj['message']['text'] == 'Продолжить'): #Если написали заданную фразу
+                if event.from_user:
+                    key = VkKeyboard(one_time=True, inline=False)
+                    key.add_button(label='Регистрация', color='primary')
+                    key.add_line()
+                    key.add_button(label='Связать аккаунты', color='default')
+                    vk.messages.send( #Отправляем сообщение
+                        user_id=event.obj['message']['from_id'],
+                        random_id=event.obj['message']['random_id'],
+                        keyboard=key.get_keyboard(),
+                        message='Я очень рад что ты заинтересовался мной) \nИ так, для начала работы со мной напиши "Связать аккаунты" если ты уже зарегестрирован в нашей библиотеке, иначе напиши "Регистрация"'
+                    )
+            elif (event.obj['message']['text'] == 'Регистрация'):
+                if event.from_user:
+                    vk.messages.send( #Отправляем сообщение
+                        user_id=event.obj['message']['from_id'],
+                        random_id=event.obj['message']['random_id'],
+                        message='И так, для регистрации мне нужны ваши данные.\nМне нужны ФИО, Дата рождения, Класс, Литера(буква класса), Адрес, Телефон и кто Вы(Ученик, Учитель или Другой посетитель)'
+                    )
+                    time.sleep(6)
+                    vk.messages.send( #Отправляем сообщение
+                        user_id=event.obj['message']['from_id'],
+                        random_id=event.obj['message']['random_id'],
+                        message='Ваше следующее сообщение дожно быть вида: Регистрация: Фамилия Имя Отчество ДД.ММ.ГГГГ Класс Литера Улица дом, кв.номер Телефон Статус(кто Вы)'
+                    )
+                    time.sleep(6)
+                    vk.messages.send( #Отправляем сообщение
+                        user_id=event.obj['message']['from_id'],
+                        random_id=event.obj['message']['random_id'],
+                        message='Пример: \nРегистрация: Париев Олег Евгеньевич 08.04.2002 10 А Советская 24, кв.60 88005553535 Ученик'
+                    )
+                    time.sleep(6)
+                    vk.messages.send( #Отправляем сообщение
+                        user_id=event.obj['message']['from_id'],
+                        random_id=event.obj['message']['random_id'],
+                        message='Если вы Учитель или Другой посетитель, то писать класс и Литеру не надо, иначе, я вас не зарегистрирую'
+                    )
+            elif (event.obj['message']['text'][:12] == 'Регистрация:'):
+                if event.from_user:
+                    vk.messages.send( #Отправляем сообщение
+                        user_id=event.obj['message']['from_id'],
+                        random_id=event.obj['message']['random_id'],
+                        message='Ждите, я вас регистрирую'
+                    )
+                    text = event.obj['message']['text'][13:]
+                    lst = text.split()
+                    res_spis = []
+                    i = 0
+                    id_us = event.obj['message']['from_id']
+                    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
+                    cur = conn.cursor()
+                    while i < len(lst):
+                        res = lst[i]
+                        res_spis.append(res)
+                        i+=1
+                    if len(res_spis) == 11:
+                        result = [res_spis[0]+' '+res_spis[1]+' '+res_spis[2],
+                        datetime.datetime.strptime(res_spis[3], '%d.%m.%Y').strftime('%Y-%m-%d'), res_spis[4], res_spis[5],
+                        res_spis[6]+' '+res_spis[7]+' '+res_spis[8],
+                        res_spis[9], res_spis[10], datetime.date.today().isoformat(), id_us]
+                    elif len(res_spis) == 12:
+                        result = [res_spis[0]+' '+res_spis[1]+' '+res_spis[2],
+                        datetime.datetime.strptime(res_spis[3], '%d.%m.%Y').strftime('%Y-%m-%d'), res_spis[4], res_spis[5],
+                        res_spis[6]+' '+res_spis[7]+' '+res_spis[8],
+                        res_spis[9], res_spis[10]+' '+res_spis[11], datetime.date.today().isoformat(), id_us]
+                    cur.execute('INSERT INTO PROFILE VALUES (?,?,?,?,?,?,?,?,?)',result)
+                    conn.commit()
+                    vk.messages.send( #Отправляем сообщение
+                        user_id=event.obj['message']['from_id'],
+                        random_id=event.obj['message']['random_id'],
+                        message='Регистрация прошла успешно!'
+                    )
+                    time.sleep(2)
+                    vk.messages.send( #Отправляем сообщение
+                        user_id=event.obj['message']['from_id'],
+                        random_id=event.obj['message']['random_id'],
+                        message='Теперь вы можете пользоваться всеми моими функциями! Желаю вам Удачи и Хорошего чтения😄'
+                    )
+            elif (event.obj['message']['text'] == 'Связать аккаунты'):
+                if event.from_user:
+                    vk.messages.send( #Отправляем сообщение
+                        user_id=event.obj['message']['from_id'],
+                        random_id=event.obj['message']['random_id'],
+                        message='Для связки аккаунтов мне потребуются ФИО, Дата рожденя и Номер телефона.'
+                    )
+                    time.sleep(1)
+                    vk.messages.send( #Отправляем сообщение
+                        user_id=event.obj['message']['from_id'],
+                        random_id=event.obj['message']['random_id'],
+                        message='Ваше следующее сообщение должно быть вида:\nСвязать: Фамилия Имя Отчество ДД.ММ.ГГГГ Номер'
+                    )
+                    time.sleep(1)
+                    vk.messages.send( #Отправляем сообщение
+                        user_id=event.obj['message']['from_id'],
+                        random_id=event.obj['message']['random_id'],
+                        message='Пример:\nСвязать: Париев Олег Евгеньевич 08.04.2002 88005553535'
+                    )
+            elif (event.obj['message']['text'][:8] == 'Связать:'):
+                if event.from_user:
+                    vk.messages.send( #Отправляем сообщение
+                        user_id=event.obj['message']['from_id'],
+                        random_id=event.obj['message']['random_id'],
+                        message='Ждите... Идёт привязка аккаунта. Это займёт не более 5 минут'
+                    )
+                    text = event.obj['message']['text'][9:]
+                    lst = text.split()
+                    res_spis = []
+                    i = 0
+                    id_us = event.obj['message']['from_id']
+                    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
+                    cur = conn.cursor()
+                    while i < len(lst):
+                        string = lst[i]
+                        res_spis.append(string)
+                        i+=1
+                    db = datetime.datetime.strptime(res_spis[3], '%d.%m.%Y')
+                    db = db.strftime('%Y-%m-%d')
+                    result = [id_us,res_spis[0]+' '+res_spis[1]+' '+res_spis[2],db,res_spis[4]]
+                    cur.execute('SELECT * FROM PROFILE WHERE FIO = (?) AND DB = (?) AND PHONE = (?)',result[1:])
+                    rows = cur.fetchall()
+                    if rows != []:
+                        cur.execute('UPDATE PROFILE SET VK_ID = (?) WHERE FIO = (?) AND DB = (?) AND PHONE = (?)',result)
+                        conn.commit()
+                        time.sleep(2)
+                        vk.messages.send( #Отправляем сообщение
+                            user_id=event.obj['message']['from_id'],
+                            random_id=event.obj['message']['random_id'],
+                            message='Привязка прошла успешно!'
+                        )
+                        time.sleep(2)
+                        vk.messages.send( #Отправляем сообщение
+                            user_id=event.obj['message']['from_id'],
+                            random_id=event.obj['message']['random_id'],
+                            message='Теперь вы можете пользоваться всеми моими функциями! Желаю вам Удачи и Хорошего чтения😄'
+                        )
+                    else:
+                        key = VkKeyboard(one_time=True, inline=False)
+                        key.add_button(label='Регистрация', color='positive')
+                        vk.messages.send( #Отправляем сообщение
+                            user_id=event.obj['message']['from_id'],
+                            random_id=event.obj['message']['random_id'],
+                            keyboard=key.get_keyboard(),
+                            message='Такой пользователь не найден😢 Либо его нету в нашей Базе Данных, либо вы неверно ввели эти самые данные\n\nПроверьте их правильность, если снова не выйдет - пройдите Регистрацию'
+                        )
+
+
+
+
+
+
+
 if __name__ == "__main__":
+    threading.Thread(target = vk_bot_start).start()
     app = Main()
     app.protocol('WM_DELETE_WINDOW', withdraw_window)
     app.mainloop()
