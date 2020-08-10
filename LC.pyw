@@ -50,6 +50,7 @@ self_book_info = 'close'
 book_add = 0
 prev_column = None
 obj = ["Алгебра","Геометрия","Математика","Русский язык","Английский язык","Французский язык","Немецкий язык","Физика","Химия","География","Информатика","Обществознание","История","Литература"]
+open_win = []
 
 easter_egg = 0
 
@@ -295,6 +296,7 @@ class Main(tk.Tk):
 class Add_profile(tk.Toplevel):
     def __init__(self, *args, **kwargs):
         tk.Toplevel.__init__(self,*args, *kwargs)
+        open_win.append(self)
         self.title("Добавить читателя") #Заголовок
         w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
@@ -370,6 +372,7 @@ class Add_profile(tk.Toplevel):
 class Edit_profile(tk.Toplevel):
     def __init__(self, *args, **kwargs):
         tk.Toplevel.__init__(self,*args, *kwargs)
+        open_win.append(self)
         self.title("Редактировать читателя") #Заголовок
         w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
         h = ((self.winfo_screenheight() // 2)) # высота экрана
@@ -441,6 +444,7 @@ class Edit_profile(tk.Toplevel):
 class INFO(tk.Toplevel):
     def __init__(self, *args, **kwargs):
         tk.Toplevel.__init__(self,*args, *kwargs)
+        open_win.append(self)
         w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
         self.geometry('710x400+{}+{}'.format(w+300, h-125))#Размер
@@ -511,6 +515,7 @@ class INFO(tk.Toplevel):
 class Add_lc(tk.Toplevel):
     def __init__(self, *args, **kwargs):
         tk.Toplevel.__init__(self,*args, *kwargs)
+        open_win.append(self)
         self.title("Добавить книгу в ЧБ") #Заголовок
         w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
@@ -557,6 +562,7 @@ class Add_lc(tk.Toplevel):
 class Edit_lc(tk.Toplevel):
     def __init__(self, *args, **kwargs):
         tk.Toplevel.__init__(self,*args, *kwargs)
+        open_win.append(self)
         self.title("Изменить книгу в ЧБ") #Заголовок
         w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
@@ -611,6 +617,7 @@ class Book(tk.Toplevel):
 
     def __init__(self, *args, **kwargs):
         tk.Toplevel.__init__(self,*args, *kwargs)
+        open_win.append(self)
         self.title("Учёт книг") #Заголовок
         w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
@@ -752,6 +759,7 @@ class Book(tk.Toplevel):
 class Add_book(tk.Toplevel):
     def __init__(self, *args, **kwargs):
         tk.Toplevel.__init__(self,*args, *kwargs)
+        open_win.append(self)
         self.title("Добавить книги") #Заголовок
         w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
@@ -784,6 +792,7 @@ class Add_book(tk.Toplevel):
 class Edit_books(tk.Toplevel):
     def __init__(self, *args, **kwargs):
         tk.Toplevel.__init__(self,*args, *kwargs)
+        open_win.append(self)
         self.title("Редактировать книги") #Заголовок
         w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
@@ -816,6 +825,7 @@ class Edit_books(tk.Toplevel):
 class INFO_Book(tk.Toplevel):
     def __init__(self, *args, **kwargs):
         tk.Toplevel.__init__(self,*args, *kwargs)
+        open_win.append(self)
         self.title("Информация о книге") #Заголовок
         w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
@@ -874,6 +884,7 @@ class INFO_Book(tk.Toplevel):
 class Not(tk.Toplevel):
       def __init__(self,*args, **kwargs):
         tk.Toplevel.__init__(self,*args, *kwargs)
+        open_win.append(self)
         self.title("Электронный читательский билет - Уведомления")#Заголовок
         self.geometry("770x450+0+0")#Размер окна
         self.resizable(False,False)#Изменение размера окна
@@ -921,9 +932,11 @@ class Not(tk.Toplevel):
 class Excel(tk.Toplevel):
       def __init__(self,*args, **kwargs):
         tk.Toplevel.__init__(self,*args, *kwargs)
+        open_win.append(self)
         w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
         self.title("Сохранить в Excel")#Заголовок
+        self.protocol("WM_DELETE_WINDOW", lambda: closed_excel(self))    
         self.geometry('167x134+{}+{}'.format(w+300, h))
         self.resizable(False,False)#Изменение размера окна
         self.configure(background='#e9e9e9')#Фон окна
@@ -958,6 +971,7 @@ class Spravka(tk.Toplevel):
 
     def __init__(self, *args, **kwargs):
         tk.Toplevel.__init__(self,*args, *kwargs)
+        open_win.append(self)
         self.title("Справка") #Заголовок
         w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
@@ -1006,6 +1020,7 @@ class Information(tk.Toplevel):
 
     def __init__(self, *args, **kwargs):
         tk.Toplevel.__init__(self,*args, *kwargs)
+        open_win.append(self)
         self.title("Информация") #Заголовок
         w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
@@ -1097,12 +1112,14 @@ class VK_api(tk.Toplevel):
 
     def __init__(self, *args, **kwargs):
         tk.Toplevel.__init__(self,*args, *kwargs)
+        open_win.append(self)
         self.title("Vk_Api") #Заголовок
         w = ((self.winfo_screenwidth() // 2) - 450) # ширина экрана
         h = ((self.winfo_screenheight() // 2) - 225) # высота экрана
         self.geometry('+{}+{}'.format(w-100, h-150))#Размер
         self.resizable(False, False)#Изменение размера окна
         self.focus_force()
+        self.protocol("WM_DELETE_WINDOW", lambda: vk_closed(self))
 
         self.frame = ttk.Frame(self)
         self.frame.pack(fill='both')
@@ -1817,27 +1834,32 @@ def lit(self):
 
 def self_main_null(self):
     global self_main
+    open_win.remove(self)
     self_main = 'close'
     self.destroy()
 
 def self_info_null(self):
     global self_info
+    open_win.remove(self)
     self_info = 'close'
     self.destroy()
 
 def self_book_null(self):
     global self_book
+    open_win.remove(self)
     self_book = 'close'
     self.destroy()
 
 def self_book_inf_null(self):
     global self_book_info
+    open_win.remove(self)
     self_book_info = 'close'
     self.destroy()
 
 def self_main_book_null(self):
     global book_add
     global self_main_book
+    open_win.remove(self)
     self_main_book = 'close'
     book_add = 0
     self.destroy()
@@ -1845,6 +1867,7 @@ def self_main_book_null(self):
 def self_main_inf_null(self):
     global book_add
     global self_main_book
+    open_win.remove(self)
     self_main_book = 'close'
     book_add = 0
     self.destroy()
@@ -1863,8 +1886,17 @@ def self_not_open(self):
 
 def self_not_close(self):
     global self_main_not
+    open_win.remove(self)
     self_main_not = 'close'
     self.destroy()
+
+def closed_excel(self):
+    open_win.remove(self)
+    self.destroy()
+
+def vk_closed(self):
+    open_win.remove(self)
+    self.destroy
 
 def book_bind_add(self):
     global book_add
@@ -2543,6 +2575,8 @@ def show_window(icon, item):
     app.after(0,app.deiconify)
 
 def withdraw_window():
+    for i in open_win:
+        i.destroy()
     app.withdraw()
     image = Image.open(os.path.dirname(os.path.abspath(__file__))+"/logo.ico")
     menu = pystray.Menu(item('Развернуть', show_window, default=True), item('Закрыть', quit_window))
