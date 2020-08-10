@@ -2618,7 +2618,7 @@ def vk_bot(token, id_g, self):
                     vk.messages.send( #Отправляем сообщение
                         user_id=event.obj['message']['from_id'],
                         random_id=event.obj['message']['random_id'],
-                        message='Если вы Учитель или Другой посетитель, то писать класс и Литеру не надо, иначе, я вас не зарегистрирую'
+                        message='Если вы Учитель или Другой посетитель, то вместо Класса и Литеры ставьте точку, иначе я вас не зарегистрирую'
                     )
             elif (event.obj['message']['text'][:12] == 'Регистрация:'):
                 if event.from_user:
@@ -2638,30 +2638,91 @@ def vk_bot(token, id_g, self):
                         res = lst[i]
                         res_spis.append(res)
                         i+=1
-                    if len(res_spis) == 11:
-                        result = [res_spis[0]+' '+res_spis[1]+' '+res_spis[2],
-                        datetime.datetime.strptime(res_spis[3], '%d.%m.%Y').strftime('%Y-%m-%d'), res_spis[4], res_spis[5],
-                        res_spis[6]+' '+res_spis[7]+' '+res_spis[8],
-                        res_spis[9], res_spis[10], datetime.date.today().isoformat(), id_us]
-                    elif len(res_spis) == 12:
-                        result = [res_spis[0]+' '+res_spis[1]+' '+res_spis[2],
-                        datetime.datetime.strptime(res_spis[3], '%d.%m.%Y').strftime('%Y-%m-%d'), res_spis[4], res_spis[5],
-                        res_spis[6]+' '+res_spis[7]+' '+res_spis[8],
-                        res_spis[9], res_spis[10]+' '+res_spis[11], datetime.date.today().isoformat(), id_us]
-                    cur.execute('INSERT INTO PROFILE VALUES (?,?,?,?,?,?,?,?,?)',result)
-                    conn.commit()
-                    self.event_generate('<<Key-43>>')
-                    vk.messages.send( #Отправляем сообщение
-                        user_id=event.obj['message']['from_id'],
-                        random_id=event.obj['message']['random_id'],
-                        message='Регистрация прошла успешно!'
-                    )
-                    time.sleep(2)
-                    vk.messages.send( #Отправляем сообщение
-                        user_id=event.obj['message']['from_id'],
-                        random_id=event.obj['message']['random_id'],
-                        message='Теперь вы можете пользоваться всеми моими функциями! Желаю вам Удачи и Хорошего чтения😄'
-                    )
+                    fio = res_spis[0]+' '+res_spis[1]+' '+res_spis[2]
+                    cur.execute('SELECT * FROM PROFILE WHERE FIO=(?) AND DB=(?) AND VK_ID =(?)',[fio,datetime.datetime.strptime(res_spis[3], '%d.%m.%Y').strftime('%Y-%m-%d'),event.obj['message']['from_id']])
+                    row = cur.fetchall()
+                    if row != []:
+                        vk.messages.send( #Отправляем сообщение
+                            user_id=event.obj['message']['from_id'],
+                            random_id=event.obj['message']['random_id'],
+                            message='Такой аккаунт существует!'
+                        )
+                    else:
+                        cur.execute('SELECT * FROM PROFILE WHERE FIO=(?) AND DB=(?)',[fio,datetime.datetime.strptime(res_spis[3], '%d.%m.%Y').strftime('%Y-%m-%d')])
+                        row = cur.fetchall()
+                        if row != []:
+                            key = VkKeyboard(one_time=True, inline=False)
+                            key.add_button(label='Связать аккаунты', color='positive')
+                            vk.messages.send( #Отправляем сообщение
+                                user_id=event.obj['message']['from_id'],
+                                random_id=event.obj['message']['random_id'],
+                                keyboard=key.get_keyboard(),
+                                message='Такой аккаунт существует! Проведите Связку аккаунтов'
+                            )
+                        else:
+                            if (len(res_spis) == 11) and (res_spis[10]!='Учитель') and (res_spis[4]!=res_spis[5]) and (res_spis[5]!='.'):
+                                result = [res_spis[0]+' '+res_spis[1]+' '+res_spis[2],
+                                datetime.datetime.strptime(res_spis[3], '%d.%m.%Y').strftime('%Y-%m-%d'), res_spis[4], res_spis[5],
+                                res_spis[6]+' '+res_spis[7]+' '+res_spis[8],
+                                res_spis[9], res_spis[10], datetime.date.today().isoformat(), id_us]
+                                cur.execute('INSERT INTO PROFILE VALUES (?,?,?,?,?,?,?,?,?)',result)
+                                conn.commit()
+                                self.event_generate('<<Key-43>>')
+                                vk.messages.send( #Отправляем сообщение
+                                    user_id=event.obj['message']['from_id'],
+                                    random_id=event.obj['message']['random_id'],
+                                    message='Регистрация прошла успешно!'
+                                )
+                                time.sleep(2)
+                                vk.messages.send( #Отправляем сообщение
+                                    user_id=event.obj['message']['from_id'],
+                                    random_id=event.obj['message']['random_id'],
+                                    message='Теперь вы можете пользоваться всеми моими функциями! Желаю вам Удачи и Хорошего чтения😄'
+                                )
+                            elif (len(res_spis) == 11) and (res_spis[10]=='Учитель') and (res_spis[4]==res_spis[5]) and (res_spis[5]=='.'):
+                                result = [res_spis[0]+' '+res_spis[1]+' '+res_spis[2],
+                                datetime.datetime.strptime(res_spis[3], '%d.%m.%Y').strftime('%Y-%m-%d'), res_spis[4].replace('.',''), res_spis[5].replace('.',''),
+                                res_spis[6]+' '+res_spis[7]+' '+res_spis[8],
+                                res_spis[9], res_spis[10], datetime.date.today().isoformat(), id_us]
+                                cur.execute('INSERT INTO PROFILE VALUES (?,?,?,?,?,?,?,?,?)',result)
+                                conn.commit()
+                                self.event_generate('<<Key-43>>')
+                                vk.messages.send( #Отправляем сообщение
+                                    user_id=event.obj['message']['from_id'],
+                                    random_id=event.obj['message']['random_id'],
+                                    message='Регистрация прошла успешно!'
+                                )
+                                time.sleep(2)
+                                vk.messages.send( #Отправляем сообщение
+                                    user_id=event.obj['message']['from_id'],
+                                    random_id=event.obj['message']['random_id'],
+                                    message='Теперь вы можете пользоваться всеми моими функциями! Желаю вам Удачи и Хорошего чтения😄'
+                                )
+                            elif len(res_spis) == 12 and (res_spis[10]+' '+res_spis[11]=='Другой посетитель') and (res_spis[4]!=res_spis[5]) and (res_spis[5]!='.'):
+                                result = [res_spis[0]+' '+res_spis[1]+' '+res_spis[2],
+                                datetime.datetime.strptime(res_spis[3], '%d.%m.%Y').strftime('%Y-%m-%d'), res_spis[4].replace('.',''), res_spis[5].replace('.',''),
+                                res_spis[6]+' '+res_spis[7]+' '+res_spis[8],
+                                res_spis[9], res_spis[10]+' '+res_spis[11], datetime.date.today().isoformat(), id_us]
+                                cur.execute('INSERT INTO PROFILE VALUES (?,?,?,?,?,?,?,?,?)',result)
+                                conn.commit()
+                                self.event_generate('<<Key-43>>')
+                                vk.messages.send( #Отправляем сообщение
+                                    user_id=event.obj['message']['from_id'],
+                                    random_id=event.obj['message']['random_id'],
+                                    message='Регистрация прошла успешно!'
+                                )
+                                time.sleep(2)
+                                vk.messages.send( #Отправляем сообщение
+                                    user_id=event.obj['message']['from_id'],
+                                    random_id=event.obj['message']['random_id'],
+                                    message='Теперь вы можете пользоваться всеми моими функциями! Желаю вам Удачи и Хорошего чтения😄'
+                                )
+                            else:
+                                vk.messages.send( #Отправляем сообщение
+                                    user_id=event.obj['message']['from_id'],
+                                    random_id=event.obj['message']['random_id'],
+                                    message='Ошибка! Посмотрети внимательнее, видимо вы где-то ошиблись'
+                                )
             elif (event.obj['message']['text'] == 'Связать аккаунты'):
                 if event.from_user:
                     vk.messages.send( #Отправляем сообщение
