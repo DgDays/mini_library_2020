@@ -2723,6 +2723,7 @@ def vk_bot(token, id_g, self):
                                 vk.messages.send( #Отправляем сообщение
                                     user_id=event.obj['message']['from_id'],
                                     random_id=event.obj['message']['random_id'],
+                                    keyboard = keyboard_help.get_keyboard(),
                                     message='Теперь вы можете пользоваться всеми моими функциями! Желаю вам Удачи и Хорошего чтения😄'
                                 )
                             elif (len(res_spis) == 11) and (res_spis[10]=='Учитель') and (res_spis[4]==res_spis[5]) and (res_spis[5]=='.'):
@@ -2742,6 +2743,7 @@ def vk_bot(token, id_g, self):
                                 vk.messages.send( #Отправляем сообщение
                                     user_id=event.obj['message']['from_id'],
                                     random_id=event.obj['message']['random_id'],
+                                    keyboard = keyboard_help.get_keyboard(),
                                     message='Теперь вы можете пользоваться всеми моими функциями! Желаю вам Удачи и Хорошего чтения😄'
                                 )
                             elif len(res_spis) == 12 and (res_spis[10]+' '+res_spis[11]=='Другой посетитель') and (res_spis[4]!=res_spis[5]) and (res_spis[5]!='.'):
@@ -2851,7 +2853,7 @@ def vk_bot(token, id_g, self):
             
             elif event.obj['message']['text'] == 'Удалить аккаунт':
                 if event.from_user:
-                    key = VkKeyboard(inline=False)
+                    key = VkKeyboard(inline=False, one_time=True)
                     key.add_button(label='Да', color ='positive')
                     key.add_button(label='Нет', color ='negative')
                     vk.messages.send(
