@@ -2605,6 +2605,15 @@ def vk_bot(token, id_g, self):
 
     vk = vk_session.get_api()
 
+    del_ac = 0
+
+    keyboard_help = VkKeyboard(inline=False)
+    keyboard_help.add_button(label='Продлить книгу', color='positive')
+    keyboard_help.add_line()
+    keyboard_help.add_button(label='Проверить наличие книги')
+    keyboard_help.add_line()
+    keyboard_help.add_button(label='Удалить аккаунт', color='negative')
+
     for event in longpoll.listen():
         if event.type == VkBotEventType.MESSAGE_NEW:
             if (event.obj['message']['text'] == 'Привет') or (event.obj['message']['text'] == 'Hello'): #Если написали заданную фразу
@@ -2617,6 +2626,7 @@ def vk_bot(token, id_g, self):
                         keyboard=key.get_keyboard(),
                         message='Здравствуй! Я роботизированный помощник для школьной библиотеки. С моей помощью можно:\n\n1)Узнать статус взятой книги\n2)Продлить ее\n3)Узнать какие книги есть в наличии.'
                     )
+
             elif (event.obj['message']['text'] == 'Продолжить'): #Если написали заданную фразу
                 if event.from_user:
                     key = VkKeyboard(one_time=True, inline=False)
@@ -2629,6 +2639,7 @@ def vk_bot(token, id_g, self):
                         keyboard=key.get_keyboard(),
                         message='Я очень рад что ты заинтересовался мной) \nИ так, для начала работы со мной напиши "Связать аккаунты" если ты уже зарегестрирован в нашей библиотеке, иначе напиши "Регистрация"'
                     )
+
             elif (event.obj['message']['text'] == 'Регистрация'):
                 if event.from_user:
                     vk.messages.send( #Отправляем сообщение
@@ -2654,6 +2665,7 @@ def vk_bot(token, id_g, self):
                         random_id=event.obj['message']['random_id'],
                         message='Если вы Учитель или Другой посетитель, то вместо Класса и Литеры ставьте точку, иначе я вас не зарегистрирую'
                     )
+
             elif (event.obj['message']['text'][:12] == 'Регистрация:'):
                 if event.from_user:
                     vk.messages.send( #Отправляем сообщение
@@ -2749,6 +2761,7 @@ def vk_bot(token, id_g, self):
                                 vk.messages.send( #Отправляем сообщение
                                     user_id=event.obj['message']['from_id'],
                                     random_id=event.obj['message']['random_id'],
+                                    keyboard=keyboard_help.get_keyboard(),
                                     message='Теперь вы можете пользоваться всеми моими функциями! Желаю вам Удачи и Хорошего чтения😄'
                                 )
                             else:
@@ -2757,6 +2770,7 @@ def vk_bot(token, id_g, self):
                                     random_id=event.obj['message']['random_id'],
                                     message='Ошибка! Посмотрети внимательнее, видимо вы где-то ошиблись'
                                 )
+
             elif (event.obj['message']['text'] == 'Связать аккаунты'):
                 if event.from_user:
                     vk.messages.send( #Отправляем сообщение
@@ -2776,6 +2790,7 @@ def vk_bot(token, id_g, self):
                         random_id=event.obj['message']['random_id'],
                         message='Пример:\nСвязать: Париев Олег Евгеньевич 08.04.2002 88005553535'
                     )
+
             elif (event.obj['message']['text'][:8] == 'Связать:'):
                 if event.from_user:
                     vk.messages.send( #Отправляем сообщение
@@ -2812,6 +2827,7 @@ def vk_bot(token, id_g, self):
                         vk.messages.send( #Отправляем сообщение
                             user_id=event.obj['message']['from_id'],
                             random_id=event.obj['message']['random_id'],
+                            keyboard=keyboard_help.get_keyboard(),
                             message='Теперь вы можете пользоваться всеми моими функциями! Желаю вам Удачи и Хорошего чтения😄'
                         )
                     else:
@@ -2824,6 +2840,53 @@ def vk_bot(token, id_g, self):
                             message='Такой пользователь не найден😢 Либо его нету в нашей Базе Данных, либо вы неверно ввели эти самые данные\n\nПроверьте их правильность, если снова не выйдет - пройдите Регистрацию'
                         )
 
+            elif event.obj['message']['text'] in ('Помощь', 'Help', 'HELP', '/h'):
+                if event.from_user:
+                    vk.messages.send(
+                        user_id=event.obj['message']['from_id'],
+                        keyboard=keyboard_help.get_keyboard(),
+                        random_id=event.obj['message']['random_id'],
+                        message='Вот тебе рука помощи друг)\nУ тебя снизу появилась клавиатура, которая поможет тебе в общении со мной.\n\nЕсли ты тут впервые - напиши "Привет"'
+                    )
+            
+            elif event.obj['message']['text'] == 'Удалить аккаунт':
+                if event.from_user:
+                    key = VkKeyboard(inline=False)
+                    key.add_button(label='Да', color ='positive')
+                    key.add_button(label='Нет', color ='negative')
+                    vk.messages.send(
+                        user_id=event.obj['message']['from_id'],
+                        keyboard=key.get_keyboard(),
+                        random_id=event.obj['message']['random_id'],
+                        message='Вы уверены что хотите удалить свой билет из нашей библиотеки?\nЭто значит, что вы не сможете пользоваться функциями бота'
+                    )
+                    del_ac = 1
+            elif event.obj['message']['text'] == 'Да':
+                if event.from_user:
+                    if del_ac != 0:
+                        conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
+                        con_cur = conn.cursor()
+                        con_cur.execute('SELECT * FROM PROFILE WHERE VK_ID = (?)',(str(event.obj['message']['from_id']),))
+                        values = con_cur.fetchall()
+                        line = (values[0][0], values[0][1], values[0][5])
+                        con_cur.execute('DELETE FROM PROFILE WHERE FIO = (?) AND DB = (?) AND PHONE = (?)',line)
+                        con_cur.execute('DELETE FROM LC WHERE FIO = (?) AND DB = (?) AND PHONE = (?)',line)
+                        conn.commit()
+                        vk.messages.send(
+                            user_id=event.obj['message']['from_id'],
+                            random_id=event.obj['message']['random_id'],
+                            message='Очень жаль что вы нас покидаете😢\nАккаунт успешно удален'
+                        )
+                        del_ac = 0
+
+            elif event.obj['message']['text'] == 'Нет':
+                if event.from_user:
+                    if del_ac != 0:
+                        vk.messages.send(
+                            user_id=event.obj['message']['from_id'],
+                            random_id=event.obj['message']['random_id'],
+                            message='Мы очень рады что вы решили остаться с нами😀'
+                        )
 
 
 
