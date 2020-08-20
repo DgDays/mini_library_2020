@@ -1183,6 +1183,7 @@ def creat_table():
         	`OBJ`	TEXT NOT NULL
         );
     """)
+    conn.commit()
 
 def update_not(self):
     threading.Thread(target = progressbar_start, args = [self,]).start()
@@ -2890,6 +2891,102 @@ def vk_bot(token, id_g, self):
                             message='Мы очень рады что вы решили остаться с нами😀'
                         )
 
+            elif event.obj['message']['text'] == 'Продлить книгу':
+                if event.from_user:
+                    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
+                    cur = conn.cursor()
+                    cur.execute('SELECT * FROM PROFILE WHERE VK_ID = (?)',(event.obj['message']['from_id'],))
+                    values = cur.fetchall()
+                    line = (values[0][0],values[0][1],values[0][5])
+                    cur.execute('SELECT DC,AUT,BOOK,STAT FROM LC WHERE FIO = (?) AND DB = (?) AND PHONE = (?)',line)
+                    rows = cur.fetchall()
+                    mess = ''
+                    k = 1
+                    for i in rows:
+                        date = datetime.datetime.strptime(i[0], '%Y-%m-%d')
+                        date = date.strftime('%d.%m.%Y')
+                        row = '{}) Автор: ' + i[1] + ' Название: ' + i[2] + ' Статус: ' + i[3] + ' Сдать: ' + date + '\n'
+                        row = row.format(k)
+                        mess += row
+                    vk.messages.send(
+                        user_id=event.obj['message']['from_id'],
+                        random_id=event.obj['message']['random_id'],
+                        message='Вот список литературы, которую вы взяли:\n' + mess + '\nКакую желаете продлить?'
+                    )
+                    time.sleep(3)
+                    vk.messages.send(
+                        user_id=event.obj['message']['from_id'],
+                        random_id=event.obj['message']['random_id'],
+                        message='Для продления напишите Автора и Название книги.'
+                    )
+                    time.sleep(1)
+                    vk.messages.send(
+                        user_id=event.obj['message']['from_id'],
+                        random_id=event.obj['message']['random_id'],
+                        message='Формат продления:\nПродлить: Фамилия И. О. "Название"'
+                    )
+                    time.sleep(1)
+                    vk.messages.send(
+                        user_id=event.obj['message']['from_id'],
+                        random_id=event.obj['message']['random_id'],
+                        message='Пример:\nПродлить: Пушкин А. С. "Евгений Онегин"'
+                    )
+                    conn.commit()
+
+            elif event.obj['message']['text'][:9] == 'Продлить:':
+                if event.from_user:
+                    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
+                    cur = conn.cursor()
+                    values = event.obj['message']['text'][10:]
+                    values = values.split()
+                    aut = ''
+                    book = ''
+                    i = 0
+                    while i < len(values):
+                        if i < 2:
+                            aut += values[i] + ' '
+                            i+=1
+                        elif i == 2:
+                            aut += values[i]
+                            i+=1
+                        elif i<len(values)-1:
+                            book += values[i] + ' '
+                            i+=1
+                        else:
+                            book += values[i]
+                            i+=1
+                    i = 0
+                    cur.execute("SELECT FIO, DB, PHONE FROM PROFILE WHERE VK_ID = (?)",(event.obj['message']['from_id'],))
+                    values = cur.fetchall()
+                    res = (values[0][0],values[0][1],values[0][2],aut, book,'На руках', 'Просрочена')
+                    cur.execute("SELECT DC FROM LC WHERE FIO = (?) AND DB=(?) AND PHONE = (?) AND AUT =(?) AND BOOK = (?) AND (STAT = (?) OR STAT = (?))", res)
+                    dc = cur.fetchone()
+                    dc = datetime.datetime.strptime(dc[0], '%Y-%m-%d')
+                    today = datetime.date.today()
+                    today = str(today)
+                    today = datetime.datetime.strptime(today, '%Y-%m-%d')
+                    raz = dc - today
+                    if raz.days > 6:
+                        vk.messages.send(
+                            user_id=event.obj['message']['from_id'],
+                            random_id=event.obj['message']['random_id'],
+                            message='Нельзя продливать книги, срок которых больше недели'
+                        )
+                    else:
+                        dc = str(dc + timedelta(days=7))
+                        dc = dc[:10]
+                        res = (dc,values[0][0],values[0][1],values[0][2],aut, book,'На руках', 'Просрочена')
+                        cur.execute("UPDATE LC SET DC = (?) WHERE FIO = (?) AND DB=(?) AND PHONE = (?) AND AUT =(?) AND BOOK = (?) AND (STAT = (?) OR STAT = (?))", res)
+                        dc = str(dc)
+                        dc = datetime.datetime.strptime(dc, '%Y-%m-%d')
+                        dc = dc.strftime('%d.%m.%Y')
+                        vk.messages.send(
+                            user_id=event.obj['message']['from_id'],
+                            random_id=event.obj['message']['random_id'],
+                            keyboard = keyboard_help.get_keyboard(),
+                            message='Книга успешно продлена до: {}'.format(dc)
+                        )
+                        conn.commit()
 
 
 
