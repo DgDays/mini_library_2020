@@ -1186,7 +1186,6 @@ def creat_table():
     conn.commit()
 
 def update_not(self):
-    threading.Thread(target = progressbar_start, args = [self,]).start()
     x = datetime.date.today().isoformat()#Текущая дата в ISO формате
     #Подключение к БД
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
@@ -1199,8 +1198,10 @@ def update_not(self):
     cur.execute("SELECT FIO, PHONE, BOOK, DC, STAT FROM LC WHERE STAT = 'Просрочена'")#Выборка просроченных книг из БД
     rows = cur.fetchall()
     for row in rows:
+        dc = datetime.datetime.strptime(row[3], '%Y-%m-%d')
+        dc = dc.strftime('%d.%m.%Y')
+        row = (row[0],row[1],row[2],dc,row[4])
         self.table.insert("" , tk.END , values=row)#Вывод в таблицу
-    threading.Thread(target = progressbar_stop, args = [self,]).start()
 
 def update_main(self):
     threading.Thread(target = progressbar_start, args = [self,]).start()
