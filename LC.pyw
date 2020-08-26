@@ -2989,6 +2989,85 @@ def vk_bot(token, id_g, self):
                         )
                         conn.commit()
 
+            elif event.obj['message']['text'] == 'Проверить наличие книги':
+                if event.from_user:
+                    vk.messages.send(
+                        user_id=event.obj['message']['from_id'],
+                        random_id=event.obj['message']['random_id'],
+                        message='Какую(ие) книгу(и) хотите проверить на наличие в библиотеке?'
+                    )
+                    time.sleep(1)
+                    vk.messages.send(
+                        user_id=event.obj['message']['from_id'],
+                        random_id=event.obj['message']['random_id'],
+                        message='Напишите "Проверить: Слово/а'
+                    )
+                    time.sleep(1)
+                    vk.messages.send(
+                        user_id=event.obj['message']['from_id'],
+                        random_id=event.obj['message']['random_id'],
+                        message='Пример:\nПроверить: Евгений Онегин'
+                    )
+                    time.sleep(1)
+                    vk.messages.send(
+                        user_id=event.obj['message']['from_id'],
+                        random_id=event.obj['message']['random_id'],
+                        message='Возможно, Автор будет записан таким образом: "И. О. Фамилия" или же "Фаимилия И. О.".\nЕсли с первого раза Вы не нашли нужную книгу - попробуйте другой вариант)'
+                    )
+
+            elif event.obj['message']['text'][:10] == 'Проверить:':
+                if event.from_user:
+                    vk.messages.send(
+                        user_id=event.obj['message']['from_id'],
+                        random_id=event.obj['message']['random_id'],
+                        message='Идёт поиск...'
+                    )
+
+                    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
+                    cur = conn.cursor()
+                    cur.execute("SELECT * FROM BOOK WHERE NAME LIKE '%{0}%' OR '{0}%' OR '%{0}'".format(event.obj['message']['text'][12:]))
+                    book = cur.fetchall()
+                    cur.execute("SELECT * FROM SCHBOOK WHERE NAME LIKE '%{0}%' OR '{0}%' OR '%{0}'".format(event.obj['message']['text'][12:]))
+                    schbook = cur.fetchall()
+                    cur.execute("SELECT * FROM SCHBOOK WHERE AUT LIKE '%{0}%' OR '{0}%' OR '%{0}'".format(event.obj['message']['text'][12:]))
+                    aut_schbook = cur.fetchall()
+                    cur.execute("SELECT * FROM BOOK WHERE AUT LIKE '%{0}%' OR '{0}%' OR '%{0}'".format(event.obj['message']['text'][12:]))
+                    aut_book = cur.fetchall()
+                    
+                    book_res = ''
+                    schbook_res = ''
+                    aut_book_res = ''
+                    aut_schbook_res = ''
+                    
+                    if (book==[]) and (schbook==[]) and (aut_book==[]) and (aut_schbook==[]):
+                        vk.messages.send(
+                            user_id=event.obj['message']['from_id'],
+                            random_id=event.obj['message']['random_id'],
+                            message='Упс... Мы ничего не нашли.'
+                        )
+                    else:
+                        for i in book:
+                            for k in i:
+                                book_res+=str(k)+' '
+                            book_res+='\n'
+                        for i in schbook:
+                            for k in i:
+                                schbook_res+=str(k)+' '
+                            schbook_res+='\n'
+                        for i in aut_book:
+                            for k in i:
+                                aut_book_res+=str(k)+' '
+                            aut_book_res+='\n'
+                        for i in aut_schbook:
+                            for k in i:
+                                aut_schbook_res+=str(k)+' '
+                            aut_schbook_res+='\n'
+                    
+                        vk.messages.send(
+                            user_id=event.obj['message']['from_id'],
+                            random_id=event.obj['message']['random_id'],
+                            message='Результаты:\n\nПо названию среди книг:\n{0}\nПо названию среди учебников:\n{1}\nПо автору среди книг:\n{2}\nПо автору среди учебников:\n{3}'.format(book_res,schbook_res,aut_book_res,aut_schbook_res)
+                        )
 
 
 
