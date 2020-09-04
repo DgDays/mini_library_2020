@@ -3069,6 +3069,15 @@ def vk_bot(token, id_g, self):
                             message='Результаты:\n\nПо названию среди книг:\n{0}\nПо названию среди учебников:\n{1}\nПо автору среди книг:\n{2}\nПо автору среди учебников:\n{3}'.format(book_res,schbook_res,aut_book_res,aut_schbook_res)
                         )
 
+            else:
+                if event.from_user:
+                    vk.messages.send(
+                        user_id=event.obj['message']['from_id'],
+                        random_id=event.obj['message']['random_id'],
+                        message='Комагда не найдена',
+                        keyboard=keyboard_help.get_keyboard()
+                    )
+
 
 
 
