@@ -3074,7 +3074,7 @@ def vk_bot(token, id_g, self):
                     vk.messages.send(
                         user_id=event.obj['message']['from_id'],
                         random_id=event.obj['message']['random_id'],
-                        message='Комагда не найдена',
+                        message='Команда не найдена',
                         keyboard=keyboard_help.get_keyboard()
                     )
 
