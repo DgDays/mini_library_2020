@@ -172,6 +172,10 @@ class Main(tk.Tk):
         file_sohranit.add_separator()
         file_sohranit.add_command(label = "Учёт регистраций", command = lambda: threading.Thread(target = excel_uchet_reg).start())
         file_sohranit.add_command(label = "Учёт книг", command = lambda: threading.Thread(target = uchet_book).start())
+        file_sohranit.add_separator()
+        file_sohranit.add_command(label='Резервная копия БД', command = lambda: threading.Thread(target = BUP_DB).start())
+        file_sohranit.add_command(label='Восстановление БД', command = lambda: threading.Thread(target = Recov_DB, args=[self,]).start())
+
 
         btn_file.config(menu=file_sohranit)
         btn_file.grid(row=0, column=0, padx=5, pady=5)
@@ -2584,6 +2588,35 @@ def withdraw_window():
     menu = pystray.Menu(item('Развернуть', show_window, default=True), item('Закрыть', quit_window))
     icon = pystray.Icon("Мини библиотека 2020", image, "Мини библиотека 2020", menu)
     icon.run()
+
+class BUP_DB:
+    def __init__(self):
+        con = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
+        ask = fd.asksaveasfilename(filetypes = (('SQL', '*.sql'),), defaultextension=".sql")
+        if ask!='':
+            with open(ask, 'w') as f:
+                for line in con.iterdump():
+                    f.write('%s\n' % line)
+            con.close()
+            messagebox.showinfo('Backup DB', "Резервная копия БД выполнена успешно")
+
+
+class Recov_DB:
+    def __init__(self,gl_window):
+        path = os.path.dirname(os.path.abspath(__file__))+"/LC.db"
+        os.remove(path)
+        con = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
+        ask = fd.askopenfilename(filetypes = (('SQL', '*.sql'),), defaultextension=".sql")
+        if ask!='':
+            f = open(ask , 'r')
+            sql = f.read()
+            cur = con.cursor()
+            cur.executescript(sql)
+            con.commit()
+            con.close()
+            messagebox.showinfo('Восстановление БД', "Восстановление БД выполнено успешно")
+            gl_window.event_generate('<<Key-43>>')
+        
 
 def vk_api_save(self):
     token = self.token_en.get()
