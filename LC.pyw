@@ -285,6 +285,7 @@ class Main(tk.Tk):
         self.fr_watch_both.pack(side='bottom', fill='both')
 
         threading.Thread(target = update_main, args = [self,]).start()
+        self.focus_force()
         
         self.bind('<KeyPress>', lambda event: event_handler_main(event, self))
         self.bind('<<Key-43>>', lambda event: update_main(self))
