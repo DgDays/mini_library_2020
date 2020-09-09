@@ -164,8 +164,6 @@ class Main(tk.Tk):
 
         file_sohranit = tk.Menu(btn_file, tearoff = 0) # Запретить отделение
         first_and_last = first_and_last_day()
-        file_sohranit.add_command(label = 'Загрузить читателей из TXT', command = lambda: threading.Thread(target = open_txt, args= [self,]).start())
-        file_sohranit.add_separator()
         file_sohranit.add_command(label = "Статистика за месяц", command = lambda: threading.Thread(target = month_excel, args = [first_and_last,]).start())
         file_sohranit.add_command(label = "Статистика за год", command = lambda: threading.Thread(target = year_excel).start())  
         file_sohranit.add_command(label = "Статистика за выбранный срок", command = lambda: Excel())
@@ -1144,6 +1142,36 @@ class VK_api(tk.Toplevel):
         self.btn.grid(row=2,column=1, pady=5, padx=5, sticky='E')
 
 
+class BUP_DB:
+    def __init__(self):
+        con = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
+        ask = fd.asksaveasfilename(filetypes = (('SQL', '*.sql'),), defaultextension=".sql")
+        if ask!='':
+            with open(ask, 'w') as f:
+                for line in con.iterdump():
+                    f.write('%s\n' % line)
+            con.close()
+            messagebox.showinfo('Backup DB', "Резервная копия БД выполнена успешно")
+
+
+class Recov_DB:
+    def __init__(self,gl_window):
+        path = os.path.dirname(os.path.abspath(__file__))+"/LC.db"
+        os.remove(path)
+        con = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
+        ask = fd.askopenfilename(filetypes = (('SQL', '*.sql'),), defaultextension=".sql")
+        if ask!='':
+            f = open(ask , 'r')
+            sql = f.read()
+            cur = con.cursor()
+            cur.executescript(sql)
+            con.commit()
+            con.close()
+            messagebox.showinfo('Восстановление БД', "Восстановление БД выполнено успешно")
+            gl_window.event_generate('<<Key-43>>')
+        
+
+
 
 #================================ Работа с БД ================================
 def creat_table():
@@ -1235,11 +1263,14 @@ def update_schbook(self):
         x = self.book_table.insert('', tk.END, text=less)
         cur.execute("SELECT NAME, AUT, COL FROM SCHBOOK WHERE OBJ = (?)",(less,))
         rows = cur.fetchall()
+        col = 0
         for row in rows:
             cur.execute("SELECT COL FROM LC WHERE BOOK = (?) AND AUT = (?) AND (STAT = 'На руках' OR STAT = 'Просрочена')",(row[0],row[1]))
-            line = cur.fetchall()
-            if line != []:
-                res = (row[0], row[1], row[2] - line[0][0])
+            lines = cur.fetchall()
+            if lines != []:
+                for line in lines:
+                    col+=int(line[0])
+                res = (row[0], row[1], row[2] - col)
                 self.book_table.insert(x, tk.END, text = res[0], values=res[1:])
             else:
                 self.book_table.insert(x, tk.END, text = row[0], values=row[1:])
@@ -1255,10 +1286,13 @@ def update_book(self):
     cur.execute("SELECT * FROM BOOK")
     rows = cur.fetchall()
     for row in rows:
-        cur.execute("SELECT COUNT(*) FROM LC WHERE BOOK = (?) AND AUT = (?) AND (STAT = 'На руках' OR STAT = 'Просрочена')",(row[0],row[1]))
-        line = cur.fetchall()
-        if line != []:
-            res = (row[0], row[1], row[2] - line[0][0])
+        cur.execute("SELECT COl FROM LC WHERE BOOK = (?) AND AUT = (?) AND (STAT = 'На руках' OR STAT = 'Просрочена')",(row[0],row[1]))
+        lines = cur.fetchall()
+        col = 0
+        if lines != []:
+            for line in lines:
+                col+=int(line[0])
+            res = (row[0], row[1], row[2] - col)
             self.book_table1.insert('', tk.END, text = res[0], values=res[1:])
         else:
             self.book_table1.insert('', tk.END, text = row[0], values=row[1:])
@@ -1902,7 +1936,7 @@ def closed_excel(self):
 
 def vk_closed(self):
     open_win.remove(self)
-    self.destroy
+    self.destroy()
 
 def book_bind_add(self):
     global book_add
@@ -2519,38 +2553,6 @@ def easter4(self):
     filename = os.path.dirname(os.path.abspath(__file__))+"/imper.mp3"
     playsound.playsound(filename)
 
-def open_txt(self):
-    ask = fd.askopenfilename(filetypes = (('TXT', '*.txt'),), defaultextension=".txt")
-    if ask != '':
-        conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
-        cur = conn.cursor()
-        threading.Thread(target = progressbar_start, args = [self,]).start()
-        f = open(ask,'r')
-        spis = f.readlines()
-        for s in spis:
-            lst = s.split()
-            i = 0
-            res_spis = []
-            while i < len(lst):
-                res = lst[i]
-                res = res.replace('.', '')
-                res = res.replace('-', '.')
-                res_spis.append(res)
-                i+=1
-            if len(res_spis) == 11:
-                result = [res_spis[0]+' '+res_spis[1]+' '+res_spis[2],
-                            datetime.datetime.strptime(res_spis[3], '%d.%m.%Y').strftime('%Y-%m-%d'), res_spis[4], res_spis[5],
-                            res_spis[6]+' '+res_spis[7]+' '+res_spis[8],
-                            res_spis[9], res_spis[10], datetime.date.today().isoformat()]
-            elif len(res_spis) == 12:
-                result = [res_spis[0]+' '+res_spis[1]+' '+res_spis[2],
-                            datetime.datetime.strptime(res_spis[3], '%d.%m.%Y').strftime('%Y-%m-%d'), res_spis[4], res_spis[5],
-                            res_spis[6]+' '+res_spis[7]+' '+res_spis[8],
-                            res_spis[9], res_spis[10]+' '+res_spis[11], datetime.date.today().isoformat()]
-            cur.execute('INSERT INTO PROFILE VALUES (?,?,?,?,?,?,?,?)',result)
-        conn.commit()
-    threading.Thread(target = progressbar_stop, args = [self,]).start()
-    update_main(self)
 
 def progressbar_start(self):
     self.progress.place(relx=0.8871,rely=0.95)
@@ -2589,35 +2591,6 @@ def withdraw_window():
     icon = pystray.Icon("Мини библиотека 2020", image, "Мини библиотека 2020", menu)
     icon.run()
 
-class BUP_DB:
-    def __init__(self):
-        con = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
-        ask = fd.asksaveasfilename(filetypes = (('SQL', '*.sql'),), defaultextension=".sql")
-        if ask!='':
-            with open(ask, 'w') as f:
-                for line in con.iterdump():
-                    f.write('%s\n' % line)
-            con.close()
-            messagebox.showinfo('Backup DB', "Резервная копия БД выполнена успешно")
-
-
-class Recov_DB:
-    def __init__(self,gl_window):
-        path = os.path.dirname(os.path.abspath(__file__))+"/LC.db"
-        os.remove(path)
-        con = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
-        ask = fd.askopenfilename(filetypes = (('SQL', '*.sql'),), defaultextension=".sql")
-        if ask!='':
-            f = open(ask , 'r')
-            sql = f.read()
-            cur = con.cursor()
-            cur.executescript(sql)
-            con.commit()
-            con.close()
-            messagebox.showinfo('Восстановление БД', "Восстановление БД выполнено успешно")
-            gl_window.event_generate('<<Key-43>>')
-        
-
 def vk_api_save(self):
     token = self.token_en.get()
     id_g = self.id_en.get()
@@ -2629,7 +2602,7 @@ def vk_api_save(self):
 def vk_bot_start(self):
     file = open(os.path.dirname(os.path.abspath(__file__))+"/vk_api.txt", 'r')
     lines = file.readlines()
-    if lines != '':
+    if lines != []:
         threading.Thread(target = vk_bot, args=[lines[0][:-1],lines[1], self]).start()
 
 def vk_bot(token, id_g, self):
