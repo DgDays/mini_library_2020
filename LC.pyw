@@ -38,6 +38,7 @@ import playsound
 import vk_api
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor 
+import socket
 
 text = ''
 values = ''
@@ -1243,14 +1244,30 @@ def update_main(self):
     cur = conn.cursor()
 
     #Вывовд всех учеников
-    cur.execute("SELECT * FROM PROFILE LIMIT 500")
+    cur.execute("SELECT * FROM PROFILE")
     rows = cur.fetchall()
+    uch = self.table.insert("" , tk.END ,text='Ученик')
+    teach = self.table.insert("" , tk.END ,text='Учитель')
+    dp = self.table.insert("" , tk.END ,text="Другой посетитель")
     for row in rows:
-        db = row[1]
-        db = datetime.datetime.strptime(db, '%Y-%m-%d')
-        db = db.strftime('%d.%m.%Y')
-        row = (row[0],db, row[2], row[3], row[4], row[5])
-        self.table.insert("" , tk.END ,text=row[0], values=row[1:])
+        if "Ученик" in row:
+            db = row[1]
+            db = datetime.datetime.strptime(db, '%Y-%m-%d')
+            db = db.strftime('%d.%m.%Y')
+            row = (row[0],db, row[2], row[3], row[4], row[5])
+            self.table.insert(uch , tk.END ,text=row[0], values=row[1:])
+        elif "Учитель" in row:
+            db = row[1]
+            db = datetime.datetime.strptime(db, '%Y-%m-%d')
+            db = db.strftime('%d.%m.%Y')
+            row = (row[0],db, row[2], row[3], row[4], row[5])
+            self.table.insert(teach , tk.END ,text=row[0], values=row[1:])
+        elif "Другой посетитель":
+            db = row[1]
+            db = datetime.datetime.strptime(db, '%Y-%m-%d')
+            db = db.strftime('%d.%m.%Y')
+            row = (row[0],db, row[2], row[3], row[4], row[5])
+            self.table.insert(dp , tk.END ,text=row[0], values=row[1:])
     threading.Thread(target = progressbar_stop, args = [self,]).start()
 
 def update_schbook(self):
@@ -1341,11 +1358,12 @@ def info(self):
     # Получаем значения в выделенной строке
     values = self.table.item(selected_item, option="values")
     text = self.table.item(selected_item, option="text")
-    if self_main == 'close':
-        if text != '':
-            self_main = self
-            root = INFO()
-            threading.Thread(target = update_info, args = [root,]).start()
+    if text not in ('Ученик','Учитель','Другой посетитель'):
+        if self_main == 'close':
+            if text != '':
+                self_main = self
+                root = INFO()
+                threading.Thread(target = update_info, args = [root,]).start()
     
 
 def add_profile(self):
@@ -2600,11 +2618,19 @@ def vk_api_save(self):
         file.write(token + '\n' + id_g)
         file.close()
 
+def network():
+    try:
+        socket.gethostbyaddr('www.yandex.ru')
+    except socket.gaierror:
+        return False
+    return True
+
 def vk_bot_start(self):
     file = open(os.path.dirname(os.path.abspath(__file__))+"/vk_api.txt", 'r')
     lines = file.readlines()
     if lines != []:
-        threading.Thread(target = vk_bot, args=[lines[0][:-1],lines[1], self]).start()
+        if network() == True:
+            threading.Thread(target = vk_bot, args=[lines[0][:-1],lines[1], self]).start()
 
 def vk_bot(token, id_g, self):
 
