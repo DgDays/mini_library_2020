@@ -1486,8 +1486,11 @@ def save_lc2(self):
     global values
     null = ''
     fio = text
-    db = datetime.datetime.strptime(values[0], '%d.%m.%Y')
-    db = db.strftime('%Y-%m-%d')
+    if len(values[0]) == 10:
+        db = datetime.datetime.strptime(values[0], '%d.%m.%Y')
+        db = db.strftime('%Y-%m-%d')
+    else:
+        db = values[0]
     phone = values[4]
     di = datetime.date.today() #Присвоение текущей даты
     dc = di + timedelta(days=14)#Определение срока сдачи книги
@@ -1531,8 +1534,11 @@ def edit_lc(self):
         # Получаем значения в выделенной строке
         values1 = self_info.info_table.item(selected_item, option="values")
         text1 = self_info.info_table.item(selected_item, option="text")
-        db = datetime.datetime.strptime(values[0],'%d.%m.%Y')
-        db = db.strftime('%Y-%m-%d')
+        if len(values[0]) == 10:
+            db = datetime.datetime.strptime(values[0],'%d.%m.%Y')
+            db = db.strftime('%Y-%m-%d')
+        else:
+            db = values[0]
         values2 = (db,values[1],values[2],values[3], values[4])
         root = Edit_lc()
         root.en_bookname.insert(0,text1)
@@ -1600,8 +1606,11 @@ def delete_lc(self):
     ask = messagebox.askyesno('Удалить','Вы точно хотите удалить книгу: {}?'.format(text1), parent=self)
 
     if ask == True:
-        db = datetime.datetime.strptime(values[0], '%d.%m.%Y')
-        db = db.strftime('%Y-%m-%d')
+        if len(values[0]) == 10:
+            db = datetime.datetime.strptime(values[0], '%d.%m.%Y')
+            db = db.strftime('%Y-%m-%d')
+        else:
+            db = values[0]
         line = (text, db, values[4], text1, values1[0], values1[1])
         conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
         con_cur = conn.cursor()
