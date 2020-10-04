@@ -1460,8 +1460,11 @@ def del_profile(self):
     ask = messagebox.askyesno('Удалить','Вы точно хотите удалить читателя {}?'.format(text), parent=self)
     if ask == True:
         self.focus_force()
-        db = datetime.datetime.strptime(values[0], '%d.%m.%Y')
-        db = db.strftime( '%Y-%m-%d')
+        if len(values[0]) == 10:
+            db = datetime.datetime.strptime(values[0], '%d.%m.%Y')
+            db = db.strftime( '%Y-%m-%d')
+        else:
+            db = values[0]
         line = (text, db, values[4])
         conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")    #Занесение данных в базу данных
         con_cur = conn.cursor()
@@ -1566,8 +1569,11 @@ def save_stat(self):
     name = self.en_bookname.get()
     aut = self.en_author2.get()
     stat = self.en_stat.get()
-    db = datetime.datetime.strptime(values[0],'%d.%m.%Y')
-    db = db.strftime('%Y-%m-%d')
+    if len(values[0]) == 10:
+        db = datetime.datetime.strptime(values[0],'%d.%m.%Y')
+        db = db.strftime('%Y-%m-%d')
+    else:
+        db = values[0]
     dc = self.en_dc.get()
     dc = datetime.datetime.strptime(dc, '%d.%m.%Y')
     dc = dc.strftime('%Y-%m-%d')
@@ -1586,9 +1592,11 @@ def save_stat(self):
     self_info.info_table.delete(*self_info.info_table.get_children())
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
     cur = conn.cursor()
-
-    db = datetime.datetime.strptime(values[0],'%d.%m.%Y')
-    db = db.strftime('%Y-%m-%d')
+    if len(values[0]) == 10:
+        db = datetime.datetime.strptime(values[0],'%d.%m.%Y')
+        db = db.strftime('%Y-%m-%d')
+    else:
+        db = values[0]
     #Вывовд всех учеников
     cur.execute("SELECT BOOK, AUT, STAT, COL FROM LC WHERE FIO=(?) AND DB=(?) AND PHONE=(?)",(text,db,values[4]))
     rows = cur.fetchall()
@@ -1621,9 +1629,11 @@ def delete_lc(self):
     self.info_table.delete(*self.info_table.get_children())
     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
     cur = conn.cursor()
-
-    db = datetime.datetime.strptime(values[0], '%d.%m.%Y')
-    db = db.strftime('%Y-%m-%d')
+    if len(values[0]) == 10:
+        db = datetime.datetime.strptime(values[0], '%d.%m.%Y')
+        db = db.strftime('%Y-%m-%d')
+    else:
+        db = values[0]
     #Вывовд всех учеников
     cur.execute("SELECT BOOK, AUT, STAT, COL FROM LC WHERE FIO=(?) AND DB=(?) AND PHONE=(?)",(text,db,values[4]))
     rows = cur.fetchall()
@@ -1647,8 +1657,9 @@ def search(self):
         rows = cur.fetchall()
         for row in rows:
             db = row[1]
-            db = datetime.datetime.strptime(db, '%Y-%m-%d')
-            db = db.strftime('%d.%m.%Y')
+            if len(db) == 10:
+                db = datetime.datetime.strptime(db, '%Y-%m-%d')
+                db = db.strftime('%d.%m.%Y')
             row = (row[0],db, row[2], row[3], row[4], row[5])
             self.table.insert("" , tk.END ,text=row[0], values=row[1:])
 
@@ -2012,8 +2023,11 @@ def schbook_info(self):
         cur.execute("SELECT FIO, DB, PHONE, DI, DC, STAT, COL FROM LC WHERE BOOK =(?) AND AUT=(?)",(text,values[0]))
         rows = cur.fetchall()
         for row in rows:
-            db = datetime.datetime.strptime(row[1], '%Y-%m-%d')
-            db = db.strftime('%d.%m.%Y')
+            if len(row[1]) == 10:
+                db = datetime.datetime.strptime(row[1], '%Y-%m-%d')
+                db = db.strftime('%d.%m.%Y')
+            else:
+                db = row[1]
             di = datetime.datetime.strptime(row[3], '%Y-%m-%d')
             di = di.strftime('%d.%m.%Y')
             dc = datetime.datetime.strptime(row[4], '%Y-%m-%d')
@@ -2052,8 +2066,11 @@ def lit_info(self):
         cur.execute("SELECT FIO, DB, PHONE, DI, DC, STAT, COL FROM LC WHERE BOOK =(?) AND AUT=(?)",(text,values[0]))
         rows = cur.fetchall()
         for row in rows:
-            db = datetime.datetime.strptime(row[1], '%Y-%m-%d')
-            db = db.strftime('%d.%m.%Y')
+            if len(row[1]) == 10:
+                db = datetime.datetime.strptime(row[1], '%Y-%m-%d')
+                db = db.strftime('%d.%m.%Y')
+            else:
+                db = row[1]
             di = datetime.datetime.strptime(row[3], '%Y-%m-%d')
             di = di.strftime('%d.%m.%Y')
             dc = datetime.datetime.strptime(row[4], '%Y-%m-%d')
@@ -2149,8 +2166,9 @@ def month_excel(x):
         rows = cur.fetchall()
         for fio,db,phone,di,dc,aut,book,stat, colvo in (rows):
             worksheet.write(row,col,fio)
-            db = datetime.datetime.strptime(db, '%Y-%m-%d')
-            db = db.strftime('%d.%m.%Y')
+            if len(db) == 10:
+                db = datetime.datetime.strptime(db, '%Y-%m-%d')
+                db = db.strftime('%d.%m.%Y')
             worksheet.write(row,col+1,db)
             worksheet.write(row,col+2,phone)
             di = datetime.datetime.strptime(di, '%Y-%m-%d')
@@ -2199,8 +2217,9 @@ def year_excel():
         rows = cur.fetchall()
         for fio,db,phone,di,dc,aut,book,stat, colvo in (rows):
             worksheet.write(row,col,fio)
-            db = datetime.datetime.strptime(db, '%Y-%m-%d')
-            db = db.strftime('%d.%m.%Y')
+            if len(db) == 10:
+                db = datetime.datetime.strptime(db, '%Y-%m-%d')
+                db = db.strftime('%d.%m.%Y')
             worksheet.write(row,col+1,db)
             worksheet.write(row,col+2,phone)
             di = datetime.datetime.strptime(di, '%Y-%m-%d')
@@ -2860,8 +2879,11 @@ def vk_bot(token, id_g, self):
                         string = lst[i]
                         res_spis.append(string)
                         i+=1
-                    db = datetime.datetime.strptime(res_spis[3], '%d.%m.%Y')
-                    db = db.strftime('%Y-%m-%d')
+                    if len(res_spis[3]) == 10:
+                        db = datetime.datetime.strptime(res_spis[3], '%d.%m.%Y')
+                        db = db.strftime('%Y-%m-%d')
+                    else:
+                        db = res_spis[3]
                     result = [id_us,res_spis[0]+' '+res_spis[1]+' '+res_spis[2],db,res_spis[4]]
                     cur.execute('SELECT * FROM PROFILE WHERE FIO = (?) AND DB = (?) AND PHONE = (?)',result[1:])
                     rows = cur.fetchall()
