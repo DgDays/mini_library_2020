@@ -363,8 +363,7 @@ class Add_profile(tk.Toplevel):
 
 
         #место ввода "Дата рождения"
-        self.en_db2= DateEntry(self, width=12, background='darkblue',
-                    foreground='white', borderwidth=2, year=2020, font= 'Arial 11', date_pattern='dd.MM.yyyy')
+        self.en_db2= ttk.Entry(self, width=12)
         self.en_db2.grid_configure(row=5,column=4,sticky='W')
 
         #кнопка "Сохранить"
@@ -433,8 +432,7 @@ class Edit_profile(tk.Toplevel):
         self.lb_db.grid(row=4,column=4, ipady=3)
 
         #место ввода "Дата рождения"
-        self.en_db2= DateEntry(self, width=12, background='darkblue',
-                    foreground='white', borderwidth=2, font= 'Arial 11', date_pattern='dd.MM.yyyy')
+        self.en_db2= ttk.Entry(self, width=12)
         self.en_db2.grid_configure(row=4,column=5,sticky='W')
 
         #кнопка "Сохранить"
@@ -1252,20 +1250,23 @@ def update_main(self):
     for row in rows:
         if "Ученик" in row:
             db = row[1]
-            db = datetime.datetime.strptime(db, '%Y-%m-%d')
-            db = db.strftime('%d.%m.%Y')
+            if len(db) == 10:
+                db = datetime.datetime.strptime(db, '%Y-%m-%d')
+                db = db.strftime('%d.%m.%Y')
             row = (row[0],db, row[2], row[3], row[4], row[5])
             self.table.insert(uch , tk.END ,text=row[0], values=row[1:])
         elif "Учитель" in row:
             db = row[1]
-            db = datetime.datetime.strptime(db, '%Y-%m-%d')
-            db = db.strftime('%d.%m.%Y')
+            if len(db) == 10:
+                db = datetime.datetime.strptime(db, '%Y-%m-%d')
+                db = db.strftime('%d.%m.%Y')
             row = (row[0],db, row[2], row[3], row[4], row[5])
             self.table.insert(teach , tk.END ,text=row[0], values=row[1:])
         elif "Другой посетитель":
             db = row[1]
-            db = datetime.datetime.strptime(db, '%Y-%m-%d')
-            db = db.strftime('%d.%m.%Y')
+            if len(db) == 10:
+                db = datetime.datetime.strptime(db, '%Y-%m-%d')
+                db = db.strftime('%d.%m.%Y')
             row = (row[0],db, row[2], row[3], row[4], row[5])
             self.table.insert(dp , tk.END ,text=row[0], values=row[1:])
     threading.Thread(target = progressbar_stop, args = [self,]).start()
@@ -1335,9 +1336,11 @@ def update_info(root):
         root.clas = ttk.Label(root.frame, text='Класс: '+values[1]+' '+values[2], font='Arial 12').pack()
         root.adr = ttk.Label(root.frame, text='Адрес: '+values[3], font='Arial 12').pack()
         root.phone = ttk.Label(root.frame,text='Телефон: '+values[4], font='Arial 12').pack()
-    
-    db = datetime.datetime.strptime(values[0], '%d.%m.%Y')#Парсит дату
-    db = db.strftime('%Y-%m-%d')#Переводит дату в другой формат
+    if len(values) == 10:
+        db = datetime.datetime.strptime(values[0], '%d.%m.%Y')#Парсит дату
+        db = db.strftime('%Y-%m-%d')#Переводит дату в другой формат
+    else:
+        db = values[0]
     #Вывовд всех учеников
     cur.execute("SELECT BOOK, AUT, STAT, COL FROM LC WHERE FIO=(?) AND DB=(?) AND PHONE=(?)",(text,db,values[4]))
     rows = cur.fetchall()
@@ -1380,8 +1383,9 @@ def save_stud2(self):
     lit = self.en_lit2.get()
     phone = self.en_phone2.get()
     db = self.en_db2.get()
-    db = datetime.datetime.strptime(db, '%d.%m.%Y')
-    db = db.strftime('%Y-%m-%d')
+    if len(db) == 10:
+        db = datetime.datetime.strptime(db, '%d.%m.%Y')
+        db = db.strftime('%Y-%m-%d')
     adr = self.en_adr2.get()
     client = self.en_client.get()
     dreg = datetime.date.today()
@@ -1410,7 +1414,7 @@ def edit_profile(self):
         text = self_main.table.item(selected_item, option="text")
         root = Edit_profile()
         root.en_fio2.insert(0,text)
-        root.en_db2.set_date(values[0])
+        root.en_db2.insert(0, values[0])
         root.en_class2.insert(0, values[1])
         root.en_lit2.insert(0, values[2])
         root.en_adr2.insert(0, values[3])
@@ -1427,8 +1431,9 @@ def edit_stud(self):
     lit = self.en_lit2.get()
     phone = self.en_phone2.get()
     db = self.en_db2.get()
-    db = datetime.datetime.strptime(db, '%d.%m.%Y')
-    db = db.strftime('%Y-%m-%d')
+    if len(db) == 10:
+        db = datetime.datetime.strptime(db, '%d.%m.%Y')
+        db = db.strftime('%Y-%m-%d')
     adr = self.en_adr2.get()
     fio2 = text
     db2 = datetime.datetime.strptime(values[0], '%d.%m.%Y')
