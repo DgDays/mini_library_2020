@@ -2879,12 +2879,21 @@ def vk_bot(token, id_g, self):
                         string = lst[i]
                         res_spis.append(string)
                         i+=1
-                    if len(res_spis[3]) == 10:
-                        db = datetime.datetime.strptime(res_spis[3], '%d.%m.%Y')
-                        db = db.strftime('%Y-%m-%d')
-                    else:
-                        db = res_spis[3]
-                    result = [id_us,res_spis[0]+' '+res_spis[1]+' '+res_spis[2],db,res_spis[4]]
+                    if len(lst) == 5:
+                        if len(res_spis[3]) == 10:
+                            db = datetime.datetime.strptime(res_spis[3], '%d.%m.%Y')
+                            db = db.strftime('%Y-%m-%d')
+                        else:
+                            db = res_spis[3]
+                        result = [id_us,res_spis[0]+' '+res_spis[1]+' '+res_spis[2],db,res_spis[4]]
+                    elif len(lst) == 4:
+                        if len(res_spis[2]) == 10:
+                            db = datetime.datetime.strptime(res_spis[3], '%d.%m.%Y')
+                            db = db.strftime('%Y-%m-%d')
+                        else:
+                            db = res_spis[2]
+                        result = [id_us,res_spis[0]+' '+res_spis[1],db,res_spis[3]]
+
                     cur.execute('SELECT * FROM PROFILE WHERE FIO = (?) AND DB = (?) AND PHONE = (?)',result[1:])
                     rows = cur.fetchall()
                     if rows != []:
