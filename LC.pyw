@@ -239,8 +239,6 @@ class Main(tk.Tk):
         style = ttk.Style()
         style.map('Treeview', foreground=fixed_map('foreground'), background=fixed_map('background'))
 
-        # ttk.Style().configure("Treeview",fieldbackground="#e9e9e9")
-
         #Создание скроллбара
         self.scroll = ttk.Scrollbar(self.fr_watch_both)
         self.scroll.pack(side='right',fill='y')
@@ -2875,7 +2873,7 @@ def vk_bot(token, id_g, self):
                     id_us = event.obj['message']['from_id']
                     conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
                     cur = conn.cursor()
-                    while i < len(lst):
+                    while i < len(lst): #Парсинг Данных и разбитие их в Массив
                         string = lst[i]
                         res_spis.append(string)
                         i+=1
