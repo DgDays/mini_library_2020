@@ -276,6 +276,8 @@ class Main(tk.Tk):
         self.profile_menu.add_command(label = "Добавить читателя", command= lambda: add_profile(self))
         self.profile_menu.add_command(label = "Изменить читателя", command = lambda: edit_profile(self))
         self.profile_menu.add_command(label = "Удалить читателя", command = lambda: threading.Thread(target = del_profile, args = [self,]).start())
+        self.profile_menu.add_command(label = "Перевести в класс на 1 >", command= lambda: plus_class(self))
+        self.profile_menu.add_command(label = "Перевести в класс на 1 <", command= lambda: minus_class(self))
         
         self.table.pack(side='left')
         self.table.bind('<Double-Button-1>', lambda event: info(self))
@@ -2640,6 +2642,41 @@ def withdraw_window():
     menu = pystray.Menu(item('Развернуть', show_window, default=True), item('Закрыть', quit_window))
     icon = pystray.Icon("Мини библиотека 2020", image, "Мини библиотека 2020", menu)
     icon.run()
+
+def plus_class(self):
+    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM PROFILE WHERE CLIENT=(?)",["Ученик",])
+    rows = cur.fetchall()
+    for row in rows:
+        clas = int(row[2])+1
+        if clas <= 11:
+            result = [clas, row[0], row[1], row[5]]
+            cur.execute("UPDATE PROFILE SET CLA = (?) WHERE FIO = (?) AND DB = (?) AND PHONE = (?)", result)
+        elif clas > 11:
+            line = [row[0], row[1], row[5]]
+            cur.execute('DELETE FROM PROFILE WHERE FIO = (?) AND DB = (?) AND PHONE = (?)',line)
+            cur.execute('DELETE FROM LC WHERE FIO = (?) AND DB = (?) AND PHONE = (?)',line)
+    conn.commit()
+    threading.Thread(target = update_main, args = [self,]).start()
+
+
+def minus_class(self):
+    conn = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+"/LC.db")
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM PROFILE WHERE CLIENT=(?)",["Ученик",])
+    rows = cur.fetchall()
+    for row in rows:
+        clas = int(row[2])-1
+        if clas >= 1:
+            result = [clas, row[0], row[1], row[5]]
+            cur.execute("UPDATE PROFILE SET CLA = (?) WHERE FIO = (?) AND DB = (?) AND PHONE = (?)", result)
+        elif clas < 1:
+            line = [row[0], row[1], row[5]]
+            cur.execute('DELETE FROM PROFILE WHERE FIO = (?) AND DB = (?) AND PHONE = (?)',line)
+            cur.execute('DELETE FROM LC WHERE FIO = (?) AND DB = (?) AND PHONE = (?)',line)
+    conn.commit()
+    threading.Thread(target = update_main, args = [self,]).start()
 
 def vk_api_save(self):
     token = self.token_en.get()
