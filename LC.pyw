@@ -504,7 +504,7 @@ class INFO(tk.Toplevel):
         self.profile_menu = tk.Menu(self.info_table, tearoff=0)
 
         self.profile_menu.add_command(label = "Добавить книгу", command= lambda: add_book(self)) 
-        self.profile_menu.add_command(label = "Изменить статус книги", command= lambda: edit_lc(self))
+        self.profile_menu.add_command(label = "Изменить статус/дату сдачи книги", command= lambda: edit_lc(self))
         self.profile_menu.add_command(label = "Удалить книгу", command = lambda: threading.Thread(target = delete_lc, args = [self,]).start())         
         
         self.bind('<KeyPress>', lambda event: event_handler_info(event, self))
@@ -1336,11 +1336,12 @@ def update_info(root):
         root.clas = ttk.Label(root.frame, text='Класс: '+values[1]+' '+values[2], font='Arial 12').pack()
         root.adr = ttk.Label(root.frame, text='Адрес: '+values[3], font='Arial 12').pack()
         root.phone = ttk.Label(root.frame,text='Телефон: '+values[4], font='Arial 12').pack()
-    if len(values) == 10:
+    if len(values[0]) == 10:
         db = datetime.datetime.strptime(values[0], '%d.%m.%Y')#Парсит дату
         db = db.strftime('%Y-%m-%d')#Переводит дату в другой формат
     else:
         db = values[0]
+        
     #Вывовд всех учеников
     cur.execute("SELECT BOOK, AUT, STAT, COL FROM LC WHERE FIO=(?) AND DB=(?) AND PHONE=(?)",(text,db,values[4]))
     rows = cur.fetchall()
