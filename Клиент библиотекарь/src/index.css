@@ -303,7 +303,9 @@ button, a {
   border-radius: 50%;
   border: 1px solid var(--secondary-color);
 }
-
+.darkitem {
+  color: var(--main-color);
+}
 .status-number {
   font-size: 24px;
   line-height: 32px;
@@ -696,7 +698,7 @@ button, a {
   display: none;
 }
 
-@media screen and (max-width: 720px) {
+@media screen and (max-width: 780px) {
   .project-boxes.jsGridView .project-box-wrapper {
     width: 50%;
   }
@@ -732,7 +734,7 @@ button, a {
     display: flex;
   }
 }
-@media screen and (max-width: 720px) {
+@media screen and (max-width: 780px) {
   .app-name, .profile-btn span {
     display: none;
   }
@@ -750,7 +752,7 @@ button, a {
     margin-left: 4px;
   }
 }
-@media screen and (max-width: 520px) {
+@media screen and (max-width: 580px) {
   .projects-section {
     overflow: auto;
   }
@@ -870,6 +872,7 @@ button, a {
   vertical-align: middle;
   height: 2.2em;
   margin: 2px;
+  margin-right: 20px;
   padding: 0.3em 0.6em;
   background: white;
   border: 1px solid #aaaaaa;
