@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Mini-lib</title>
+    <link rel="stylesheet" href="index.css">
+    <style> @charset "UTF-8";@import "https://fonts.googleapis.com/css?family=DM+Sans:400,500,700&display=swap";*{box-sizing:border-box}html{height:100%}body{height:100%;font-weight:300;background-color:#f5f6f7}form{position:absolute;top:0;left:50%;width:300px;transform:translateX(-50%);margin:2rem 0;z-index:1}fieldset{margin:0 0 1rem;padding:0;border:none}legend{font-weight:400}legend,label{display:inline-block;margin-bottom:.5rem}input[type=text],textarea,select{display:block;padding:.5rem;width:100%;background-color:#fff;border-radius:.25rem;border:1px solid #e5e5e5;outline:none;transition-property:none;transition-duration:none}input[type=text]:focus,textarea:focus,select:focus{border-color:#ef7ead}textarea{max-width:300px;height:100px}input[type=text],select{height:34px}select{font-size:.875rem}input[type=checkbox],input[type=radio]{position:relative;top:5px;width:22px;height:22px;margin:0 .5rem;background-color:#fff;border:1px solid #e5e5e5;outline:none;-moz-appearance:none;-webkit-appearance:none;transition-property:none;transition-duration:none}input[type=checkbox]{border-radius:5px}input[type=checkbox]:checked{background-color:#ef7ead;border:none}input[type=checkbox]:checked:after{display:block;content:"";height:4px;width:10px;border-bottom:3px solid #fff;border-left:3px solid #fff;transform:translate(5px,6px) rotate(-45deg) scale(1)}input[type=radio]{border-radius:50%}input[type=radio]:checked{border-width:5px;border-color:#fff;background-color:#ef7ead}button{display:block;margin:3em auto;padding:.5rem 2rem;font-size:125%;color:#fff;border:none;border-radius:.25rem;background-color:#ef7ead;outline:none;box-shadow:0 .4rem .1rem -.3rem rgba(0,0,0,0.1);transform:perspective(300px) scale(0.95) translateZ(0);transform-style:preserve-3d;transition-property:none;transition-duration:none}button:hover{cursor:pointer;background-color:#ff96c8;box-shadow:0 0 0 0 rgba(0,0,0,0);transform:scale(1.1) rotateX(0)}button:active{background-color:#ef7ead;transform:scale(1.05) rotateX(-10deg)}</style>
+  </head>
+    <body>
+        <form>
+        <fieldset>
+            <label for="newLogin">Как нам вас называть (логин)?*</label>
+            <input type="text" name="login" id="newLogin" placeholder="ваш логин">
+        </fieldset>
+        <fieldset>
+            <label for="newPassword">Придумайте надёжный пароль!*</label>
+            <input type="text" name="password" id="newPassword" placeholder="ваш пароль">
+        </fieldset>
+        <p>!! если вы вдруг забудете пароль, его всегда можно будет восстановить</p>
+        <fieldset>
+            <label for="newEmail">Мы будем уведомлять вас об обновлениях и прочем!</label>
+            <input type="text" name="email" id="newEmail" placeholder="ваша почта">
+        </fieldset>
+        <fieldset>
+            <legend>Какую тему программы вы выберете?</legend>
+            <input type="radio" id="theme1" name="theme" checked>
+            <label for="theme1">Светлая</label><br>
+            <input type="radio" id="theme2" name="theme">
+            <label for="theme2">Тёмная</label><br>
+            <input type="radio" id="theme3" name="theme">
+            <label for="theme3">По умолчанию</label>
+        </fieldset>
+        <p>!! изменить тему программы можно прямо на её главной странице (клик по значку луны)</p>
+        <!-- <fieldset>
+            <label for="select-choice">Transformers fan?</label>
+            <select name="select-choice" id="select-choice">
+            <option value="Choice 1">- - select one - -</option>
+            <option value="Choice 2">Yes!</option>
+            <option value="Choice 3">They're kinda cool, yeah.</option>
+            <option value="Choice 4">Meh... not really.</option>
+            <option value="Choice 5">What's Transformers?</option>
+            </select>
+        </fieldset> -->
+        <button>Зарегистрироваться</button>
+        </form>
+        
+        <script>
+        // скрипт для работы кнопки
+            $("button").click(function(e) {
+                e.preventDefault();
+            });
+        </script>
+    </body>
+<!-- https://codepen.io/markgeyer/pen/yklLx -->
+</html>

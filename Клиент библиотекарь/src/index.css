@@ -490,8 +490,8 @@ button, a {
   max-width: 150px;
 }
 .project-boxes.jsListView .project-box-content-header:hover {
-  max-width: 170px;
-  transition: 3s linear;
+  max-width: 200px;
+  transition: 1s ease;
 }
 .project-boxes.jsListView .project-box-header {
   order: 2;
@@ -593,8 +593,8 @@ button, a {
 }
 
 .box-content-subheader {
-  font-size: 14px;
-  line-height: 24px;
+  font-size: 16px;
+  line-height: 22px;
   opacity: 0.7;
 }
 
