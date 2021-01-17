@@ -414,8 +414,8 @@
 </div>
 </div>
 </div>
-  <script>
-  document.addEventListener('DOMContentLoaded', function () {
+<script>
+document.addEventListener('DOMContentLoaded', function () {
   var modeSwitch = document.querySelector('.mode-switch');
 
   modeSwitch.addEventListener('click', function () {                     
@@ -441,14 +441,23 @@
     projectsList.classList.add('jsGridView');
   });
   
-  document.querySelector('.messages-btn').addEventListener('click', function () {
-    document.querySelector('.messages-section').classList.add('show');
-  });
-  
-  document.querySelector('.messages-close').addEventListener('click', function() {
-    document.querySelector('.messages-section').classList.remove('show');
-  });
 });
+</script>
+<script>
+// отключать :hover-состояния при прокрутке.
+var body = document.body,
+  timer;
+ 
+window.addEventListener('scroll', function() {
+  clearTimeout(timer);
+  if(!body.classList.contains('disable-hover')) {
+    body.classList.add('disable-hover')
+  }
+ 
+  timer = setTimeout(function(){
+    body.classList.remove('disable-hover')
+  }, 500);
+}, false);
 </script>
   </body>
 <!-- https://codepen.io/aybukeceylan/pen/OJRNbZp -->

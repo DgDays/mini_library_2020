@@ -8,26 +8,25 @@
     </head>
     <body>
         <div class="panel">
-		    <div class="state"><br><i class="fa fa-unlock-alt"></i><br><h1>Log in</h1></div>
-		    <div class="form">
-			    <input placeholder='Email' type="text">
-			    <input placeholder='Password' type="text">
-			    <div class="login">Login</div>
+		    <div class="state"><br><i class="fa fa-unlock-alt"></i><br><h1>Вход</h1></div>
+		    <div class="form" method="post">
+			    <input placeholder='Логин' id="login" type="text">
+			    <input placeholder='Пароль' id="password" type="text">
+			    <div class="login" id="btn" type="button">Войти</div>
 		    </div>
-		    <div class="fack"><a href="regist.html"><i class="fa fa-question-circle"></i>Forgot password?</a></div>
+		    <div class="fack"><a href="regist.html"><i class="fa fa-question-circle"></i>Забыли пароль?</a></div>
 	    </div>
         <script>
-        $(document).ready(function() {
-          return $('.login').click(function(event) {
-            if (false) {
-              // сначала нужно сменить значение на true 
-            } else {
-              return $('.state').html('<br><i class="fa fa-ban"></i><br><h2>Error</h2>The email or password you entered is incorrect, please try again.').css({
-                color: '#eb5638'
-              });
-            }
-          });
-        });
+        
+        document.getElementById('btn').onclick = function() {
+          var login = document.getElementById('login').value;
+          var password = document.getElementById('password').value;
+          if(login === 'admin' && password === '12345') {
+            alert('Пароль верный');
+          } else {
+            alert('Пароль неверный');
+          }
+        }
         </script>
     </body>
 <!-- https://codepen.io/retyui/pen/NPPzrd -->
