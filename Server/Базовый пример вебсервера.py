@@ -26,10 +26,11 @@ async def hello(websocket, path): # На стороне сервера websocket
                     "Password": greeting[2],
                     "Name": greeting[3],
                     "Phone": greeting[4],
-                    "Date_of_birthday": greeting[5].strftime("%d.%m.%Y")
+                    "Date_of_birthday": greeting[5].strftime("%d.%m.%Y"),
+                    'res': "Good"
                 }
             else:
-                greeting = ['None']
+                greeting = {'res': 'None'}
             greeting = json.dumps(greeting)
             print(greeting)
             await websocket.send(greeting)

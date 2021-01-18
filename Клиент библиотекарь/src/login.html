@@ -41,13 +41,13 @@
               };
               ws.onmessage = function (event) {
                     ret = JSON.parse(event.data);
-                    console.log(ret)
-                };
-          if(ret != ["None"]) {
-            alert('Пароль верный');
-          } else {
-            alert('Пароль неверный');
-          }
+                
+                    if(ret.res != "None") {
+                      alert('Пароль верный');
+                    } else {
+                      alert('Пароль неверный');
+            }
+          };
         }
         </script>
     </body>
