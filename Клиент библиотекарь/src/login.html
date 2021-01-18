@@ -15,13 +15,35 @@
 			    <div class="login" id="btn" type="button">Войти</div>
 		    </div>
 		    <div class="fack"><a href="regist.html"><i class="fa fa-question-circle"></i>Забыли пароль?</a></div>
-	    </div>
+      </div>
+      <script>
+        
+            ws.onmessage = function (event) {
+
+            };
+        </script>
         <script>
         
         document.getElementById('btn').onclick = function() {
-          var login = document.getElementById('login').value;
+          var log = document.getElementById('login').value;
           var password = document.getElementById('password').value;
-          if(login === 'admin' && password === '12345') {
+          var ret;
+          var ws = new WebSocket("ws://127.0.0.1:8765/"),
+              messages = document.createElement('ul');
+              ws.onopen = function () {
+                  let data = {
+                      comm: 'login',
+                      login: log,
+                      password: password
+                  };
+                  let json = JSON.stringify(data);
+                   ws.send(json);
+              };
+              ws.onmessage = function (event) {
+                    ret = JSON.parse(event.data);
+                    console.log(ret)
+                };
+          if(ret != ["None"]) {
             alert('Пароль верный');
           } else {
             alert('Пароль неверный');
