@@ -48,6 +48,8 @@
                       window.close()
                     } else {
                       alert('Пароль неверный');
+                      document.getElementById('login').value = '';
+                      document.getElementById('password').value = '';
             }
           };
         }
