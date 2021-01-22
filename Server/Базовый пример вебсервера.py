@@ -39,6 +39,7 @@ async def hello(websocket, path): # На стороне сервера websocket
                 greeting = {'res': 'None'} # Если ответ MySQL None, то отправляет ответ сервера None
             greeting = json.dumps(greeting) # Преобразование в json для отправки данных
             await websocket.send(greeting) # Отправка json в клиент, который обратился
+            
     elif ask["comm"] == 'signup':
         con = pymysql.connect(host=HOST, user=USER,
                               password=PASSWORD, db='library')
