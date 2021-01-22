@@ -1,25 +1,32 @@
+'''
+WS Сервер (базовый пример)
+'''
 
-# WS Сервер (базовый пример)
-
-import asyncio # Библиотека стандартной архитектуры асинхронного ввода - вывода в Python
+import asyncio    # Библиотека стандартной архитектуры асинхронного ввода - вывода в Python
 import websockets # Библиотека вебсокетов
 import pymysql    # Библиотека для обращения к MySQL
 import json       # Библиотека для работы с json
 import datetime   # Библиотека для корректного преобразования данных в DD.MM.YYYY
 
+HOST = '92.49.138.74'
+USER = 'DGDays'
+PASSWORD = '669202Qazwerty+'
+
 async def hello(websocket, path): # На стороне сервера websocket выполняет 
     # сопрограмму обработчика hello один раз для каждого соединения
     ask = await websocket.recv() # Получение данных с клиента
     ask = json.loads(ask)        # Чтение  json
-    if ask["comm"] == 'login':   # Проверка комманды. Если comm == login запуск регистрации
-        con = pymysql.connect(host='92.49.138.74', user='DGDays', 
-            password='669202Qazwerty+', db='library')
-        with con:                # Подключение к Мускулам
+    
+    if ask["comm"] == 'login':   # Проверка комманды. Если comm == login, запуск регистрации
+        con = pymysql.connect(host=HOST, user=USER, 
+            password=PASSWORD, db='library')
+        
+        with con:                # Подключение к MySQL
             cur = con.cursor()
-            cur.execute('''SELECT * FROM users WHERE Login=(%s) AND Password=(%s)''',(ask['login'],ask['password'])) # Получение данных пользователя под этим логином и паролем
+            cur.execute('SELECT * FROM users WHERE Login=(%s) AND Password=(%s)', (ask['login'], ask['password'])) # Получение данных пользователя под этим логином и паролем
             greeting = cur.fetchone() # Получение одной единственной записи аккаунта
-            if greeting != None: # Проверка ответа MySQL. Если не None, то создаёт json с данными пользователя и ответом сервера Good
-                greeting = {     # Сам json с данными юзера
+            if greeting: # Проверка ответа MySQL. Если не None, то создаёт json с данными пользователя и ответом сервера Good
+                greeting = { # Сам json с данными юзера
                     "id": greeting[0],
                     "Login": greeting[1],
                     "Password": greeting[2],
@@ -27,7 +34,7 @@ async def hello(websocket, path): # На стороне сервера websocket
                     "Phone": greeting[4],
                     "Date_of_birthday": greeting[5].strftime("%d.%m.%Y"),
                     'res': "Good"
-                }
+                } 
             else:
                 greeting = {'res': 'None'} # Если ответ MySQL None, то отправляет ответ сервера None
             greeting = json.dumps(greeting) # Преобразование в json для отправки данных
