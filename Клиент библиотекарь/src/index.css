@@ -860,6 +860,7 @@ button, a {
     top: 10px;
   }
 }
+
 /* для кнопочек сортировки */
 /*** USWITCH SELECT ** */
 .us-form select {
@@ -1103,3 +1104,4 @@ th,
   color:                #fff;
   background:           #666;
 }
+
