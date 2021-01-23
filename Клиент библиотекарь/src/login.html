@@ -1,23 +1,36 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Mini-lib</title>
-        <link rel="stylesheet" href="index.css">
-        <link rel="stylesheet" href="login.css">
-    </head>
+  <head>
+    <meta charset="UTF-8">
+    <title>Mini-lib</title>
+    <link rel="stylesheet" href="login.css">
+  </head>
     <body>
-        <div class="panel">
-		    <div class="state"><br><i class="fa fa-unlock-alt"></i><br><h1>Вход</h1></div>
-		    <div class="form" method="post">
-			    <input placeholder='Логин' id="login" type="text">
-			    <input placeholder='Пароль' id="password" type="password">
-			    <div class="login" id="btn" type="button">Войти</div>
-		    </div>
-        <div class="fack"><a href="regist.html"><i class="fa fa-question-circle"></i>Вы ещё не зарегистрированы?</a></div>
-        <div class="fack"><a href=""><i class="fa fa-question-circle"></i>Забыли пароль?</a></div>
-      </div>
-      <script>
+      <form>
+  <input checked id='signin' name='action' type='radio' value='signin'>
+  <label for='signin'>Войти</label>
+  <input id='signup' name='action' type='radio' value='signup'>
+  <label for='signup'>Зарегистрироваться</label>
+  <input id='reset' name='action' type='radio' value='reset'>
+  <label for='reset'>Сброс</label>
+  <div id='wrapper'>
+    <div id='arrow'></div>
+    <input placeholder='Логин' id="login" type="text">
+    <input placeholder='Пароль' id="password" type="password">
+    <input placeholder='Повторить пароль' id='repass' type="password">
+  </div>
+  <button class="login" id="btn" type='submit'>
+    <span>
+      Сбросить пароль
+      <br>
+      Войти
+      <br>
+      Принять
+    </span>
+  </button>
+</form>
+<div id='hint'>Нажмите на поля, они не кусаются ; )</div>
+<script>
         ws.onmessage = function (event) {
         };
       </script>
@@ -51,6 +64,8 @@
           };
         }
       </script>
+
     </body>
-<!-- https://codepen.io/retyui/pen/NPPzrd -->
+<!-- https://codepen.io/m0n4d/pen/qJBazW?editors=1100 -->
+<!-- https://codepen.io/_fbrz/pen/pvZRNK -->
 </html>
