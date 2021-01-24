@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="login.css">
   </head>
     <body>
-      <form>
+      <form onsubmit="return false;"> 
   <input checked id='signin' name='action' type='radio' value='signin'>
   <label for='signin'>Войти</label>
   <input id='signup' name='action' type='radio' value='signup'>
@@ -31,38 +31,50 @@
 </form>
 <div id='hint'>Нажмите на поля, они не кусаются ; )</div>
 <script>
-        ws.onmessage = function (event) {
-        };
       </script>
       <script>
+        document.getElementById('btn').comm = 'login';
+        document.getElementById('signin').onclick = function() {
+          document.getElementById('btn').comm = 'login';
+        };
+
+        document.getElementById('signup').onclick = function() {
+          document.getElementById('btn').comm = 'signup';
+        };
+
+        document.getElementById('reset').onclick = function() {
+          document.getElementById('btn').comm = 'reset';
+        };
+
         document.getElementById('btn').onclick = function() {
-          var log = document.getElementById('login').value;
-          var password = document.getElementById('password').value;
-          var ret;
-          var ws = new WebSocket("ws://127.0.0.1:8765/"),
-              messages = document.createElement('ul');
-              ws.onopen = function () {
-                  let data = {
-                      comm: 'login',
-                      login: log,
-                      password: password
+          if (this.comm == 'login'){
+            var log = document.getElementById('login').value;
+            var password = document.getElementById('password').value;
+            var ret;
+            var ws = new WebSocket("ws://127.0.0.1:8765/")
+                ws.onopen = function () {
+                    let data = {
+                        comm: 'login',
+                        login: log,
+                        password: password
+                    };
+                    let json = JSON.stringify(data);
+                    ws.send(json);
+                };
+                ws.onmessage = function (event) {
+                      ret = JSON.parse(event.data);
+                  
+                      if(ret.res != "None") {
+                        alert('Пароль верный');
+                        window.close()
+                      } else {
+                        alert('Пароль неверный');
+                        document.getElementById('login').value = '';
+                        document.getElementById('password').value = '';
+                      }
                   };
-                  let json = JSON.stringify(data);
-                   ws.send(json);
-              };
-              ws.onmessage = function (event) {
-                    ret = JSON.parse(event.data);
-                
-                    if(ret.res != "None") {
-                      alert('Пароль верный');
-                      window.close()
-                    } else {
-                      alert('Пароль неверный');
-                      document.getElementById('login').value = '';
-                      document.getElementById('password').value = '';
-            }
           };
-        }
+        };
       </script>
 
     </body>

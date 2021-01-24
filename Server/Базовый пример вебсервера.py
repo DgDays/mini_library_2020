@@ -46,7 +46,7 @@ async def hello(websocket, path): # На стороне сервера websocket
         with con:
             cur = con.cursor()
             cur.execute(
-                f'INSERT INTO users (Login, Password, Name, Phone, Date_of_birthday) VALUES (%s, %s, %s, %s, %s)',
+                f'INSERT INTO users (Login, Password, Name, Phone, Date_of_birthday) VALUES (%s, %s, %s, %s, %s, %s, %s)',
                 (ask['login'], ask['password'], ask['name'], ask['phone'], ask['date_of_birth']))
 
 start_server = websockets.serve(hello, "localhost", 8765) # Старт сервака
