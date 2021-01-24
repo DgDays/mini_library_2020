@@ -56,7 +56,7 @@ body {
 #signin:checked ~ #wrapper #arrow { left: 32px; }
 #signin:checked ~ button span { transform: translate3d(0,-72px,0); }
 
-#signup:checked ~ #wrapper { height: 262px; }
+#signup:checked ~ #wrapper { height: 348px; }
 #signup:checked ~ #wrapper #arrow { left: 137px; }
 #signup:checked ~ button span { transform: translate3d(0,-144px,0); }
 
@@ -70,7 +70,7 @@ form {
   margin: -185px -225px;
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 40%;
 }
 
 input[type=radio] { display: none; }

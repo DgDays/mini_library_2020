@@ -15,9 +15,10 @@
   <label for='reset'>Сброс</label>
   <div id='wrapper'>
     <div id='arrow'></div>
-    <input placeholder='Логин' id="login" type="text">
-    <input placeholder='Пароль' id="password" type="password">
-    <input placeholder='Повторить пароль' id='repass' type="password">
+    <input placeholder='Логин*' id="login" type="text" required>
+    <input placeholder='Пароль*' id="password" type="password" autocomplete="password">
+    <input placeholder='Повторить пароль*' id='repass' type="password">
+    <input placeholder='Почта*' id='email' type="text">
   </div>
   <button class="login" id="btn" type='submit'>
     <span>
@@ -29,7 +30,7 @@
     </span>
   </button>
 </form>
-<div id='hint'>Нажмите на поля, они не кусаются ; )</div>
+<div id='hint'>Нажмите на поля, они не кусаются ; )<br>* — так обозначаются поля необходимые для заполнения</div>
 <script>
       </script>
       <script>
