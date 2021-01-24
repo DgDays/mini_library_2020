@@ -17,10 +17,10 @@ function createWindow() {
     width: 800,
     height: 700,
     parent: appWindow,
-    closable: false,
+    // closable: false,
     modal: true,
     autoHideMenuBar: true, 
-    icon: __dirname + '/icon.ico'
+    icon: __dirname + '/icon.ico',
   });
   child.loadFile("src/login.html");
   child.once('ready-to-show', () => {

@@ -65,8 +65,8 @@
                       ret = JSON.parse(event.data);
                   
                       if(ret.res != "None") {
-                        alert('Пароль верный');
-                        window.close()
+                        // alert('Пароль верный'); 
+                        window.close();
                       } else {
                         alert('Пароль неверный');
                         document.getElementById('login').value = '';
