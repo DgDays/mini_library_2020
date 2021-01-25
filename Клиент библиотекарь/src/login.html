@@ -74,7 +74,45 @@
                         document.getElementById('password').value = '';
                       }
                   };
-          };
+          } else if (this.comm == 'signup'){
+            var log = document.getElementById('login').value;
+            var password = document.getElementById('password').value;
+            var email = document.getElementById('email').value;
+            if (password == document.getElementById('repass').value){
+              var ret;
+              var ws = new WebSocket("ws://127.0.0.1:8765/")
+                  ws.onopen = function () {
+                      let data = {
+                          comm: 'signup',
+                          login: log,
+                          password: password,
+                          email: email
+                      };
+                      let json = JSON.stringify(data);
+                      ws.send(json);
+                  };
+                  ws.onmessage = function (event) {
+                        ret = JSON.parse(event.data);
+                    
+                        if(ret.res != "None") {
+                          alert('Новый пользователь добавлен!'); 
+                          document.getElementById('signin').click();
+                        } else if (ret.res == 'UserFound'){
+                          alert('Такой пользователь существует!');
+                          document.getElementById('login').value = '';
+                          document.getElementById('password').value = '';
+                          document.getElementById('repass').value = '';
+                          document.getElementById('email').value = '';
+                        } else {
+                          alert('Использованы неверные символы в пароле, почте или логине.\r\n Проверьте их ещё раз');
+                          document.getElementById('login').value = '';
+                          document.getElementById('password').value = '';
+                          document.getElementById('repass').value = '';
+                          document.getElementById('email').value = '';
+                        }
+                    }
+                  }
+          }; 
         };
       </script>
 
