@@ -93,8 +93,8 @@
                   };
                   ws.onmessage = function (event) {
                         ret = JSON.parse(event.data);
-                    
-                        if(ret.res != "None") {
+                        console.log(ret.res);
+                        if(ret.res != "None" && ret.res != 'UserFound') {
                           alert('Новый пользователь добавлен!'); 
                           document.getElementById('signin').click();
                         } else if (ret.res == 'UserFound'){
@@ -109,8 +109,8 @@
                           document.getElementById('password').value = '';
                           document.getElementById('repass').value = '';
                           document.getElementById('email').value = '';
-                        }
-                    }
+                        };
+                    };
                   }
           }; 
         };
