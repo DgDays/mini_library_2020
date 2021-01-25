@@ -32,7 +32,7 @@ async def hello(websocket, path): # На стороне сервера websocket
                     "Password": greeting[2],
                     "Name": greeting[3],
                     "Phone": greeting[4],
-                    "Date_of_birthday": greeting[7].strftime("%d.%m.%Y"),
+                    "Date_of_birthday": greeting[7].strftime("%d.%m.%Y") if greeting[7] != None else greeting[7],
                     'res': "Good"
                 } 
             else:
