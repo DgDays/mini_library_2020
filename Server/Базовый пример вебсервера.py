@@ -47,11 +47,11 @@ async def hello(websocket, path): # На стороне сервера websocket
             cur = con.cursor()
             cur.execute('SELECT * FROM users WHERE (Login=(%s)) OR (Email=(%s))', (ask['login'], ask['email']))
             res = cur.fetchone()
-            print(res)
-            if (res == []):
+            if (res == None):
                 cur.execute(
                     f'INSERT INTO users (Login, Password, Email) VALUES (%s, %s, %s)',
                     (ask['login'], ask['password'], ask['email']))
+                con.commit()
                 greeting = {'res': 'Good'}
             else:
                 greeting = {'res': 'UserFound'}
