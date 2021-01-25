@@ -45,9 +45,19 @@ async def hello(websocket, path): # На стороне сервера websocket
                               password=PASSWORD, db='library')
         with con:
             cur = con.cursor()
-            cur.execute(
-                f'INSERT INTO users (Login, Password, Name, Phone, Date_of_birthday) VALUES (%s, %s, %s, %s, %s, %s, %s)',
-                (ask['login'], ask['password'], ask['name'], ask['phone'], ask['date_of_birth']))
+            cur.execute('SELECT * FROM users WHERE (Login=(%s)) OR (Email=(%s))', (ask['login'], ask['email']))
+            res = cur.fetchone()
+            print(res)
+            if (res == []):
+                cur.execute(
+                    f'INSERT INTO users (Login, Password, Email) VALUES (%s, %s, %s)',
+                    (ask['login'], ask['password'], ask['email']))
+                greeting = {'res': 'Good'}
+            else:
+                greeting = {'res': 'UserFound'}
+            greeting = json.dumps(greeting) # Преобразование в json для отправки данных
+            await websocket.send(greeting)
+
 
 start_server = websockets.serve(hello, "localhost", 8765) # Старт сервака
 
