@@ -63,10 +63,16 @@ async def hello(websocket, path): # На стороне сервера websocket
             await websocket.send(greeting)
     
     elif ask['comm'] == 'repass':
+        con = pymysql.connect(host=HOST, user=USER,
+                              password=PASSWORD, db='library')
+        with con:
+            cur = con.cursor()
+            cur.execute("SELECT Email FROM users WHERE Login=(%s)",(ask['login'],))
+            email = cur.fetchone()[0]
         smtpObj = smtplib.SMTP('smtp.gmail.com', 587)
         smtpObj.starttls()
         smtpObj.login(EMAIL,PASS_EMAIL)
-        smtpObj.sendmail(EMAIL,"oleg.pariev@gmail.com","go to bed!")
+        smtpObj.sendmail(EMAIL,email,"go to bed!")
         smtpObj.quit()
 
 

@@ -72,6 +72,8 @@
                         alert('Пароль неверный');
                         document.getElementById('login').value = '';
                         document.getElementById('password').value = '';
+                        document.getElementById('repass').value = '';
+                        document.getElementById('email').value = '';
                       }
                   };
           } else if (this.comm == 'signup'){
@@ -115,9 +117,11 @@
           } else if (this.comm == 'reset') {
             var ret;
             var ws = new WebSocket("ws://127.0.0.1:8765/")
+            var log = document.getElementById('login').value;
                 ws.onopen = function () {
                     let data = {
-                        comm: 'repass'
+                        comm: 'repass',
+                        login: log
                     };
                     let json = JSON.stringify(data);
                     console.log(json)
