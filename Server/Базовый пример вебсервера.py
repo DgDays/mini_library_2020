@@ -7,10 +7,14 @@ import websockets # Библиотека вебсокетов
 import pymysql    # Библиотека для обращения к MySQL
 import json       # Библиотека для работы с json
 import datetime   # Библиотека для корректного преобразования данных в DD.MM.YYYY
+import smtplib    # Библиотека для отправки email сообщений
 
 HOST = '92.49.138.74'
 USER = 'DGDays'
 PASSWORD = '669202Qazwerty+'
+
+EMAIL = 'mini.lib.2020@gmail.com'
+PASS_EMAIL = '669202qaz'
 
 async def hello(websocket, path): # На стороне сервера websocket выполняет 
     # сопрограмму обработчика hello один раз для каждого соединения
@@ -57,6 +61,13 @@ async def hello(websocket, path): # На стороне сервера websocket
                 greeting = {'res': 'UserFound'}
             greeting = json.dumps(greeting) # Преобразование в json для отправки данных
             await websocket.send(greeting)
+    
+    elif ask['comm'] == 'repass':
+        smtpObj = smtplib.SMTP('smtp.gmail.com', 587)
+        smtpObj.starttls()
+        smtpObj.login(EMAIL,PASS_EMAIL)
+        smtpObj.sendmail(EMAIL,"oleg.pariev@gmail.com","go to bed!")
+        smtpObj.quit()
 
 
 start_server = websockets.serve(hello, "localhost", 8765) # Старт сервака

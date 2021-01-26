@@ -112,7 +112,18 @@
                         };
                     };
                   }
-          }; 
+          } else if (this.comm == 'reset') {
+            var ret;
+            var ws = new WebSocket("ws://127.0.0.1:8765/")
+                ws.onopen = function () {
+                    let data = {
+                        comm: 'repass'
+                    };
+                    let json = JSON.stringify(data);
+                    console.log(json)
+                    ws.send(json);
+                  };
+          }
         };
       </script>
 
