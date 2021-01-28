@@ -2,12 +2,14 @@
 WS Сервер (базовый пример)
 '''
 
-import asyncio    # Библиотека стандартной архитектуры асинхронного ввода - вывода в Python
-import websockets # Библиотека вебсокетов
-import pymysql    # Библиотека для обращения к MySQL
-import json       # Библиотека для работы с json
-import datetime   # Библиотека для корректного преобразования данных в DD.MM.YYYY
-import smtplib    # Библиотека для отправки email сообщений
+import asyncio                       # Библиотека стандартной архитектуры асинхронного ввода - вывода в Python
+import websockets                    # Библиотека вебсокетов
+import pymysql                       # Библиотека для обращения к MySQL
+import json                          # Библиотека для работы с json
+import datetime                      # Библиотека для корректного преобразования данных в DD.MM.YYYY
+import smtplib                       # Библиотека для отправки email сообщений
+from email.mime.text import MIMEText # Нужно для корректной отправки собщений с кириллицей
+from email.header import Header      # Тоже что и выше
 
 HOST = '92.49.138.74'
 USER = 'DGDays'
@@ -69,11 +71,15 @@ async def hello(websocket, path): # На стороне сервера websocket
             cur = con.cursor()
             cur.execute("SELECT Email FROM users WHERE Login=(%s)",(ask['login'],))
             email = cur.fetchone()[0]
-        smtpObj = smtplib.SMTP('smtp.gmail.com', 587)
-        smtpObj.starttls()
-        smtpObj.login(EMAIL,PASS_EMAIL)
-        smtpObj.sendmail(EMAIL,email,"go to bed!")
-        smtpObj.quit()
+        msg = MIMEText('ЖИВО ПОШЁЛ СПАТЬ, СУЧЁНОК!!!!', 'plain', 'utf-8')   # Эта и ещё 3 строчки вниз нужны для отправки сообщений с кириллицей
+        msg['Subject'] = Header('Восстановление пароля', 'utf-8')
+        msg['From'] = EMAIL
+        msg['To'] = email
+        smtpObj = smtplib.SMTP('smtp.gmail.com', 587)                       # Подключение к сервису Gmail
+        smtpObj.starttls()                                                  # Подключени к соединенной ссесии
+        smtpObj.login(EMAIL,PASS_EMAIL)                                     # Логин в Gmail
+        smtpObj.sendmail(msg['From'],msg['To'],msg.as_string())             # Отправка письма
+        smtpObj.quit()                                                      # Закрытие ссесии
 
 
 start_server = websockets.serve(hello, "localhost", 8765) # Старт сервака
