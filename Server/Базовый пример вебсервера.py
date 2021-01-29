@@ -69,9 +69,13 @@ async def hello(websocket, path): # На стороне сервера websocket
                               password=PASSWORD, db='library')
         with con:
             cur = con.cursor()
-            cur.execute("SELECT Email FROM users WHERE Login=(%s)",(ask['login'],))
-            email = cur.fetchone()[0]
-        msg = MIMEText('ЖИВО ПОШЁЛ СПАТЬ, СУЧЁНОК!!!!', 'plain', 'utf-8')   # Эта и ещё 3 строчки вниз нужны для отправки сообщений с кириллицей
+            cur.execute("SELECT Email, Password FROM users WHERE Login=(%s)",(ask['login'],))
+            email = cur.fetchone()
+            user_pass = email[1]
+            email = email[0]
+            user_login = ask['login']
+        text = f'Доброго времени суток!\n Это письмо было отправлено, т.к. Вы забыли пароль от аккаунта в библиотеке.\n\n\nВаш логин: {user_login}\nВаш пароль: {user_pass}'
+        msg = MIMEText(text, 'plain', 'utf-8')   # Эта и ещё 3 строчки вниз нужны для отправки сообщений с кириллицей
         msg['Subject'] = Header('Восстановление пароля', 'utf-8')
         msg['From'] = EMAIL
         msg['To'] = email
