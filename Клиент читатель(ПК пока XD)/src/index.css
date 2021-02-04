@@ -862,6 +862,10 @@ button, a {
   }
 }
 
+.us-form {
+  padding: 0 0 12px 0;
+}
+
 /* для кнопочек сортировки */
 /*** USWITCH SELECT ** */
 .us-form select {
@@ -1106,3 +1110,11 @@ th,
   background:           #666;
 }
 
+.btn-logout {
+  border: none;
+  background-color: transparent;
+  color: var(--light-font);
+  margin-top: auto;
+  cursor: pointer;
+  transition: 0.2s;
+}
