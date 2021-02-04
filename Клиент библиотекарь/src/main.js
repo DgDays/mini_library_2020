@@ -21,7 +21,7 @@ function createWindow() {
     autoHideMenuBar: true, 
     icon: __dirname + '/icon.ico',
   });
-  child.loadFile("src/login.html");
+  child.loadURL(`file://${__dirname}/servlog.html`);
   // child.once('ready-to-show', () => {
   //   child.show()
   // })
