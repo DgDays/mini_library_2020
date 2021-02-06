@@ -13,15 +13,15 @@ function createWindow() {
     icon: __dirname + '/icon.ico'
   });
   let child = new BrowserWindow({
-    width: 800,
-    height: 700,
-    parent: mainWindow,
+    width: 800, // задал ширину
+    height: 700, // задал высоту
+    parent: mainWindow, // указал родительское окно
     // closable: false,
-    modal: true,
-    autoHideMenuBar: true, 
+    modal: true, // указал дочернее окно 
+    autoHideMenuBar: true, // скрыл меню под 
     icon: __dirname + '/icon.ico',
   });
-  child.loadURL(`file://${__dirname}/login.html`);
+  child.loadURL(`file://${__dirname}/servlog.html`);
   // child.once('ready-to-show', () => {
   //   child.show()
   // })
