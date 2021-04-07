@@ -168,7 +168,7 @@ class Main(tk.Tk):
 
         self.initMenus()
         self.initSearch()
-        self.initSearch()
+        self.initTable()
 
     def initMenus(self):
         # ================================ Меню ===============================
