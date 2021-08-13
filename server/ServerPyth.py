@@ -11,12 +11,33 @@ import smtplib                       # Библиотека для отправ�
 from email.mime.text import MIMEText # Нужно для корректной отправки собщений с кириллицей
 from email.header import Header      # Тоже что и выше
 
-HOST = '92.49.138.74'
+HOST = '127.0.0.1'
 USER = 'DGDays'
 PASSWORD = '669202Qazwerty+'
 
 EMAIL = 'mini.lib.2020@gmail.com'
 PASS_EMAIL = '669202qaz'
+
+con = pymysql.connect(host=HOST, user=USER, 
+    password=PASSWORD, db='library')
+with con:                # Подключение к MySQL
+    cur = con.cursor()
+    cur.execute("""CREATE DATABASE IF NOT EXISTS library""")
+    cur.execute("""CREATE TABLE IF NOT EXISTS users
+                    (
+                        ID int NOT NULL AUTO_INCREMENT,
+                        Login VARCHAR(45),
+                        Password VARCHAR(45),
+                        Email VARCHAR(45),
+                        Phone_Number VARCHAR(45),
+                        FirstName VARCHAR(45),
+                        LastName VARCHAR(45),
+                        DateBirthday DATE,
+                        Address VARCHAR(45),
+                        POWOS VARCHAR(45),
+                        CLASS VARCHAR(5),
+                        primary key (ID)
+                    );""")
 
 async def hello(websocket, path): # На стороне сервера websocket выполняет 
     # сопрограмму обработчика hello один раз для каждого соединения
