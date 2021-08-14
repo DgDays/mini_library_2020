@@ -11,4 +11,6 @@ for repo in g.get_user().get_repos():
 
 contents = repo.get_contents("ip-list.txt", ref="main")
 file_content = str(b64decode(contents.content))[2:-1]
-repo.update_file(contents.path, "more", file_content+"more", contents.sha, branch="main")
+file_content = file_content + '|more|'
+print(file_content.replace('||', '|').split('|')[1:-1])
+repo.update_file(contents.path, "more", file_content, contents.sha, branch="main")
