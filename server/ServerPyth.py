@@ -49,7 +49,7 @@ async def hello(websocket, path): # На стороне сервера websocket
     ask = json.loads(ask)        # Чтение  json
     
     if ask["comm"] == 'login':   # Проверка комманды. Если comm == login, запуск регистрации
-        con = mysql.connect(host=HOST, user=USER, 
+        con = mysql.connector.connect(host=HOST, user=USER, 
             password=PASSWORD, db='library')
         
         with con:                # Подключение к MySQL
@@ -72,7 +72,7 @@ async def hello(websocket, path): # На стороне сервера websocket
             await websocket.send(greeting) # Отправка json в клиент, который обратился
             
     elif ask["comm"] == 'signup':
-        con = mysql.connect(host=HOST, user=USER,
+        con = mysql.connector.connect(host=HOST, user=USER,
                               password=PASSWORD, db='library')
         with con:
             cur = con.cursor()
@@ -90,7 +90,7 @@ async def hello(websocket, path): # На стороне сервера websocket
             await websocket.send(greeting)
     
     elif ask['comm'] == 'repass':
-        con = mysql.connect(host=HOST, user=USER,
+        con = mysql.connector.connect(host=HOST, user=USER,
                               password=PASSWORD, db='library')
         with con:
             cur = con.cursor()
@@ -111,7 +111,7 @@ async def hello(websocket, path): # На стороне сервера websocket
         smtpObj.quit()                                                      # Закрытие ссесии
 
 
-start_server = websockets.serve(hello, "localhost", 8765) # Старт сервака
+start_server = websockets.serve(hello, "192.168.1.146", 8765) # Старт сервака
 
 asyncio.get_event_loop().run_until_complete(start_server) # Асинхронный запуск до тех пор, пока сервак не заработает
 asyncio.get_event_loop().run_forever()                    # Запускает петлю работы сервака
