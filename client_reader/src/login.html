@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Mini-lib</title>
+    <link rel="stylesheet" href="login.css">
+  </head>
+    <body>
+      <form onsubmit="return false;"> 
+  <input checked id='signin' name='action' type='radio' value='signin'>
+  <label for='signin'>Войти</label>
+  <input id='signup' name='action' type='radio' value='signup'>
+  <label for='signup'>Зарегистрироваться</label>
+  <input id='reset' name='action' type='radio' value='reset'>
+  <label for='reset'>Сброс</label>
+  <div id='wrapper'>
+    <div id='arrow'></div>
+    <input placeholder='Логин*' id="login" type="text" required>
+    <input placeholder='Пароль*' id="password" type="password" autocomplete="password">
+    <input placeholder='Повторить пароль*' id='repass' type="password">
+    <input placeholder='Почта*' id='email' type="text">
+  </div>
+  <button class="login" id="btn" type='submit'>
+    <span>
+      Сбросить пароль
+      <br>
+      Войти
+      <br>
+      Принять
+    </span>
+  </button>
+</form>
+<div id='hint'>Нажмите на поля, они не кусаются ; )<br>* — так обозначаются поля необходимые для заполнения</div>
+<script>
+      </script>
+      <script>
+        document.getElementById('btn').comm = 'login';
+        document.getElementById('signin').onclick = function() {
+          document.getElementById('btn').comm = 'login';
+        };
+
+        document.getElementById('signup').onclick = function() {
+          document.getElementById('btn').comm = 'signup';
+        };
+
+        document.getElementById('reset').onclick = function() {
+          document.getElementById('btn').comm = 'reset';
+        };
+
+        document.getElementById('btn').onclick = function() {
+          if (this.comm == 'login'){
+            var log = document.getElementById('login').value;
+            var password = document.getElementById('password').value;
+            var ret;
+            var ws = new WebSocket("ws://127.0.0.1:8765/")
+                ws.onopen = function () {
+                    let data = {
+                        comm: 'login',
+                        login: log,
+                        password: password
+                    };
+                    let json = JSON.stringify(data);
+                    ws.send(json);
+                };
+                ws.onmessage = function (event) {
+                      ret = JSON.parse(event.data);
+                  
+                      if(ret.res != "None") {
+                        // alert('Пароль верный'); 
+                        window.close();
+                      } else {
+                        alert('Пароль неверный');
+                        document.getElementById('login').value = '';
+                        document.getElementById('password').value = '';
+                        document.getElementById('repass').value = '';
+                        document.getElementById('email').value = '';
+                      }
+                  };
+          } else if (this.comm == 'signup'){
+            var log = document.getElementById('login').value;
+            var password = document.getElementById('password').value;
+            var email = document.getElementById('email').value;
+            if (password == document.getElementById('repass').value){
+              var ret;
+              var ws = new WebSocket("ws://127.0.0.1:8765/")
+                  ws.onopen = function () {
+                      let data = {
+                          comm: 'signup',
+                          login: log,
+                          password: password,
+                          email: email
+                      };
+                      let json = JSON.stringify(data);
+                      ws.send(json);
+                  };
+                  ws.onmessage = function (event) {
+                        ret = JSON.parse(event.data);
+                        console.log(ret.res);
+                        if(ret.res != "None" && ret.res != 'UserFound') {
+                          alert('Новый пользователь добавлен!'); 
+                          document.getElementById('signin').click();
+                        } else if (ret.res == 'UserFound'){
+                          alert('Такой пользователь существует!');
+                          document.getElementById('login').value = '';
+                          document.getElementById('password').value = '';
+                          document.getElementById('repass').value = '';
+                          document.getElementById('email').value = '';
+                        } else {
+                          alert('Использованы неверные символы в пароле, почте или логине.\r\n Проверьте их ещё раз');
+                          document.getElementById('login').value = '';
+                          document.getElementById('password').value = '';
+                          document.getElementById('repass').value = '';
+                          document.getElementById('email').value = '';
+                        };
+                    };
+                  }
+          } else if (this.comm == 'reset') {
+            var ret;
+            var ws = new WebSocket("ws://127.0.0.1:8765/")
+            var log = document.getElementById('login').value;
+                ws.onopen = function () {
+                    let data = {
+                        comm: 'repass',
+                        login: log
+                    };
+                    let json = JSON.stringify(data);
+                    console.log(json)
+                    ws.send(json);
+                  };
+          }
+        };
+      </script>
+
+    </body>
+<!-- https://codepen.io/m0n4d/pen/qJBazW?editors=1100 -->
+<!-- https://codepen.io/_fbrz/pen/pvZRNK -->
+</html>

@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Mini-lib</title>
+    <link rel="stylesheet" href="index.css">
+  </head>
+<body>
+<div class="app-container">
+  <div class="app-header">
+    <div class="app-header-left">
+      <span class="app-icon"></span>
+      <p class="app-name">Modulo</p>
+      <div class="search-wrapper">
+        <input class="search-input" type="text" placeholder="Поиск">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="feather feather-search" viewBox="0 0 24 24">
+          <defs></defs>
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="M21 21l-4.35-4.35"></path>
+        </svg>
+      </div>
+    </div>
+    <div class="app-header-right">
+      <button class="mode-switch" title="Поменять тему">
+        <svg class="moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="24" height="24" viewBox="0 0 24 24">
+          <defs></defs>
+          <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+        </svg>
+      </button>
+      <button class="add-btn" title="Добавить читателя">
+        <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus">
+          <line x1="12" y1="5" x2="12" y2="19" />
+          <line x1="5" y1="12" x2="19" y2="12" /></svg>
+      </button>
+      <button class="notification-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+          <path d="M13.73 21a2 2 0 0 1-3.46 0" /></svg>
+      </button>
+      <button class="profile-btn">
+        <!-- <img src="http://dummyimage.com/150x60/c0c0c0" /> -->
+        <span>Аккаунт</span>
+      </button>
+    </div>
+    <button class="messages-btn">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-message-circle">
+        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" /></svg>
+    </button>
+  </div>
+  <div class="app-content">
+    <div class="app-sidebar">
+      <a href="" class="app-sidebar-link active">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" /></svg>
+      </a>
+      <a href="" class="app-sidebar-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="feather feather-folder" viewBox="0 0 24 24">
+        <defs />
+        <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z" />
+      </svg>
+      </a>
+      <a href="" class="app-sidebar-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+          <line x1="16" y1="2" x2="16" y2="6" />
+          <line x1="8" y1="2" x2="8" y2="6" />
+          <line x1="3" y1="10" x2="21" y2="10" /></svg>
+      </a>
+      <a href="" class="app-sidebar-link">
+        <svg class="link-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="feather feather-settings" viewBox="0 0 24 24">
+          <defs />
+          <circle cx="12" cy="12" r="3" />
+          <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" />
+        </svg>
+      </a>
+      <button class="btn-logout">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="feather feather-log-out" viewBox="0 0 24 24">
+        <defs/>
+        <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>
+      </svg>
+    </button>
+    </div>
+    <div class="projects-section">
+      <div class="projects-section-header">
+        <p>Читатели</p>
+        <p class="time">
+        <script>
+        // показывает дату входа( данные обновляются только при перезапуске)
+          var d = new Date();
+          var day=new Array("Воскресенье","Понедельник","Вторник","Среда","Четверг","Пятница","Суббота");
+          var month=new Array("января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря");
+          document.write(day[d.getDay()]+" " +d.getDate()+ " " + month[d.getMonth()]
+          + " " + d.getFullYear() + " г.");
+          </script></p>
+      </div>
+      <div class="projects-section-line">
+        <div class="projects-status">
+          <div class="item-status">
+            <span class="status-number">45</span>
+            <span class="status-type">Книг</span>
+          </div>
+          <div class="item-status">
+            <span class="status-number">24</span>
+            <span class="status-type">Должников</span>
+          </div>
+          <div class="item-status">
+            <span class="status-number">62</span>
+            <span class="status-type">Читателей</span>
+          </div>
+        </div>
+        <div class="view-actions">
+          <button class="view-btn list-view" title="Показать в строчку">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list">
+              <line x1="8" y1="6" x2="21" y2="6" />
+              <line x1="8" y1="12" x2="21" y2="12" />
+              <line x1="8" y1="18" x2="21" y2="18" />
+              <line x1="3" y1="6" x2="3.01" y2="6" />
+              <line x1="3" y1="12" x2="3.01" y2="12" />
+              <line x1="3" y1="18" x2="3.01" y2="18" /></svg>
+          </button>
+          <button class="view-btn grid-view active" title="Показать в колонку">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-grid">
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" /></svg>
+          </button>
+        </div>
+      </div>
+      <!-- фильтрация списков -->
+      <div class="us-form">
+        <label class="darkitem">Сортировать по классу: </label>
+        <span class="us-form-select-wrap">
+          <select>
+            <option>Все классы</option>
+            <option>11 класс(-ы)</option>
+            <option>10 класс(-ы)</option>
+            <option>9 класс(-ы)</option>
+            <option>8 класс(-ы)</option>
+            <option>7 класс(-ы)</option>
+            <option>6 класс(-ы)</option>
+            <option>5 класс(-ы)</option>
+            <option>4 класс(-ы)</option>
+            <option>3 класс(-ы)</option>
+            <option>2 класс(-ы)</option>
+            <option>1 класс(-ы)</option>
+          </select>
+        </span>
+        <label class="darkitem">Сортировать по литере: </label>
+        <span class="us-form-select-wrap">
+          <select>
+            <option>Все литеры</option>
+            <option>А</option>
+            <option>Б</option>
+            <option>В</option>
+            <option>Г</option>
+            <option>Д</option>
+          </select>
+        </span>
+      </div>
+      <!-- список читателей -->
+      <div class="project-boxes jsGridView">
+        <div class="project-box-wrapper">
+          <div class="project-box" style="background-color: #fee4cb;">
+            <div class="project-box-header">
+              <span>Январь 1, 2021</span>
+              <div class="more-wrapper">
+                <button class="project-btn-more">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical">
+                    <circle cx="12" cy="12" r="1" />
+                    <circle cx="12" cy="5" r="1" />
+                    <circle cx="12" cy="19" r="1" /></svg>
+                </button>
+            </div>
+          </div>
+          <div class="project-box-content-header">
+            <p class="box-content-header">Ученик(-ца) 11 "А"</p>
+            <p class="box-content-subheader">Иванов Иван Иванович</p>
+          </div>
+          <div class="box-progress-wrapper">
+            <p class="box-progress-header">Взял(-а) книги: </p>
+            <!-- <div class="box-progress-bar">
+              <span class="box-progress" style="width: 60%; background-color: #ff942e"></span>
+            </div>
+            <p class="box-progress-percentage">60%</p> -->
+            <div class="box-content-reader">
+              <p class="box-content-reader">А.С. Пушкин - Сборник стихов</p>
+            </div>
+          </div>
+          <div class="project-box-footer">
+            <div class="participants">
+              <button class="add-participant" style="color: #ff942e;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus">
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+              </button>
+            </div>
+            <div class="days-left" style="color: #ff942e;">2 дня назад</div>
+            <!-- ЗВЁЗДОЧКА -->
+            <div class="star-checkbox">
+              <input type="checkbox" id="star-1">
+              <label for="star-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-star">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    <div class="project-box-wrapper">
+      <div class="project-box" style="background-color: #e9e7fd;">
+        <div class="project-box-header">
+          <span>December 10, 2020</span>
+          <div class="more-wrapper">
+            <button class="project-btn-more">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical">
+                <circle cx="12" cy="12" r="1" />
+                <circle cx="12" cy="5" r="1" />
+                <circle cx="12" cy="19" r="1" /></svg>
+            </button>
+          </div>
+        </div>
+        <div class="project-box-content-header">
+          <p class="box-content-header">Ученик(-ца) 11 "А"</p>
+          <p class="box-content-subheader">Иванов Иван Иванович</p>
+        </div>
+        <div class="box-progress-wrapper">
+            <p class="box-progress-header">Взял(-а) книги: </p>
+            <!-- <div class="box-progress-bar">
+              <span class="box-progress" style="width: 60%; background-color: #ff942e"></span>
+            </div>
+            <p class="box-progress-percentage">60%</p> -->
+            <div class="box-content-reader">
+              <p class="box-content-reader">А.С. Пушкин - Сборник стихов</p>
+            </div>
+        </div>
+        <div class="project-box-footer">
+          <div class="participants">
+            <button class="add-participant" style="color: #4f3ff0;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus">
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+            </button>
+          </div>
+          <div class="days-left" style="color: #4f3ff0;">
+            4 дня назад
+          </div>
+          <!-- ЗВЁЗДОЧКА -->
+          <div class="star-checkbox">
+            <input type="checkbox" id="star-2">
+            <label for="star-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-star">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="project-box-wrapper">
+      <div class="project-box">
+        <div class="project-box-header">
+          <span>December 10, 2020</span>
+          <div class="more-wrapper">
+            <button class="project-btn-more">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical">
+                <circle cx="12" cy="12" r="1" />
+                <circle cx="12" cy="5" r="1" />
+                <circle cx="12" cy="19" r="1" /></svg>
+            </button>
+          </div>
+        </div>
+        <div class="project-box-content-header">
+          <p class="box-content-header">Ученик(-ца) 11 "А"</p>
+          <p class="box-content-subheader">Иванов Иван Иванович</p>
+        </div>
+        <div class="box-progress-wrapper">
+            <p class="box-progress-header">Взял(-а) книги: </p>
+            <!-- <div class="box-progress-bar">
+              <span class="box-progress" style="width: 60%; background-color: #ff942e"></span>
+            </div>
+            <p class="box-progress-percentage">60%</p> -->
+            <div class="box-content-reader">
+              <p class="box-content-reader">А.С. Пушкин - Сборник стихов</p>
+            </div>
+        </div>
+        <div class="project-box-footer">
+          <div class="participants">
+            <button class="add-participant" style="color: #096c86;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus">
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+            </button>
+          </div>
+          <div class="days-left" style="color: #096c86;">
+            6 дней назад
+          </div>
+          <!-- ЗВЁЗДОЧКА-->
+          <div class="star-checkbox">
+            <input type="checkbox" id="star-3">
+            <label for="star-3">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-star">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="project-box-wrapper">
+      <div class="project-box" style="background-color: #ffd3e2;">
+        <div class="project-box-header">
+          <span>December 10, 2020</span>
+          <div class="more-wrapper">
+            <button class="project-btn-more">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical">
+                <circle cx="12" cy="12" r="1" />
+                <circle cx="12" cy="5" r="1" />
+                <circle cx="12" cy="19" r="1" /></svg>
+            </button>
+          </div>
+        </div>
+        <div class="project-box-content-header">
+          <p class="box-content-header">Ученик(-ца) 11 "А"</p>
+          <p class="box-content-subheader">Иванов Иван Иванович</p>
+        </div>
+        <div class="box-progress-wrapper">
+            <p class="box-progress-header">Взял(-а) книги: </p>
+            <!-- <div class="box-progress-bar">
+              <span class="box-progress" style="width: 60%; background-color: #ff942e"></span>
+            </div>
+            <p class="box-progress-percentage">60%</p> -->
+            <div class="box-content-reader">
+              <p class="box-content-reader">А.С. Пушкин - Сборник стихов</p>
+            </div>
+        </div>
+        <div class="project-box-footer">
+          <div class="participants">
+            <button class="add-participant" style="color: #df3670;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus">
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+            </button>
+          </div>
+          <div class="days-left" style="color: #df3670;">
+            1 день назад
+          </div>
+          <!-- ЗВЁЗДОЧКА-->
+          <div class="star-checkbox">
+            <input type="checkbox" id="star-4">
+            <label for="star-4">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-star">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="project-box-wrapper">
+      <div class="project-box" style="background-color: #c8f7dc;">
+        <div class="project-box-header">
+          <span>December 10, 2020</span>
+          <div class="more-wrapper">
+            <button class="project-btn-more">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical">
+                <circle cx="12" cy="12" r="1" />
+                <circle cx="12" cy="5" r="1" />
+                <circle cx="12" cy="19" r="1" /></svg>
+            </button>
+          </div>
+        </div>
+        <div class="project-box-content-header">
+          <p class="box-content-header">Ученик(-ца) 11 "А"</p>
+          <p class="box-content-subheader">Витёков Витёк Витёкович</p>
+        </div>
+        <div class="box-progress-wrapper">
+            <p class="box-progress-header">Взял(-а) книги: </p>
+            <!-- <div class="box-progress-bar">
+              <span class="box-progress" style="width: 60%; background-color: #ff942e"></span>
+            </div>
+            <p class="box-progress-percentage">60%</p> -->
+            <div class="box-content-reader">
+              <p class="box-content-reader">А.С. Пушкин - Сборник стихов</p>
+            </div>
+        </div>
+        <div class="project-box-footer">
+          <div class="participants">
+            <button class="add-participant" style="color: #34c471;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus">
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+            </button>
+          </div>
+          <div class="days-left" style="color: #34c471;">
+            15 дней назад
+          </div>
+          <!-- ЗВЁЗДОЧКА-->
+          <div class="star-checkbox">
+            <input type="checkbox" id="star-5">
+            <label for="star-5">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-star">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="project-box-wrapper">
+      <div class="project-box" style="background-color: #d5deff;">
+        <div class="project-box-header">
+          <span>December 10, 2020</span>
+          <div class="more-wrapper">
+            <button class="project-btn-more">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical">
+                <circle cx="12" cy="12" r="1" />
+                <circle cx="12" cy="5" r="1" />
+                <circle cx="12" cy="19" r="1" /></svg>
+            </button>
+          </div>
+        </div>
+        <div class="project-box-content-header">
+          <p class="box-content-header">Ученик(-ца) 11 "А"</p>
+          <p class="box-content-subheader">Иванов Иван Иванович</p>
+        </div>
+        <div class="box-progress-wrapper">
+            <p class="box-progress-header">Взял(-а) книги: </p>
+            <!-- <div class="box-progress-bar">
+              <span class="box-progress" style="width: 60%; background-color: #ff942e"></span>
+            </div>
+            <p class="box-progress-percentage">60%</p> -->
+            <div class="box-content-reader">
+              <p class="box-content-reader">А.С. Пушкин - Сборник стихов</p>
+            </div>
+        </div>
+        <div class="project-box-footer">
+          <div class="participants">
+            <button class="add-participant" style="color: #4067f9;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus">
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+            </button>
+          </div>
+          <div class="days-left" style="color: #4067f9;">
+            8 дней назад
+          </div>
+          <!-- ЗВЁЗДОЧКА-->
+          <div class="star-checkbox">
+            <input type="checkbox" id="star-6">
+            <label for="star-6">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-star">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var modeSwitch = document.querySelector('.mode-switch');
+
+  modeSwitch.addEventListener('click', function () {                     
+    document.documentElement.classList.toggle('dark');
+    modeSwitch.classList.toggle('active');
+  });
+  
+  var listView = document.querySelector('.list-view');
+  var gridView = document.querySelector('.grid-view');
+  var projectsList = document.querySelector('.project-boxes');
+  
+  listView.addEventListener('click', function () {
+    gridView.classList.remove('active');
+    listView.classList.add('active');
+    projectsList.classList.remove('jsGridView');
+    projectsList.classList.add('jsListView');
+  });
+  
+  gridView.addEventListener('click', function () {
+    gridView.classList.add('active');
+    listView.classList.remove('active');
+    projectsList.classList.remove('jsListView');
+    projectsList.classList.add('jsGridView');
+  });
+  
+});
+</script>
+<script>
+// отключать :hover-состояния при прокрутке.
+var body = document.body,
+  timer;
+ 
+window.addEventListener('scroll', function() {
+  clearTimeout(timer);
+  if(!body.classList.contains('disable-hover')) {
+    body.classList.add('disable-hover')
+  }
+ 
+  timer = setTimeout(function(){
+    body.classList.remove('disable-hover')
+  }, 500);
+}, false);
+</script>
+  </body>
+<!-- https://codepen.io/aybukeceylan/pen/OJRNbZp -->
+</html>
