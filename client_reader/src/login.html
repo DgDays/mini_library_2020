@@ -52,7 +52,7 @@
             var log = document.getElementById('login').value;
             var password = document.getElementById('password').value;
             var ret;
-            var ws = new WebSocket("ws://127.0.0.1:8765/")
+            var ws = new WebSocket("ws://92.49.191.102:8765/")
                 ws.onopen = function () {
                     let data = {
                         comm: 'login',
@@ -82,7 +82,7 @@
             var email = document.getElementById('email').value;
             if (password == document.getElementById('repass').value){
               var ret;
-              var ws = new WebSocket("ws://127.0.0.1:8765/")
+              var ws = new WebSocket("ws://92.49.191.102:8765/")
                   ws.onopen = function () {
                       let data = {
                           comm: 'signup',
@@ -116,7 +116,7 @@
                   }
           } else if (this.comm == 'reset') {
             var ret;
-            var ws = new WebSocket("ws://127.0.0.1:8765/")
+            var ws = new WebSocket("ws://92.49.191.102:8765/")
             var log = document.getElementById('login').value;
                 ws.onopen = function () {
                     let data = {
