@@ -33,6 +33,8 @@ app.on('ready', () => {
   createWindow();
 });
 
+const ipc = require('electorn').ipcMain
+
 app.on('window-all-closed', () => {
   if (process.platform !== "darwin") {
     app.quit();
