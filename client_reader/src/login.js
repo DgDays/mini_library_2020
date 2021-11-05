@@ -1,4 +1,5 @@
 document.getElementById('btn').comm = 'login';
+const ipc = require('electron').ipcRenderer
 document.getElementById('signin').onclick = function() {
     document.getElementById('btn').comm = 'login';
 };
@@ -31,6 +32,7 @@ document.getElementById('btn').onclick = function() {
                   
                 if(ret.res != "None") {
                 // alert('Пароль верный'); 
+                ipc.send('login_access', ret);
                 window.close();
                 } else {
                     alert('Пароль неверный');
@@ -92,8 +94,6 @@ document.getElementById('btn').onclick = function() {
             };
     }
 };
-
-const ipc = require('electron').ipcRenderer
 
 ipc.send('login_user', 'Какашка')
 ipc.on('login', function (event, arg){
