@@ -4,7 +4,7 @@ const { app, BrowserWindow } = require('electron')
 
 //создаём окно
 function createWindow() {
-  let mainWindow = new BrowserWindow({
+  var mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
     minWidth: 450,
@@ -12,7 +12,7 @@ function createWindow() {
     autoHideMenuBar: true,
     icon: __dirname + '/icon.ico'
   });
-  let child = new BrowserWindow({
+  var child = new BrowserWindow({
     width: 800, // задал ширину
     height: 700, // задал высоту
     parent: mainWindow, // указал родительское окно
@@ -33,7 +33,10 @@ app.on('ready', () => {
   createWindow();
 });
 
-const ipc = require('electorn').ipcMain
+const ipc = require('electron').ipcMain
+ipc.on('login_user', function (event, arg){
+    child.webContents.send('login', arg)
+})
 
 app.on('window-all-closed', () => {
   if (process.platform !== "darwin") {

@@ -92,3 +92,10 @@ document.getElementById('btn').onclick = function() {
             };
     }
 };
+
+const ipc = require('electron').ipcRenderer
+
+ipc.send('login_user', 'Какашка')
+ipc.on('login', function (event, arg){
+    console.log(arg)
+})
