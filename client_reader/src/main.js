@@ -1,7 +1,8 @@
 const { app, BrowserWindow } = require('electron')
 // const path = require("path")
 // const url = require("url")
-
+var child_window
+var main_window
 //создаём окно
 function createWindow() {
   var mainWindow = new BrowserWindow({
@@ -21,6 +22,8 @@ function createWindow() {
     autoHideMenuBar: true, // скрыл меню под 
     icon: __dirname + '/icon.ico',
   });
+  child_window =  child;
+  main_window = mainWindow;
   child.loadURL(`file://${__dirname}/login.html`);
   // child.once('ready-to-show', () => {
   //   child.show()
@@ -35,7 +38,7 @@ app.on('ready', () => {
 
 const ipc = require('electron').ipcMain
 ipc.on('login_user', function (event, arg){
-    child.webContents.send('login', arg)
+    child_window.webContents.send('login', arg)
 })
 
 app.on('window-all-closed', () => {
