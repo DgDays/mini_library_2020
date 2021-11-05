@@ -20,8 +20,8 @@
     <input placeholder='Повторить пароль*' id='repass' type="password">
     <input placeholder='Почта*' id='email' type="text">
   </div>
-  <button onclick="shareData()" class="login" id="btn" type='submit'>
-    <span>
+  <button class="login" id="btn" type='submit'>
+    <span onclick="shareData()">
       Сбросить пароль
       <br>
       Войти
@@ -36,7 +36,7 @@
       <script>
         const {ipcRenderer} = require('electron');
         function shareData() {
-          ipcRenderer.send("msg","Пользователь вошёл успешно")
+          ipcRenderer.send("msg","Polzovatel` voshel!")
         }
       </script>
     </body>
