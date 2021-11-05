@@ -45,10 +45,6 @@ ipc.on('login_user', function (event, arg){
     child_window.webContents.send('login', arg)
 })
 
-ipc.on('login_access', function (event, arg){
-    main_window.webContents.send('login', arg)
-})
-
 app.on('window-all-closed', () => {
   if (process.platform !== "darwin") {
     app.quit();
