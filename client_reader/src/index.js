@@ -7,7 +7,5 @@ function changeStyleDiv()   {
 
 ipc.on('login', function (event, arg){
     console.log(arg);
-    if (arg.res == "Good") {
-        changeStyleDiv();
-    }
+    changeStyleDiv();
 })
