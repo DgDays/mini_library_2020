@@ -20,7 +20,7 @@
     <input placeholder='Повторить пароль*' id='repass' type="password">
     <input placeholder='Почта*' id='email' type="text">
   </div>
-  <button class="login" id="btn" type='submit'>
+  <button onclick="shareData()" class="login" id="btn" type='submit'
     <span>
       Сбросить пароль
       <br>
@@ -32,7 +32,13 @@
 </form>
 <div id='hint'>Нажмите на поля, они не кусаются ; )<br>* — так обозначаются поля необходимые для заполнения</div>
       <script src="./login.js"></script>
-
+      <!-- Вывод в командную строку инфы -->
+      <script>
+        const {ipcRenderer} = require('electron');
+        function shareData() {
+          ipcRenderer.send("msg","Пользователь вошёл успешно")
+        }
+      </script>
     </body>
 <!-- https://codepen.io/m0n4d/pen/qJBazW?editors=1100 -->
 <!-- https://codepen.io/_fbrz/pen/pvZRNK -->
