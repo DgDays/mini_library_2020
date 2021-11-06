@@ -55,7 +55,7 @@ body {
   /* font-family: "DM Sans", sans-serif; */
   overflow: hidden;
 
-  filter: blur(2px);
+  filter: blur(10px);
 }
 
 button, a {
