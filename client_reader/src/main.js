@@ -1,8 +1,5 @@
-const { app, BrowserWindow, ipcMain } = require('electron')
+const { app, BrowserWindow} = require('electron')
 // Вывод инфы в консоль login.html 35-41
-ipcMain.on("msg",(event,data) => {
-  console.warn(data)
-})
 // const path = require("path")
 // const url = require("url")
 var child_window
