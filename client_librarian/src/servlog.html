@@ -11,12 +11,24 @@
   <label >Подключиться к серверу</label>
   <div id='wrapper'>
     <div id='arrow'></div>
-    <input placeholder='ip-сервера:порт*' id="login" type="text" required>
-    <input placeholder='Область*' id="region" type="text" required>
-    <input placeholder='Город*' id='city' type="text" required>
-    <input placeholder='Адрес*' id='address' type="text" required>
-    <input type="checkbox" id="checkbox1zaal1">Запомнить меня</input> 
+    <div class="block_regist">
+      <input placeholder='ip-сервера:порт*' id="login" type="text" required>
+      <input placeholder='Область*' id="region" type="text" required>
+      <input placeholder='Город*' id='city' type="text" required>
+      <input placeholder='Адрес*' id='address' type="text" required>
+      <input placeholder='Название библиотеки*' id='name_biblio' type="text" required>
+      <input placeholder='Пароль сервера*' id='password_serv' type="password" required>
+    </div>
   </div>
+  
+  <label class="custom-checkbox">
+    <input class="hidden-checkbox" type="checkbox" id="checkbox1zaal1">
+    <div class="checkbox">
+      <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" border="2px solid rgb(255, 255, 255)"><path fill="#ffffff" d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"/></svg>
+    </div>
+    Запомнить меня
+  </label>
+
   <button class="login" id="btn" type='submit'>
     <span onclick="export2json()">
       Подключиться
