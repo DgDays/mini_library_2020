@@ -1,11 +1,16 @@
 const ipc = require('electron').ipcRenderer
 
-// функция для изменения стиля
-function changeStyleDiv()   {
-    document.getElementById('body').style.filter = 'blur(0px)';
-}
 
 ipc.on('login', function (event, arg){
     console.log(arg);
-    changeStyleDiv();
+    var blur = 10;
+    let timer = setInterval(function(){
+        blur = blur - 0.2
+        if (blur <= 0){
+            clearInterval(timer);
+        }
+        else{
+            document.getElementById('body').style.filter = 'blur('+blur+'px)';
+        }
+    }, 20)
 })
