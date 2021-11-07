@@ -1,7 +1,7 @@
 '''
 WS Сервер (базовый пример)
 '''
-
+import os
 import asyncio                       # Библиотека стандартной архитектуры асинхронного ввода - вывода в Python
 import websockets                    # Библиотека вебсокетов
 import mysql.connector                         # Библиотека для обращения к MySQL
@@ -11,12 +11,35 @@ import smtplib                       # Библиотека для отправ�
 from email.mime.text import MIMEText # Нужно для корректной отправки собщений с кириллицей
 from email.header import Header      # Тоже что и выше
 
-HOST = '127.0.0.1'
-USER = 'DGDays'
-PASSWORD = '669202Qazwerty+'
-
-EMAIL = 'mini.lib.2020@gmail.com'
-PASS_EMAIL = '669202qaz'
+if not(os.path.isfile(os.path.dirname(os.path.abspath(__file__))+'/settings.json')) or open(os.path.dirname(os.path.abspath(__file__))+'/settings.json').read() == '':
+    HOST = input("IP Хоста MySQL: ")
+    USER = input('Логин юзера MySQL: ')
+    PASSWORD = input('Пароль юзера MySQL: ')
+    SERVER_PASSWORD = input('Пароль сервера: ')
+    EMAIL = input('Почта Gmail для отправки сообщений: ')
+    PASS_EMAIL = input('Пароль почты: ')
+    LOCAL_IP = input('Локальный ip сервера: ')
+    json_data = {
+        'HOST' : HOST,
+        'USER' : USER,
+        'PASSWORD' : PASSWORD,
+        'SERVER_PASSWORD' : SERVER_PASSWORD,
+        'EMAIL' : EMAIL,
+        'PASS_EMAIL' : PASS_EMAIL,
+        'LOCAL_IP' : LOCAL_IP
+    }
+    f = open(os.path.dirname(os.path.abspath(__file__))+'/settings.json', 'w')
+    f.write(json.dumps(json_data))
+    f.close()
+else:
+    json_data = json.load(open(os.path.dirname(os.path.abspath(__file__))+'/settings.json'))
+    HOST = json_data['HOST']
+    USER = json_data['USER']
+    PASSWORD = json_data['PASSWORD']
+    SERVER_PASSWORD = json_data['SERVER_PASSWORD']
+    EMAIL = json_data['EMAIL']
+    PASS_EMAIL = json_data['PASS_EMAIL']
+    LOCAL_IP = json_data['LOCAL_IP']
 
 con = mysql.connector.connect(host=HOST, user=USER, password=PASSWORD)
 with con:                # Подключение к MySQL
@@ -111,7 +134,7 @@ async def hello(websocket, path): # На стороне сервера websocket
         smtpObj.quit()                                                      # Закрытие ссесии
 
 
-start_server = websockets.serve(hello, "192.168.1.146", 8765) # Старт сервака
+start_server = websockets.serve(hello, LOCAL_IP, 8765) # Старт сервака
 
 asyncio.get_event_loop().run_until_complete(start_server) # Асинхронный запуск до тех пор, пока сервак не заработает
 asyncio.get_event_loop().run_forever()                    # Запускает петлю работы сервака
