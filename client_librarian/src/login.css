@@ -75,6 +75,15 @@ form {
 
 input[type=radio] { display: none; }
 
+/* input{
+  margin: 0px;
+  padding: 0px;
+}
+
+input, label{
+  vertical-align: middle;
+} */
+
 label {
   cursor: pointer;
   display: inline-block;

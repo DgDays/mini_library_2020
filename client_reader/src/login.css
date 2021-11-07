@@ -148,3 +148,42 @@ button:hover {
   position: absolute;
   bottom: 20px;
 }
+
+/* стили для чекбокса */
+
+.custom-checkbox .checkbox {
+  margin-right: 10px;
+}
+
+.custom-checkbox input {
+  -webkit-appearance: none; 
+  position: absolute;
+}
+
+.checkbox { 
+  position: relative;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgb(255, 255, 255);
+  background: rgb(255, 255, 255);
+  border-radius: 4px;
+}
+
+.checkmark { 
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  height: auto;
+  display: none; 
+}
+
+.custom-checkbox input:checked ~ .checkbox .checkmark {
+  display: block; 
+}
+
+.custom-checkbox input:checked ~ .checkbox {
+  background: #007BA5;
+  border: 2px solid #007BA5;
+}
