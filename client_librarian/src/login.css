@@ -162,10 +162,6 @@ button:hover {
   column-count: 2;
 }
 
-*, *:before, *:after {
-  box-sizing: inherit;
-}
-
 /* стили для чекбокса */
 
 .custom-checkbox .checkbox {
