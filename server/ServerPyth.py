@@ -4,7 +4,7 @@ WS Сервер (базовый пример)
 import os
 import asyncio                       # Библиотека стандартной архитектуры асинхронного ввода - вывода в Python
 import websockets                    # Библиотека вебсокетов
-import mysql.connector                         # Библиотека для обращения к MySQL
+import mysql.connector               # Библиотека для обращения к MySQL
 import json                          # Библиотека для работы с json
 import datetime                      # Библиотека для корректного преобразования данных в DD.MM.YYYY
 import smtplib                       # Библиотека для отправки email сообщений

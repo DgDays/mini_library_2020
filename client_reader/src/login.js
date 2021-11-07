@@ -182,3 +182,11 @@ function wis()  {
 }
 
 load();
+
+// нажал клавишу энтер и балдеешь
+document.addEventListener("keydown", function onEvent(event) {
+    if (event.key === "Enter") {
+        export2json();
+        document.getElementById("btn").click();
+    }
+});

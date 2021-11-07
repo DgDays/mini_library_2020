@@ -173,11 +173,10 @@ document.getElementById('btn').onclick = function() {
             };
     }
 };
-document.addEventListener("keypress", function(event){
-  console.log(event)
-  if (event.key == 'Enter'){
-    let btn = document.getElementById('btn')
-    btn.click()
-    console.log('Click')
+
+document.addEventListener("keydown", function onEvent(event) {
+  if (event.key === "Enter") {
+      export2json();
+      document.getElementById("btn").click();
   }
-})
+});
