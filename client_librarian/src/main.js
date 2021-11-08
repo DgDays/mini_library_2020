@@ -30,7 +30,7 @@ function createWindow() {
   // child.once('ready-to-show', () => {
   //   child.show()
   // })
-  // appWindow.webContents.openDevTools();
+  // main_window.webContents.openDevTools();
   mainWindow.loadURL(`file://${__dirname}/index.html`);
 };
 

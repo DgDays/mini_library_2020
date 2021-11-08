@@ -15,7 +15,7 @@ ipc.on('login', function (event, arg){
 })
 
 
-function myFunction() {
+function myDropdown() {
     document.getElementById("myDropdown").classList.toggle("show");
   }
   
@@ -32,3 +32,10 @@ function myFunction() {
       }
     }
   }
+
+// как вариант можно удалять через жс див
+
+// function delete_this_div() {    
+//   var elem = document.getElementById("chitatel_1");
+//   elem.parentNode.removeChild(elem);
+// }

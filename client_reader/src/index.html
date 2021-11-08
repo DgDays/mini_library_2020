@@ -161,16 +161,16 @@
       </div>
       <!-- список читателей -->
       <div class="project-boxes jsGridView">
-        <div class="project-box-wrapper">
+        <div class="project-box-wrapper" id="chitatel_1">
           <div class="project-box" style="background-color: #fee4cb;">
             <div class="project-box-header">
               <span>Январь 1, 2021</span>
               <div class="more-wrapper">
                   <div class="dropdown">
-                    <button onclick="myFunction()" class="project-btn-more">
+                    <button onclick="myDropdown()" class="project-btn-more">
                       <!-- меню в другом виде списка открывается за пределами браузера -->
                       <div id="myDropdown" class="dropdown-content">
-                        <a href="#">Удалить</a>
+                        <a onclick="delete_this_div()" href="#">Удалить</a>
                         <a href="#">Выбрать</a>
                         <a href="#">Подробнее</a>
                       </div>
