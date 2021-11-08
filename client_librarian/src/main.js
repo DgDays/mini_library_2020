@@ -36,6 +36,7 @@ function createWindow() {
 
 app.on('ready', () => {
   createWindow();
+  child_window.focus();
 });
 
 const ipc = require('electron').ipcMain
