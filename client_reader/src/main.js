@@ -38,11 +38,11 @@ app.on('ready', () => {
 });
 
 const ipc = require('electron').ipcMain
-ipc.on('login_user', function (event, arg){
-    child_window.webContents.send('login', arg)
-})
+
+var logins_data;
 
 ipc.on('login_access', function (event, arg){
+  logins_data = arg;
   main_window.webContents.send('login', arg)
 })
 
@@ -51,6 +51,10 @@ app.on('window-all-closed', () => {
     app.quit();
   }
 });
+
+if (logins_data == ''){
+  app.quit();
+}
 
 // // отправка отчёта об ошибках, url укажем в будущем
 // const { crashReporter, globalShortcut } = require('electron')

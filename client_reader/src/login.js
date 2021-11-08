@@ -95,11 +95,6 @@ document.getElementById('btn').onclick = function() {
     }
 };
 
-ipc.send('login_user', 'Какашка')
-ipc.on('login', function (event, arg){
-    console.log(arg)
-})
-
 function export2json() {
     const originalData = {
       user: [{
@@ -171,11 +166,11 @@ document.getElementById('checkbox1zaal1').addEventListener('click', function () 
     }
 });
 
-var localValue = localStorage.getItem('login');
-var localValue2 = localStorage.getItem('password');
-var localValue3 = localStorage.getItem('repass');
-var localValue4 = localStorage.getItem('email');
-console.log(localValue,localValue2,localValue3,localValue4);
+//var localValue = localStorage.getItem('login');
+//var localValue2 = localStorage.getItem('password');
+//var localValue3 = localStorage.getItem('repass');
+//var localValue4 = localStorage.getItem('email');
+//console.log(localValue,localValue2,localValue3,localValue4);
 
 function wis()  {
     localStorage.clear()
