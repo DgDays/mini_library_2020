@@ -147,7 +147,7 @@ class Main(tk.Tk):
         self.title("Мини Библиотека 2020")  # Заголовок
         w = self.winfo_screenwidth() // 2 - 455  # ширина экрана
         h = self.winfo_screenheight() // 2 - 225  # высота экрана
-        self.geometry('910x450+{}+{}'.format(w, h))  # Размер
+        self.geometry('+{}+{}'.format(w, h))  # Размер
         self.resizable(False, False)  # Изменение размера окна
 
         threading.Thread(target=creat_table).start()
@@ -354,7 +354,7 @@ class Add_profile(tk.Toplevel):
         self.title("Добавить читателя")  # Заголовок
         w = self.winfo_screenwidth() // 2 - 450  # ширина экрана
         h = self.winfo_screenheight() // 2 - 225  # высота экрана
-        self.geometry('475x235+{}+{}'.format(w, h))  # Размер
+        self.geometry('+{}+{}'.format(w, h))  # Размер
         self.resizable(False, False)  # Изменение размера окна
         self.protocol("WM_DELETE_WINDOW", lambda: self_main_null(self))
         self.attributes("-topmost", True)
@@ -439,7 +439,7 @@ class Edit_profile(tk.Toplevel):
         self.title("Редактировать читателя")  # Заголовок
         w = self.winfo_screenwidth() // 2 - 450  # ширина экрана
         h = self.winfo_screenheight() // 2  # высота экрана
-        self.geometry('466x202+{}+{}'.format(w + 300, h - 125))  # Размер
+        self.geometry('+{}+{}'.format(w + 300, h - 125))  # Размер
         self.resizable(False, False)  # Изменение размера окна
         self.protocol("WM_DELETE_WINDOW", lambda: self_main_null(self))
         self.attributes("-topmost", True)
@@ -516,7 +516,7 @@ class INFO(tk.Toplevel):
         open_win.append(self)
         w = self.winfo_screenwidth() // 2 - 450  # ширина экрана
         h = self.winfo_screenheight() // 2 - 225  # высота экрана
-        self.geometry('710x400+{}+{}'.format(w + 300, h - 125))  # Размер
+        self.geometry('+{}+{}'.format(w + 300, h - 125))  # Размер
         self.resizable(False, False)  # Изменение размера окна
         self.focus_force()
         self.protocol("WM_DELETE_WINDOW", lambda: self_main_null(self))
@@ -600,7 +600,7 @@ class Add_lc(tk.Toplevel):
         self.title("Добавить книгу в ЧБ")  # Заголовок
         w = self.winfo_screenwidth() // 2 - 450  # ширина экрана
         h = self.winfo_screenheight() // 2 - 225  # высота экрана
-        self.geometry('452x136+{}+{}'.format(w + 300, h - 125))  # Размер
+        self.geometry('+{}+{}'.format(w + 300, h - 125))  # Размер
         self.resizable(False, False)  # Изменение размера окна
         self.protocol("WM_DELETE_WINDOW", lambda: self_info_null(self))
         self.attributes("-topmost", True)
@@ -655,7 +655,7 @@ class Edit_lc(tk.Toplevel):
         self.title("Изменить книгу в ЧБ")  # Заголовок
         w = self.winfo_screenwidth() // 2 - 450  # ширина экрана
         h = self.winfo_screenheight() // 2 - 225  # высота экрана
-        self.geometry('484x193+{}+{}'.format(w + 300, h - 125))  # Размер
+        self.geometry('+{}+{}'.format(w + 300, h - 125))  # Размер
         self.resizable(False, False)  # Изменение размера окна
         self.protocol("WM_DELETE_WINDOW", lambda: self_info_null(self))
         self.attributes("-topmost", True)
@@ -723,7 +723,7 @@ class Book(tk.Toplevel):
         self.title("Учёт книг")  # Заголовок
         w = self.winfo_screenwidth() // 2 - 450  # ширина экрана
         h = self.winfo_screenheight() // 2 - 225  # высота экрана
-        self.geometry('713x450+{}+{}'.format(w - 100, h - 150))  # Размер
+        self.geometry('+{}+{}'.format(w - 100, h - 150))  # Размер
         self.resizable(False, False)  # Изменение размера окна
         self.protocol("WM_DELETE_WINDOW", lambda: self_main_book_null(self))
 
@@ -1100,7 +1100,7 @@ class Excel(tk.Toplevel):
         h = self.winfo_screenheight() // 2 - 225  # высота экрана
         self.title("Сохранить в Excel")  # Заголовок
         self.protocol("WM_DELETE_WINDOW", lambda: closed_excel(self))
-        self.geometry('167x134+{}+{}'.format(w + 300, h))
+        self.geometry('200x150+{}+{}'.format(w + 300, h))
         self.resizable(False, False)  # Изменение размера окна
         self.configure(background='#e9e9e9')  # Фон окна
         self.focus_force()
@@ -1153,7 +1153,7 @@ class Spravka(tk.Toplevel):
         self.text = ttk.Frame(self.frame)
 
         file = open(os.path.dirname(
-            os.path.abspath(__file__)) + "/spravka.txt", 'r')
+            os.path.abspath(__file__)) + "/spr.txt", 'r')
         lines = file.readlines()
         row = 0
         for line in lines:
@@ -1218,7 +1218,7 @@ class Information(tk.Toplevel):
         self.fr_inf = ttk.Frame(self)
 
         file = open(os.path.dirname(os.path.abspath(
-            __file__)) + "/information.txt", 'r')
+            __file__)) + "/inf.txt", 'r')
         lines = file.readlines()
         row = 0
         self.text = ttk.Frame(self.fr_inf)
@@ -2205,7 +2205,7 @@ def schbook(self):
     self = Add_book()
     w = ((self.winfo_screenwidth() // 2) - 450)  # ширина экрана
     h = ((self.winfo_screenheight() // 2) - 225)  # высота экрана
-    self.geometry('359x193+{}+{}'.format(w + 300, h - 125))  # Размер
+    self.geometry('+{}+{}'.format(w + 300, h - 125))  # Размер
     self.lb_name.grid(row=0, column=0)
     self.lb_aut.grid(row=1, column=0)
     self.lb_col.grid(row=2, column=0)
@@ -2230,7 +2230,7 @@ def lit(self):
     self = Add_book()
     w = ((self.winfo_screenwidth() // 2) - 450)  # ширина экрана
     h = ((self.winfo_screenheight() // 2) - 225)  # высота экрана
-    self.geometry('359x154+{}+{}'.format(w + 300, h - 125))  # Размер
+    self.geometry('+{}+{}'.format(w + 300, h - 125))  # Размер
     self.lb_name.grid(row=0, column=0)
     self.lb_aut.grid(row=1, column=0)
     self.lb_col.grid(row=2, column=0)
