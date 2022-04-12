@@ -19,7 +19,7 @@
 '''
 import tkinter as tk
 import tkinter.font as tkFont
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox, PhotoImage
 from ttkthemes import ThemedStyle
 from pystray import MenuItem as item
 import pystray
@@ -37,7 +37,7 @@ from PIL import ImageTk, Image
 import playsound
 import vk_api
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
-from vk_api.keyboard import VkKeyboard, VkKeyboardColor
+from vk_api.keyboard import VkKeyboard
 import socket
 
 text = values = ''
@@ -339,9 +339,11 @@ class Main(tk.Tk):
 
         self.bind('<KeyPress>', lambda event: event_handler_main(event, self))
         self.bind('<<Key-43>>', lambda event: update_main(self))
-
-        self.iconbitmap(os.path.dirname(
-            os.path.abspath(__file__)) + "/lib.ico")
+        try:
+            self.iconbitmap(os.path.dirname(
+                os.path.abspath(__file__)) + "/lib.ico")
+        except:
+            self.tk.call('wm', 'iconphoto', self._w, ImageTk.PhotoImage(Image.open("./lib.ico")))
 
 
 # ---------------- Добавить читателя ----------------
@@ -421,8 +423,12 @@ class Add_profile(tk.Toplevel):
         self.btn_save = ttk.Button(self, text='Сохранить', command=lambda: threading.Thread(target=save_stud2, args=[
             self, ]).start())  # Пример многопоточности
         self.btn_save.grid(row=6, column=4, pady=3)
-        self.iconbitmap(os.path.dirname(
+        try:
+            self.iconbitmap(os.path.dirname(
             os.path.abspath(__file__)) + "/add.ico")
+        except:
+            self.tk.call('wm', 'iconphoto', self._w, ImageTk.PhotoImage(Image.open("./add.ico")))
+        
 
 
 # ---------------- Изменить читателя ----------------
@@ -495,8 +501,12 @@ class Edit_profile(tk.Toplevel):
         self.btn_save = ttk.Button(self, text='Сохранить',
                                    command=lambda: threading.Thread(target=edit_stud, args=[self, ]).start())
         self.btn_save.grid(row=5, column=5, ipady=3)
-        self.iconbitmap(os.path.dirname(
+
+        try:
+            self.iconbitmap(os.path.dirname(
             os.path.abspath(__file__)) + "/edit.ico")
+        except:
+            self.tk.call('wm', 'iconphoto', self._w, ImageTk.PhotoImage(Image.open("./edit.ico")))
 
 
 # ================================ Информация о читателе =================
@@ -574,8 +584,11 @@ class INFO(tk.Toplevel):
 
         self.info_table.bind(
             '<Button-3>', lambda event: self.profile_menu.post(event.x_root, event.y_root))
-        self.iconbitmap(os.path.dirname(
+        try:
+            self.iconbitmap(os.path.dirname(
             os.path.abspath(__file__)) + "/profile.ico")
+        except:
+            self.tk.call('wm', 'iconphoto', self._w, ImageTk.PhotoImage(Image.open("./profile.ico")))
 
 
 # ---------------- Добавить книгу читателю ----------------
@@ -626,8 +639,11 @@ class Add_lc(tk.Toplevel):
         self.btn_save.grid(row=3, column=1, padx=3, pady=3,
                            columnspan=40, sticky='E')
 
-        self.iconbitmap(os.path.dirname(
+        try:
+            self.iconbitmap(os.path.dirname(
             os.path.abspath(__file__)) + "/add.ico")
+        except:
+            self.tk.call('wm', 'iconphoto', self._w, ImageTk.PhotoImage(Image.open("./add.ico")))
 
 
 # ---------------- Изменить книгу читателя ----------------
@@ -689,8 +705,11 @@ class Edit_lc(tk.Toplevel):
                                    command=lambda: threading.Thread(target=save_stat, args=[self, ]).start())
         self.btn_save.grid(row=4, column=1, padx=3, pady=3,
                            columnspan=50, sticky='E')
-        self.iconbitmap(os.path.dirname(
+        try:
+            self.iconbitmap(os.path.dirname(
             os.path.abspath(__file__)) + "/edit.ico")
+        except:
+            self.tk.call('wm', 'iconphoto', self._w, ImageTk.PhotoImage(Image.open("./edit.ico")))
 
 
 # ---------------- Удалить книгу у читателя ----------------
@@ -865,8 +884,11 @@ class Book(tk.Toplevel):
                        lambda event: book_bind_add(self))
         self.note.pack(fill='both')
 
-        self.iconbitmap(os.path.dirname(
+        try:
+            self.iconbitmap(os.path.dirname(
             os.path.abspath(__file__)) + "/books.ico")
+        except:
+            self.tk.call('wm', 'iconphoto', self._w, ImageTk.PhotoImage(Image.open("./books.ico")))
 
 
 # !---------------- Добавить книгу ----------------
@@ -899,8 +921,11 @@ class Add_book(tk.Toplevel):
                                command=lambda: threading.Thread(target=save_book, args=[self, ]).start())
         self.save_sch = ttk.Button(self, text='Сохранить',
                                    command=lambda: threading.Thread(target=save_schbook, args=[self, ]).start())
-        self.iconbitmap(os.path.dirname(
+        try:
+            self.iconbitmap(os.path.dirname(
             os.path.abspath(__file__)) + "/add.ico")
+        except:
+            self.tk.call('wm', 'iconphoto', self._w, ImageTk.PhotoImage(Image.open("./add.ico")))
 
 
 # !---------------- Изменить книгу ----------------
@@ -941,8 +966,11 @@ class Edit_books(tk.Toplevel):
                                command=lambda: threading.Thread(target=edit_book, args=[self, ]).start())
         self.save_sch = ttk.Button(self, text='Сохранить',
                                    command=lambda: threading.Thread(target=edit_schbook, args=[self, ]).start())
-        self.iconbitmap(os.path.dirname(
+        try:
+            self.iconbitmap(os.path.dirname(
             os.path.abspath(__file__)) + "/edit.ico")
+        except:
+            self.tk.call('wm', 'iconphoto', self._w, ImageTk.PhotoImage(Image.open("./edit.ico")))
 
 
 class INFO_Book(tk.Toplevel):
@@ -1001,8 +1029,11 @@ class INFO_Book(tk.Toplevel):
         self.table.heading('COL', text='Кол-во')
 
         self.table.pack(side='left', fill='both')
-        self.iconbitmap(os.path.dirname(
+        try:
+            self.iconbitmap(os.path.dirname(
             os.path.abspath(__file__)) + "/book.ico")
+        except:
+            self.tk.call('wm', 'iconphoto', self._w, ImageTk.PhotoImage(Image.open("./book.ico")))
 
 
 # ================================ Уведомления ================================
@@ -1054,8 +1085,11 @@ class Not(tk.Toplevel):
         self.progress = ttk.Progressbar(self.table, mode='indeterminate')
 
         # Иконка
-        self.iconbitmap(os.path.dirname(
+        try:
+            self.iconbitmap(os.path.dirname(
             os.path.abspath(__file__)) + "/bell.ico")
+        except:
+            self.tk.call('wm', 'iconphoto', self._w, ImageTk.PhotoImage(Image.open("./bell.ico")))
 
 
 class Excel(tk.Toplevel):
@@ -1145,8 +1179,11 @@ class Spravka(tk.Toplevel):
         self.scroll.pack(fill='y', side='right')
 
         # Иконка
-        self.iconbitmap(os.path.dirname(
+        try:
+            self.iconbitmap(os.path.dirname(
             os.path.abspath(__file__)) + "/ask.ico")
+        except:
+            self.tk.call('wm', 'iconphoto', self._w, ImageTk.PhotoImage(Image.open("./ask.ico")))
 
 
 class Information(tk.Toplevel):
@@ -1253,8 +1290,11 @@ class Information(tk.Toplevel):
         self.fr_inf.pack(side='bottom', fill='both')
 
         # Иконка
-        self.iconbitmap(os.path.dirname(
+        try:
+            self.iconbitmap(os.path.dirname(
             os.path.abspath(__file__)) + "/ask.ico")
+        except:
+            self.tk.call('wm', 'iconphoto', self._w, ImageTk.PhotoImage(Image.open("./ask.ico")))
         global easter_egg
         if easter_egg == 3:
             threading.Thread(target=easter4, args=[self, ]).start()
