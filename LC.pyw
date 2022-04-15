@@ -1709,7 +1709,7 @@ def del_profile(self):
             'DELETE FROM LC WHERE FIO = (?) AND DB = (?) AND PHONE = (?)', line)
         conn.commit()
 
-    update_main(self)
+    self.table.delete(selected_item)
 
 
 def add_book(self):
@@ -1890,23 +1890,7 @@ def delete_lc(self):
             line)
         conn.commit()
 
-    threading.Thread(target=progressbar_start, args=[self, ]).start()
-    self.info_table.delete(*self.info_table.get_children())
-    conn = sqlite3.connect(os.path.dirname(
-        os.path.abspath(__file__)) + "/LC.db")
-    cur = conn.cursor()
-    if len(values[0]) == 10:
-        db = datetime.datetime.strptime(values[0], '%d.%m.%Y')
-        db = db.strftime('%Y-%m-%d')
-    else:
-        db = values[0]
-    # Вывовд всех учеников
-    cur.execute(
-        "SELECT BOOK, AUT, STAT, COL FROM LC WHERE FIO=(?) AND DB=(?) AND PHONE=(?)", (text, db, values[4]))
-    rows = cur.fetchall()
-    for row in rows:
-        self.info_table.insert("", tk.END, text=row[0], values=row[1:])
-    threading.Thread(target=progressbar_stop, args=[self, ]).start()
+    self.info_table.delete(selected_item)
 
 
 def search(self):
@@ -2149,7 +2133,7 @@ def del_book(self):
             'DELETE FROM BOOK WHERE NAME = (?) AND AUT = (?) AND COL = (?)', line)
         conn.commit()
 
-    threading.Thread(target=update_book, args=[self, ]).start()
+    self.book_table1.delete(selected_item)
 
 
 def del_schbook(self):
@@ -2171,7 +2155,7 @@ def del_schbook(self):
             'DELETE FROM SCHBOOK WHERE NAME = (?) AND AUT = (?) AND COL = (?)', line)
         conn.commit()
 
-    threading.Thread(target=update_schbook, args=[self, ]).start()
+    self.book_table.delete(selected_item)
 
 
 def save_schbook(self):
