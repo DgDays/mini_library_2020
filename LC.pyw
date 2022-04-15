@@ -1446,9 +1446,9 @@ def update_main(self):
     # Вывовд всех учеников
     cur.execute("SELECT * FROM PROFILE")
     rows = cur.fetchall()
-    uch = self.table.insert("", tk.END, text='Ученик')
-    teach = self.table.insert("", tk.END, text='Учитель')
-    dp = self.table.insert("", tk.END, text="Другой посетитель")
+    self.uch = self.table.insert("", tk.END, text='Ученик')
+    self.teach = self.table.insert("", tk.END, text='Учитель')
+    self.dp = self.table.insert("", tk.END, text="Другой посетитель")
     for row in rows:
         if "Ученик" in row:
             db = row[1]
@@ -1456,21 +1456,21 @@ def update_main(self):
                 db = datetime.datetime.strptime(db, '%Y-%m-%d')
                 db = db.strftime('%d.%m.%Y')
             row = (row[0], db, row[2], row[3], row[4], row[5])
-            self.table.insert(uch, tk.END, text=row[0], values=row[1:])
+            self.table.insert(self.uch, tk.END, text=row[0], values=row[1:])
         elif "Учитель" in row:
             db = row[1]
             if len(db) == 10:
                 db = datetime.datetime.strptime(db, '%Y-%m-%d')
                 db = db.strftime('%d.%m.%Y')
             row = (row[0], db, row[2], row[3], row[4], row[5])
-            self.table.insert(teach, tk.END, text=row[0], values=row[1:])
+            self.table.insert(self.teach, tk.END, text=row[0], values=row[1:])
         elif "Другой посетитель":
             db = row[1]
             if len(db) == 10:
                 db = datetime.datetime.strptime(db, '%Y-%m-%d')
                 db = db.strftime('%d.%m.%Y')
             row = (row[0], db, row[2], row[3], row[4], row[5])
-            self.table.insert(dp, tk.END, text=row[0], values=row[1:])
+            self.table.insert(self.dp, tk.END, text=row[0], values=row[1:])
     threading.Thread(target=progressbar_stop, args=[self, ]).start()
 
 
@@ -1621,10 +1621,9 @@ def save_stud2(self):
         con_cur = conn.cursor()
         con_cur.execute('INSERT INTO PROFILE VALUES (?,?,?,?,?,?,?,?,?)', line)
         conn.commit()
-
-    messagebox.showinfo('Успех!', 'Данные сохранены!', parent=self)
-
-    update_main(self_main)
+        messagebox.showinfo('Успех!', 'Данные сохранены!', parent=self)
+        prof = self_main.uch if client == 'Ученик' else self_main.teach if client == 'Учитель' else self_main.dp
+        self_main.table.insert(prof, 'end', text=line[0], values=[datetime.datetime.strptime(line[1], '%Y-%m-%d').strftime('%d.%m.%Y')]+line[2:7])
 
 
 def edit_profile(self):
