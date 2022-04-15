@@ -20,6 +20,7 @@
 import tkinter as tk
 import tkinter.font as tkFont
 from tkinter import ttk, messagebox, PhotoImage
+from soupsieve import select
 from ttkthemes import ThemedStyle
 from pystray import MenuItem as item
 import pystray
@@ -936,7 +937,7 @@ class Edit_books(tk.Toplevel):
         self.title("Редактировать книги")  # Заголовок
         w = self.winfo_screenwidth() // 2 - 450  # ширина экрана
         h = self.winfo_screenheight() // 2 - 225  # высота экрана
-        self.geometry('359x154+{}+{}'.format(w + 300, h - 125))  # Размер
+        self.geometry('+{}+{}'.format(w + 300, h - 125))  # Размер
         self.resizable(False, False)  # Изменение размера окна
         self.protocol("WM_DELETE_WINDOW", lambda: self_book_null(self))
         self.attributes("-topmost", True)
@@ -1678,10 +1679,8 @@ def edit_stud(self):
             'UPDATE PROFILE SET FIO = (?), DB = (?), CLA = (?), LIT = (?), ADR = (?), PHONE = (?) WHERE FIO = (?) AND DB = (?) AND PHONE = (?)',
             line)
         conn.commit()
-
-    messagebox.showinfo('Успех!', 'Данные сохранены!', parent=self)
-
-    update_main(self_main)
+        messagebox.showinfo('Успех!', 'Данные сохранены!', parent=self)
+        self_main.table.item(self_main.table.selection(), text=line[0], values=[datetime.datetime.strptime(line[1], '%Y-%m-%d').strftime('%d.%m.%Y')]+line[2:6])
 
 
 def del_profile(self):
@@ -1708,8 +1707,7 @@ def del_profile(self):
         con_cur.execute(
             'DELETE FROM LC WHERE FIO = (?) AND DB = (?) AND PHONE = (?)', line)
         conn.commit()
-
-    self.table.delete(selected_item)
+        self.table.delete(selected_item)
 
 
 def add_book(self):
@@ -1828,8 +1826,8 @@ def save_stat(self):
     dc = self.en_dc.get()
     dc = datetime.datetime.strptime(dc, '%d.%m.%Y')
     dc = dc.strftime('%Y-%m-%d')
-    line = (name, aut, stat, dc, text, db,
-            values[4], text1, values1[0], values1[1], values1[2])
+    line = [name, aut, stat, dc, text, db,
+            values[4], text1, values1[0], values1[1], values1[2]]
     if null in (name, aut, stat):  # Проверка на пустоту полей
         messagebox.showerror(
             'ОШИБКА!!!', 'Ошибка! Поля не могут быть пустыми!', parent=self)  # Вывод ошибки
@@ -1844,24 +1842,7 @@ def save_stat(self):
         conn.commit()
 
     messagebox.showinfo('Успех!', 'Данные сохранены!', parent=self)
-
-    threading.Thread(target=progressbar_start, args=[self_info, ]).start()
-    self_info.info_table.delete(*self_info.info_table.get_children())
-    conn = sqlite3.connect(os.path.dirname(
-        os.path.abspath(__file__)) + "/LC.db")
-    cur = conn.cursor()
-    if len(values[0]) == 10:
-        db = datetime.datetime.strptime(values[0], '%d.%m.%Y')
-        db = db.strftime('%Y-%m-%d')
-    else:
-        db = values[0]
-    # Вывовд всех учеников
-    cur.execute(
-        "SELECT BOOK, AUT, STAT, COL FROM LC WHERE FIO=(?) AND DB=(?) AND PHONE=(?)", (text, db, values[4]))
-    rows = cur.fetchall()
-    for row in rows:
-        self_info.info_table.insert("", tk.END, text=row[0], values=row[1:])
-    threading.Thread(target=progressbar_stop, args=[self_info, ]).start()
+    self_info.info_table.item(selected_item, text=line[0], values=line[1:3]+[line[-1]])
 
 
 def delete_lc(self):
@@ -1889,8 +1870,7 @@ def delete_lc(self):
             'DELETE FROM LC WHERE FIO = (?) AND DB = (?) AND PHONE = (?) AND BOOK = (?) AND AUT = (?) AND STAT = (?)',
             line)
         conn.commit()
-
-    self.info_table.delete(selected_item)
+        self.info_table.delete(selected_item)
 
 
 def search(self):
@@ -2074,10 +2054,9 @@ def edit_book(self):
         con_cur.execute(
             'UPDATE BOOK SET NAME=(?), AUT=(?), COL=(?) WHERE NAME=(?) AND AUT=(?) AND COL=(?)', line)
         conn.commit()
+        messagebox.showinfo('Успех!', 'Данные сохранены!', parent=self)
+        self_book.book_table1.item(selected_item, text=line[0], values=line[1:3])
 
-    messagebox.showinfo('Успех!', 'Данные сохранены!', parent=self)
-
-    threading.Thread(target=update_book, args=[self_book, ]).start()
 
 
 def edit_schbook(self):
@@ -2108,10 +2087,8 @@ def edit_schbook(self):
         con_cur.execute(
             'UPDATE SCHBOOK SET NAME=(?), AUT=(?), COL=(?) WHERE NAME=(?) AND AUT=(?) AND COL=(?)', line)
         conn.commit()
-
-    messagebox.showinfo('Успех!', 'Данные сохранены!', parent=self)
-
-    threading.Thread(target=update_schbook, args=[self_book, ]).start()
+        messagebox.showinfo('Успех!', 'Данные сохранены!', parent=self)
+        self_book.book_table.item(selected_item, text=line[0], values=line[1:3])
 
 
 def del_book(self):
@@ -2132,8 +2109,7 @@ def del_book(self):
         con_cur.execute(
             'DELETE FROM BOOK WHERE NAME = (?) AND AUT = (?) AND COL = (?)', line)
         conn.commit()
-
-    self.book_table1.delete(selected_item)
+        self.book_table1.delete(selected_item)
 
 
 def del_schbook(self):
@@ -2154,8 +2130,7 @@ def del_schbook(self):
         con_cur.execute(
             'DELETE FROM SCHBOOK WHERE NAME = (?) AND AUT = (?) AND COL = (?)', line)
         conn.commit()
-
-    self.book_table.delete(selected_item)
+        self.book_table.delete(selected_item)
 
 
 def save_schbook(self):
