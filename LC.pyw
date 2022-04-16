@@ -1481,9 +1481,10 @@ def update_schbook(self):
     conn = sqlite3.connect(os.path.dirname(
         os.path.abspath(__file__)) + "/LC.db")
     cur = conn.cursor()
-
+    self.obj = {}
     for less in obj:
         x = self.book_table.insert('', tk.END, text=less)
+        self.obj[less] = x
         cur.execute(
             "SELECT NAME, AUT, COL FROM SCHBOOK WHERE OBJ = (?)", (less,))
         rows = cur.fetchall()
@@ -1749,24 +1750,8 @@ def save_lc2(self):
         con_cur = conn.cursor()
         con_cur.execute('INSERT INTO LC VALUES (?,?,?,?,?,?,?,?,?)', line)
         conn.commit()
-
-    messagebox.showinfo('Успех!', 'Данные сохранены!', parent=self)
-
-    # Обновление таблицы при нажатии на кнопку никак не хочет работать потому
-    # сделал как коммент
-    threading.Thread(target=progressbar_start, args=[self_info, ]).start()
-    self_info.info_table.delete(*self_info.info_table.get_children())
-    conn = sqlite3.connect(os.path.dirname(
-        os.path.abspath(__file__)) + "/LC.db")
-    cur = conn.cursor()
-
-    # Вывовд всех учеников
-    cur.execute(
-        "SELECT BOOK, AUT, STAT, COL FROM LC WHERE FIO=(?) AND DB=(?) AND PHONE=(?)", (fio, db, phone))
-    rows = cur.fetchall()
-    for row in rows:
-        self_info.info_table.insert("", tk.END, text=row[0], values=row[1:])
-    threading.Thread(target=progressbar_stop, args=[self_info, ]).start()
+        messagebox.showinfo('Успех!', 'Данные сохранены!', parent=self)
+        self_info.info_table.insert('', 'end', text=line[-3], values=[line[-4], line[-2], line[-1]])
 
 
 def edit_lc(self):
@@ -1971,10 +1956,9 @@ def save_book(self):
         con_cur = conn.cursor()
         con_cur.execute('INSERT INTO BOOK VALUES (?,?,?)', line)
         conn.commit()
+        messagebox.showinfo('Успех!', 'Данные сохранены!', parent=self)
+        self_book.book_table1.insert('', 'end', text=line[0], values=line[1:3])
 
-    messagebox.showinfo('Успех!', 'Данные сохранены!', parent=self)
-
-    threading.Thread(target=update_book, args=[self_book, ]).start()
 
 
 def edit_lit(self):
@@ -2150,10 +2134,9 @@ def save_schbook(self):
         con_cur = conn.cursor()
         con_cur.execute('INSERT INTO SCHBOOK VALUES (?,?,?,?)', line)
         conn.commit()
+        messagebox.showinfo('Успех!', 'Данные сохранены!', parent=self)
+        self_book.book_table.insert(self_book.obj[line[-1]] , 'end', text=line[0], values=line[1:3])
 
-    messagebox.showinfo('Успех!', 'Данные сохранены!', parent=self)
-
-    threading.Thread(target=update_schbook, args=[self_book, ]).start()
 
 
 def schbook(self):
