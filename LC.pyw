@@ -3038,13 +3038,14 @@ def network():
 
 
 def vk_bot_start(self):
-    file = open(os.path.dirname(
-        os.path.abspath(__file__)) + "/vk_api.txt", 'r')
-    lines = file.readlines()
-    if lines != []:
-        if network() == True:
-            threading.Thread(target=vk_bot, args=[
-                lines[0][:-1], lines[1], self]).start()
+    if os.path.exists('os.path.abspath(__file__)) + "/vk_api.txt"'):
+        file = open(os.path.dirname(
+            os.path.abspath(__file__)) + "/vk_api.txt", 'r')
+        lines = file.readlines()
+        if lines != []:
+            if network() == True:
+                threading.Thread(target=vk_bot, args=[
+                    lines[0][:-1], lines[1], self]).start()
 
 
 def vk_bot(token, id_g, self):
