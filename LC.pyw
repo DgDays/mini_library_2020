@@ -20,7 +20,6 @@
 import tkinter as tk
 import tkinter.font as tkFont
 from tkinter import ttk, messagebox, PhotoImage
-from soupsieve import select
 from ttkthemes import ThemedStyle
 from pystray import MenuItem as item
 import pystray
@@ -85,9 +84,9 @@ class MyTree(ttk.Treeview):
 # ================================ Entry с Placeholder ===================
 
 class Entry_Pl(ttk.Entry):
-    def __init__(self, master=None, placeholder=None):
+    def __init__(self, master=None, placeholder=None, width=20):
         self.entry_var = tk.StringVar()
-        super().__init__(master, textvariable=self.entry_var)
+        super().__init__(master, width=width, textvariable=self.entry_var)
 
         if placeholder is not None:
             self.placeholder = placeholder
@@ -417,7 +416,7 @@ class Add_profile(tk.Toplevel):
         self.lb_db.grid(row=5, column=3, pady=3)
 
         # место ввода "Дата рождения"
-        self.en_db2 = ttk.Entry(self, width=12)
+        self.en_db2 = Entry_Pl(self, 'dd.mm.YYYY', width=12)
         self.en_db2.grid_configure(row=5, column=4, sticky='W')
 
         # кнопка "Сохранить"
@@ -495,7 +494,7 @@ class Edit_profile(tk.Toplevel):
         self.lb_db.grid(row=4, column=4, ipady=3)
 
         # место ввода "Дата рождения"
-        self.en_db2 = ttk.Entry(self, width=12)
+        self.en_db2 = Entry_Pl(self, 'dd.mm.YYYY', width=12)
         self.en_db2.grid_configure(row=4, column=5, sticky='W')
 
         # кнопка "Сохранить"
@@ -1605,9 +1604,13 @@ def save_stud2(self):
     lit = self.en_lit2.get()
     phone = self.en_phone2.get()
     db = self.en_db2.get()
-    if len(db) == 10:
+    try:
         db = datetime.datetime.strptime(db, '%d.%m.%Y')
         db = db.strftime('%Y-%m-%d')
+    except:
+        messagebox.showerror(
+            'ОШИБКА!!!', 'Данные в поле "Дата рождения" имеют неверный формат', parent=self)
+        return 0
     adr = self.en_adr2.get()
     client = self.en_client.get()
     dreg = datetime.date.today()
@@ -1656,9 +1659,13 @@ def edit_stud(self):
     lit = self.en_lit2.get()
     phone = self.en_phone2.get()
     db = self.en_db2.get()
-    if len(db) == 10:
+    try:
         db = datetime.datetime.strptime(db, '%d.%m.%Y')
         db = db.strftime('%Y-%m-%d')
+    except:
+        messagebox.showerror(
+            'ОШИБКА!!!', 'Данные в поле "Дата рождения" имеют неверный формат', parent=self)
+        return 0
     adr = self.en_adr2.get()
     fio2 = text
     db2 = datetime.datetime.strptime(values[0], '%d.%m.%Y')
@@ -2954,7 +2961,7 @@ def geometry(self):
 
 def quit_window(icon, item):
     icon.stop()
-    sys.exit(0)
+    sys.exit(1)
 
 
 def show_window(icon, item):
